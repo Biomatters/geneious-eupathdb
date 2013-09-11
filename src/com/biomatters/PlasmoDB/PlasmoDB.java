@@ -42,9 +42,6 @@ import java.net.*;
  */
 public class PlasmoDB extends DatabaseService {
 
-    public PlasmoDB(File fastaFile) {
-    }
-
     public String getUniqueID() {
         return "PlasmoDBPlugin";
     }
