@@ -51,14 +51,9 @@ public class PlasmoDBPlugin extends GeneiousPlugin {
         return 4;
     }
 
-    private File pluginDirectory;
-    public void initialize(File pluginUserDirectory, File pluginDirectory) {
-        this.pluginDirectory = pluginDirectory;
-    }
-
     public GeneiousService[] getServices() {
         return new GeneiousService[]{
-        		new PlasmoDB(new File(pluginDirectory.getAbsolutePath()))
+        		new PlasmoDB()
         };
     }
 
