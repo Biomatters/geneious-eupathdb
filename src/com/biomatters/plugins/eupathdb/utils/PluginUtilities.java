@@ -46,15 +46,18 @@ public class PluginUtilities {
 	 * @return the string
 	 */
 	public static String deEscape(String str) {
-		StringBuilder token = new StringBuilder(str);
-		if (token.charAt(0) == '\"' || token.charAt(0) == '\'') {
-			token.deleteCharAt(0);
+		if(str.length() > 0){
+			StringBuilder token = new StringBuilder(str);
+			if (token.charAt(0) == '\"' || token.charAt(0) == '\'') {
+				token.deleteCharAt(0);
+			}
+			if (token.length() > 0 && token.charAt(token.length() - 1) == '\"'
+					|| token.charAt(token.length() - 1) == '\'') {
+				token.deleteCharAt(token.length() - 1);
+			}
+			return token.toString().replace("\\\"", "\"");
 		}
-		if (token.charAt(token.length() - 1) == '\"'
-				|| token.charAt(token.length() - 1) == '\'') {
-			token.deleteCharAt(token.length() - 1);
-		}
-		return token.toString().replace("\\\"", "\"");
+		return str;
 	}
 
 	/**
