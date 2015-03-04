@@ -57,14 +57,28 @@ public class PluginHelper {
 
 		DefaultSequenceDocument document;
 		for (Map<String, String> map : list) {
-			for (DocType docType : DocType.values()) {
-				document = SequenceDocumentGenerator
-						.getDefaultSequenceDocument(map, getDBUrl(database),
-								docType);
-				if (document != null) {
-					paramRetrieveCallback.add(document,
-							Collections.<String, Object> emptyMap());
+			if (map.get(EuPathDBConstants.RESPONSE_KEY_ERROR) == null) {
+				for (DocType docType : DocType.values()) {
+					document = SequenceDocumentGenerator
+							.getDefaultSequenceDocument(map,
+									getDBUrl(database), docType);
+					if (document != null) {
+						paramRetrieveCallback.add(document,
+								Collections.<String, Object> emptyMap());
+					}
 				}
+			} else {
+				String type = map.get(EuPathDBConstants.RESPONSE_KEY_ERROR_TYPE);
+				String code = map.get(EuPathDBConstants.RESPONSE_KEY_ERROR_CODE);
+				StringBuilder errorMsg = new StringBuilder(map.get(EuPathDBConstants.RESPONSE_KEY_ERROR));
+
+				if (type != null && !type.isEmpty()) {
+					errorMsg.append("<br><b>Type: </b>" + type);
+				}
+				if (code != null && !code.isEmpty()) {
+					errorMsg.append("<br><b>Code: </b>" + code);
+				}
+				throw new DatabaseServiceException(errorMsg.toString(), false);
 			}
 		}
 	}

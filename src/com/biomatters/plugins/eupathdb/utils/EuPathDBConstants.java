@@ -64,4 +64,10 @@ public final class EuPathDBConstants {
 	public static final int PLUGIN_MAX_API_VERSION = 4;
 
 	public static final String PLUGIN_ICON = "database32.png";
+	
+	/* keys to parse json error response and to add in map */
+	public static final String RESPONSE_KEY_ERROR = "error";
+	public static final String RESPONSE_KEY_ERROR_MSG = "msg";
+	public static final String RESPONSE_KEY_ERROR_TYPE = "type";
+	public static final String RESPONSE_KEY_ERROR_CODE = "code";
 }
