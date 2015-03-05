@@ -86,10 +86,10 @@
     <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
 
     <!-- load ivy settings -->
-    <ivy:settings file="ivysettings.xml" id="biocode.ivy.config" />
+    <ivy:settings file="ivysettings.xml" id="eupathdb.ivy.config" />
 
     <target name="retrieve-build-dependencies" description="Retrieve dependencies with ivy">
-       <ivy:retrieve conf="build" settingsref="biocode.ivy.config"/>
+       <ivy:retrieve conf="build" settingsref="eupathdb.ivy.config"/>
     </target>
 
     <condition property="GeneiousFiles.exists">
@@ -97,6 +97,6 @@
     </condition>
 	
     <target name="clean-ivy-cache">
-        <ivy:cleancache settingsRef="biocode.ivy.config"/>
+        <ivy:cleancache settingsRef="eupathdb.ivy.config"/>
     </target>
 </project>
