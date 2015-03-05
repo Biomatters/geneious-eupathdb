@@ -13,6 +13,12 @@ import com.biomatters.plugins.eupathdb.EuPathDBGenes.EuPathDatabase;
  * @version $Revision: 1.0 $
  */
 public final class EuPathDBConstants {
+	
+	/**
+	 * Constant provider utility.
+	 */
+	private EuPathDBConstants(){
+	}
 
 	/* Defines DB specific array of tags */
 	private static final String[] PLASMODB_TAGS = { "PF", "MAL", "PV", "PY",

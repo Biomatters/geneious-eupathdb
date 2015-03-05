@@ -19,6 +19,12 @@ public class PluginUtilities {
 
 	private static final String ENCODING = "UTF-8";
 	private static Properties Properties = new Properties();
+	
+	/**
+	 * Utility class 
+	 */
+	private PluginUtilities(){
+	}
 
 	/**
 	 * Encode.

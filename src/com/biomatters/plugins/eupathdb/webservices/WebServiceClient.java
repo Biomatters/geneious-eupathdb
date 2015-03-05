@@ -14,6 +14,12 @@ import com.sun.jersey.api.client.WebResource;
  * @version $Revision: 1.0 $
  */
 public class WebServiceClient {
+	
+	/**
+	 * Since serving as a utility.
+	 */
+	private WebServiceClient(){
+	}
 
 	/**
 	 * This method makes web service call and returns response in string format.

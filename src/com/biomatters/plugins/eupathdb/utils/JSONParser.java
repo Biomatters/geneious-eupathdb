@@ -1,7 +1,6 @@
 package com.biomatters.plugins.eupathdb.utils;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +16,12 @@ import com.google.gson.reflect.TypeToken;
  * @version $Revision: 1.0 $
  */
 public class JSONParser {
+	
+	/**
+	 * Utility class
+	 */
+	private JSONParser(){
+	}
 
 	/**
 	 * This method uses <code>JSONCustomMapper</code> to map a JSON response to
@@ -27,7 +32,7 @@ public class JSONParser {
 	 */
 	public static List<Map<String, String>> parse(String jsonString) {
 
-		List<Map<String, String>> recordList = new ArrayList<Map<String, String>>();
+		List<Map<String, String>> recordList;
 		Gson gson = new GsonBuilder().registerTypeAdapter(List.class,
 				new JSONCustomMapper()).create();
 

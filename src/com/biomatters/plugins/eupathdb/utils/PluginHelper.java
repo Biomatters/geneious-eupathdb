@@ -56,8 +56,24 @@ public class PluginHelper {
 		List<Map<String, String>> list = JSONParser.parse(response);
 
 		DefaultSequenceDocument document;
-		for (Map<String, String> map : list) {
-			if (map.get(EuPathDBConstants.RESPONSE_KEY_ERROR) == null) {
+		if (!(list == null || list.isEmpty() || list.get(0).get(
+				EuPathDBConstants.RESPONSE_KEY_ERROR) == null)) {
+
+			Map<String, String> map = list.get(0);
+			String type = map.get(EuPathDBConstants.RESPONSE_KEY_ERROR_TYPE);
+			String code = map.get(EuPathDBConstants.RESPONSE_KEY_ERROR_CODE);
+			StringBuilder errorMsg = new StringBuilder(
+					map.get(EuPathDBConstants.RESPONSE_KEY_ERROR));
+
+			if (type != null && !type.isEmpty()) {
+				errorMsg.append("<br><b>Type: </b>" + type);
+			}
+			if (code != null && !code.isEmpty()) {
+				errorMsg.append("<br><b>Code: </b>" + code);
+			}
+			throw new DatabaseServiceException(errorMsg.toString(), false);
+		} else {
+			for (Map<String, String> map : list) {
 				for (DocType docType : DocType.values()) {
 					document = SequenceDocumentGenerator
 							.getDefaultSequenceDocument(map,
@@ -67,18 +83,6 @@ public class PluginHelper {
 								Collections.<String, Object> emptyMap());
 					}
 				}
-			} else {
-				String type = map.get(EuPathDBConstants.RESPONSE_KEY_ERROR_TYPE);
-				String code = map.get(EuPathDBConstants.RESPONSE_KEY_ERROR_CODE);
-				StringBuilder errorMsg = new StringBuilder(map.get(EuPathDBConstants.RESPONSE_KEY_ERROR));
-
-				if (type != null && !type.isEmpty()) {
-					errorMsg.append("<br><b>Type: </b>" + type);
-				}
-				if (code != null && !code.isEmpty()) {
-					errorMsg.append("<br><b>Code: </b>" + code);
-				}
-				throw new DatabaseServiceException(errorMsg.toString(), false);
 			}
 		}
 	}

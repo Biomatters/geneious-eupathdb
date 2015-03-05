@@ -60,7 +60,7 @@ public class JSONCustomMapper implements
 			String errorType = errorObject.get(EuPathDBConstants.RESPONSE_KEY_ERROR_TYPE).getAsString();
 			String errorCode = errorObject.get(EuPathDBConstants.RESPONSE_KEY_ERROR_CODE).getAsString();
 			JsonArray errorMsgArray = errorObject.getAsJsonArray(EuPathDBConstants.RESPONSE_KEY_ERROR_MSG);
-			if(errorMsgArray != null && errorMsgArray.size() > 0) {
+			if(!(errorMsgArray == null || errorMsgArray.size() <= 0)){
 				errorMsg = errorMsgArray.getAsString();
 			}
 			map = new HashMap<String, String>();
