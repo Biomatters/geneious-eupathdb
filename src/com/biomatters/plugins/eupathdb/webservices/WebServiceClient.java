@@ -1,9 +1,12 @@
 package com.biomatters.plugins.eupathdb.webservices;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+
 import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * This Class <code>WebServiceClient</code> creates jersey client and makes web
@@ -29,13 +32,14 @@ public class WebServiceClient {
 	 * @throws DatabaseServiceException 
 	 */
 	public static String call(String url) throws DatabaseServiceException {
-		Client client = Client.create();
 
-		WebResource webResource = client.resource(url);
-		ClientResponse response = webResource.post(ClientResponse.class);
+		Client client = ClientBuilder.newClient();
+		WebTarget target = client.target(url);
+		Response response = target.request().post(Entity.text(""));
+		
 		if(response.getStatus() != 200) {
 			throw new DatabaseServiceException("Search failed: ", true);
 		}
-		return response.getEntity(String.class);
+		return response.readEntity(String.class).toString();
 	}
 }
