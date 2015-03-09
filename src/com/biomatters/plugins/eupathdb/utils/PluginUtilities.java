@@ -19,11 +19,11 @@ public class PluginUtilities {
 
 	private static final String ENCODING = "UTF-8";
 	private static Properties Properties = new Properties();
-	
+
 	/**
-	 * Utility class 
+	 * Utility class
 	 */
-	private PluginUtilities(){
+	private PluginUtilities() {
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class PluginUtilities {
 	 * @return the string
 	 */
 	public static String deEscape(String str) {
-		if(str.length() > 0){
+		if (str.length() > 0) {
 			StringBuilder token = new StringBuilder(str);
 			if (token.charAt(0) == '\"' || token.charAt(0) == '\'') {
 				token.deleteCharAt(0);
@@ -72,7 +72,7 @@ public class PluginUtilities {
 	 * @throws DatabaseServiceException
 	 */
 	public static void loadProperties() throws DatabaseServiceException {
-		InputStream inputStream = PluginUtilities.class.getClassLoader()
+		InputStream inputStream = PluginUtilities.class
 				.getResourceAsStream(EuPathDBConstants.EUPATHDB_PROPERTIES);
 		try {
 			Properties.load(inputStream);

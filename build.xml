@@ -19,11 +19,13 @@
     <property name="build" location="build"/>
     <property name="classes" location="classes"/>
     <property name="lib" location="lib"/>
+	<property name="resources" location="resources"/>
     <property name="src" location="src"/>
     <property name="GeneiousFiles" location="GeneiousFiles"/>
 
     <path id="classpath">
         <fileset dir="${lib}"/>
+        <fileset dir="${resources}"/>
     </path>
 
     <target name= "create-plugin" depends="build-plugin">
@@ -38,7 +40,6 @@
     <target name="build-plugin" depends="clean,compile-plugin">
         <jar jarfile="${build}/${plugin-name}.jar">
             <fileset dir="${classes}"/>
-            <fileset file="eupathdb.properties"/>
         </jar>
         <mkdir dir="${build}/${plugin-name}"/>
         <copy todir="${build}/${plugin-name}">
@@ -51,8 +52,15 @@
                 <exclude name="*-sources.jar"/>
                 <exclude name="*-javadoc.jar"/>
                 <!-- Exclude the Geneious Public API libraries because they are available at runtime -->
-                <exclude name="GeneiousPublicAPI*.jar"/>
+  				<exclude name="GeneiousPublicAPI*.jar"/>
+            	<exclude name="jdom*.jar"/>
+            	<exclude name="jebl*.jar"/>
+            	<exclude name="guava*.jar"/>
+            	<!--Exclude test libs, not needed at runtime-->
+            	<exclude name="junit*.jar"/>
+            	<exclude name="hamcrest*.jar"/>
             </fileset>
+        	<fileset dir="resources" />
         </copy>
     </target>
 
