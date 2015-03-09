@@ -45,7 +45,7 @@ public final class EuPathDBConstants {
 	/* Web service parameters */
 	public static final String WEB_SERVICE_SPECIES_PARAM = "text_search_organism=";
 	public static final String WEB_SERVICE_O_FILEDS_PARAM = "o-fields=";
-	public static final String WEB_SERVICE_DS_GENE_IDS_PARAM = "ds_gene_ids=";
+	public static final String WEB_SERVICE_DS_GENE_IDS_PARAM = "ds_gene_ids_data=";
 	public static final String WEB_SERVICE_TEXT_EXPRESSION_PARAM = "text_expression=";
 	public static final String WEB_SERVICE_TEXT_FIELDS_PARAM = "text_fields=";
 	public static final String WEB_SERVICE_MAX_PVALUE_PARAM = "max_pvalue=";
