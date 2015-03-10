@@ -1,7 +1,6 @@
 package com.biomatters.plugins.eupathdb.utils;
 
 import static org.junit.Assert.assertNotNull;
-import static com.biomatters.test.CommonTestCase.getTestDataFile;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -11,8 +10,6 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.biomatters.plugins.eupathdb.utils.JSONParser;
 
 /**
  * The class <code>JSONParserTest</code> contains tests for the class
@@ -35,8 +32,8 @@ public class JSONParserTest {
 		String inputLine;
 		StringBuilder jsonString = new StringBuilder();
 		try {
-			reader = new FileReader(getTestDataFile(getClass(),
-					"JSONResponseString.txt"));
+			reader = new FileReader(getClass().getResource(
+					"JSONResponseString.txt").getPath());
 			bufferedReader = new BufferedReader(reader);
 
 			while ((inputLine = bufferedReader.readLine()) != null) {
