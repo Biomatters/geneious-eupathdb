@@ -3,7 +3,6 @@ package com.biomatters.plugins.eupathdb.utils;
 import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
 import com.google.gson.JsonSyntaxException;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -22,9 +21,18 @@ import static org.junit.Assert.*;
  * @version $Revision: 1.0 $
  */
 public class JSONParserTest {
-    String responseJson = "";
-    FileReader reader = null;
-    BufferedReader bufferedReader = null;
+    private String responseJson = "";
+    private FileReader reader = null;
+    private BufferedReader bufferedReader = null;
+
+    /**
+     * Launch the test.
+     *
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        new org.junit.runner.JUnitCore().run(JSONParserTest.class);
+    }
 
     /**
      * Run the List<Map<String, String>> parseJSON(String) method test for recordset response.
@@ -67,16 +75,6 @@ public class JSONParserTest {
     }
 
     /**
-     * Perform pre-test initialization.
-     *
-     * @throws Exception if the initialization fails for some reason
-     */
-    @Before
-    public void setUp() throws Exception {
-        // add additional set up code here
-    }
-
-    /**
      * Perform post-test clean-up.
      *
      * @throws Exception if the clean-up fails for some reason
@@ -90,17 +88,6 @@ public class JSONParserTest {
         if (bufferedReader != null) {
             bufferedReader.close();
         }
-    }
-
-    /**
-     * Launch the test.
-     *
-     * @param args
-     *            the command line arguments
-     *
-     */
-    public static void main(String[] args) {
-        new org.junit.runner.JUnitCore().run(JSONParserTest.class);
     }
 
     /**

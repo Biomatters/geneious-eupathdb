@@ -31,7 +31,7 @@ public class PluginUtilitiesTest {
      */
     @Test
     public void testEncodeUnreservedChars() throws Exception {
-        String testString = "* - _ .";
+        String testString = "*-_.";
         String val = PluginUtilities.encode(testString);
         assertEquals(testString, val);
     }

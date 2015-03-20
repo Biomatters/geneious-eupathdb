@@ -32,9 +32,9 @@ import java.util.Map;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(WebServiceClient.class)
 public class PluginHelperTest {
-    String responseJson = "";
-    FileReader reader = null;
-    BufferedReader bufferedReader = null;
+    private String responseJson = "";
+    private FileReader reader = null;
+    private BufferedReader bufferedReader = null;
 
     /**
      * Perform pre-test initialization.
@@ -44,7 +44,7 @@ public class PluginHelperTest {
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(WebServiceClient.class);
-        read("JSONResponseString.txt");
+        read();
     }
 
     /**
@@ -98,13 +98,12 @@ public class PluginHelperTest {
     /**
      * Reads and return data string from given file.
      *
-     * @param Filename the file name
      * @throws java.io.IOException
      */
-    private void read(String Filename) throws IOException {
+    private void read() throws IOException {
         String inputLine;
         StringBuilder jsonString = new StringBuilder();
-        reader = new FileReader(getClass().getResource(Filename).getPath());
+        reader = new FileReader(getClass().getResource("JSONResponseString.txt").getPath());
         bufferedReader = new BufferedReader(reader);
 
         while ((inputLine = bufferedReader.readLine()) != null) {

@@ -20,10 +20,10 @@ import java.util.Map;
  */
 public class SequenceDocumentGeneratorTest {
 
-    String dbUrl;
-    Map<String, String> parameters;
-    DefaultSequenceDocument document;
-    SequenceDocumentGenerator.DocType docType;
+    private String dbUrl;
+    private Map<String, String> parameters;
+    private DefaultSequenceDocument document;
+    private SequenceDocumentGenerator.DocType docType;
 
     /**
      * Perform pre-test initialization.
