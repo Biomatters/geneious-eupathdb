@@ -6,40 +6,34 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
-
 /**
  * This Class <code>WebServiceClient</code> creates jersey client and makes web
  * service call. It retrieves web service response and returns it back in string
  * format.
- * 
+ *
  * @author cybage
  * @version $Revision: 1.0 $
  */
 public class WebServiceClient {
-	
-	/**
-	 * Since serving as a utility.
-	 */
-	private WebServiceClient(){
-	}
 
-	/**
-	 * This method makes web service call and returns response in string format.
-	 * 
-	 * @param url
-	 * @return string
-	 * @throws DatabaseServiceException 
-	 */
-	public static String call(String url) throws DatabaseServiceException {
+    /**
+     * Since serving as a utility.
+     */
+    private WebServiceClient() {
+    }
 
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(url);
-		Response response = target.request().post(Entity.text(""));
-		
-		if(response.getStatus() != 200) {
-			throw new DatabaseServiceException("Search failed: ", true);
-		}
-		return response.readEntity(String.class).toString();
-	}
+    /**
+     * This method makes web service call and returns response in string format.
+     *
+     * @param url the webservice url
+     * @return string the json string
+     */
+    public static String call(String url) {
+
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client.target(url);
+        Response response = target.request().post(Entity.text(""));
+
+        return response.readEntity(String.class);
+    }
 }
