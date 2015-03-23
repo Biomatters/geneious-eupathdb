@@ -21,7 +21,7 @@
 	<property name="lib" location="lib" />
 	<property name="resources" location="resources" />
 	<property name="src" location="src" />
-	<property name="test-integration" location="test" />
+	<property name="test.src" location="test" />
 	<property name="test.classes" location="testclasses" />
 	<property name="test.data" location="testdata" />
 	<property name="report" location="report" />
@@ -107,7 +107,7 @@
 				<path refid="classpath" />
 				<pathelement location="${classes}" />
 			</classpath>
-			<src path="${test-integration}" />
+			<src path="${test.src}" />
 		</javac>
 	</target>
 
