@@ -1,7 +1,5 @@
 package com.biomatters.plugins.eupathdb;
 
-import javax.swing.JPanel;
-
 import com.biomatters.geneious.publicapi.plugin.GeneiousServiceListener;
 import com.biomatters.geneious.publicapi.plugin.GeneiousServiceWithPanel;
 import com.biomatters.geneious.publicapi.plugin.Icons;
@@ -9,6 +7,8 @@ import com.biomatters.geneious.publicapi.utilities.IconUtilities;
 import com.biomatters.plugins.eupathdb.services.PiroplasmaDB;
 import com.biomatters.plugins.eupathdb.services.PlasmoDB;
 import com.biomatters.plugins.eupathdb.utils.EuPathDBConstants;
+
+import javax.swing.*;
 
 /**
  * The Class <code>EuPathDBGenes</code> displays a custom panel for the EuPathDB

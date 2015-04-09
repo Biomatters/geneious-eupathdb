@@ -4,14 +4,20 @@ import com.biomatters.geneious.publicapi.databaseservice.BasicSearchQuery;
 import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
 import com.biomatters.geneious.publicapi.databaseservice.Query;
 import com.biomatters.geneious.publicapi.databaseservice.RetrieveCallback;
+import com.biomatters.geneious.publicapi.documents.sequence.SequenceDocument;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultSequenceDocument;
 import com.biomatters.plugins.eupathdb.EuPathDBGenes.EuPathDatabase;
-import com.biomatters.plugins.eupathdb.utils.SequenceDocumentGenerator.DocType;
-import com.biomatters.plugins.eupathdb.webservices.WebServiceClient;
+import com.biomatters.plugins.eupathdb.webservices.EuPathDBWebService;
+import com.biomatters.plugins.eupathdb.webservices.models.Error;
+import com.biomatters.plugins.eupathdb.webservices.models.Field;
+import com.biomatters.plugins.eupathdb.webservices.models.Record;
+import com.biomatters.plugins.eupathdb.webservices.models.Response;
 
+import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +30,8 @@ import java.util.Map;
  */
 public class PluginHelper {
 
-	private static final String WILDCARD = "*";
-	private static final String SEARCH_FAILED = "Search failed";
+    private static final String WILDCARD = "*";
+    private static final String SEARCH_FAILED = "Search failed";
 
     /**
      * Processes search in the EuPathDB family of databases.
@@ -39,57 +45,21 @@ public class PluginHelper {
                               RetrieveCallback paramRetrieveCallback, EuPathDatabase database)
             throws DatabaseServiceException {
 
-        // will be fixed by CYB-21
+        Map<String, Object> paramMap = new HashMap<String, Object>(5);
         String queryText = ((BasicSearchQuery) paramQuery).getSearchText();
-        queryText = PluginUtilities.deEscape(queryText);
-        StringBuilder url;
-        try {
-            if (isQueryTextContainsTag(queryText, database)) {
-                url = buildTagSearchUrl(database).append(
-                        PluginUtilities.encode(queryText));
-            } else {
-                url = buildTextSearchUrl(database).append(
-                        PluginUtilities.encode(queryText)).append(WILDCARD);
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw new DatabaseServiceException(e, SEARCH_FAILED+": "
-                    + e.getMessage(), false);
+
+        URI uri = buildURI(paramMap, database, queryText);
+        EuPathDBWebService service = new EuPathDBWebService();
+        Response wsResponse = service.post(uri, paramMap,
+                new ResponseMessageBodyReader()).readEntity(Response.class);
+
+        DatabaseServiceException exception = getException(wsResponse);
+        if (exception != null) {
+            throw exception;
         }
-
-        String response = WebServiceClient.call(url.toString());
-        List<Map<String, String>> list = JSONParser.parse(response);
-
-        DefaultSequenceDocument document;
-        if (!(list == null || list.isEmpty())) {
-            Map<String, String> responseMap = list.get(0);
-            if (responseMap.get(EuPathDBConstants.RESPONSE_KEY_ERROR) != null) {
-                String type = responseMap.get(EuPathDBConstants.RESPONSE_KEY_ERROR_TYPE);
-                String code = responseMap.get(EuPathDBConstants.RESPONSE_KEY_ERROR_CODE);
-                StringBuilder errorMsg = new StringBuilder(
-                        responseMap.get(EuPathDBConstants.RESPONSE_KEY_ERROR));
-
-                if (type != null && !type.isEmpty()) {
-                    errorMsg.append("<br><b>Type: </b>").append(type);
-                }
-                if (code != null && !code.isEmpty()) {
-                    errorMsg.append("<br><b>Code: </b>").append(code);
-                }
-                throw new DatabaseServiceException(errorMsg.toString(), false);
-            } else {
-                for (Map<String, String> map : list) {
-                    for (DocType docType : DocType.values()) {
-                        document = SequenceDocumentGenerator
-                                .getDefaultSequenceDocument(map,
-                                        getDBUrl(database), docType);
-                        if (document != null) {
-                            paramRetrieveCallback.add(document,
-                                    Collections.<String, Object>emptyMap());
-                        }
-                    }
-                }
-            }
-        }
+        reportSearchResult(paramRetrieveCallback, wsResponse, database);
     }
+
 
     /**
      * Checks if the query text contains the tag.
@@ -112,45 +82,155 @@ public class PluginHelper {
     }
 
     /**
-     * Builds the tag search url.
+     * Prepares search result from each record and report back to the caller
+     * using RetrieveCallback.
      *
-     * @param database the database
-     * @return the string builder
-     * @throws DatabaseServiceException the database service exception
+     * @param callback the RetrieveCallback
+     * @param response the Response
+     * @param database the EuPathDatabase
+     * @throws DatabaseServiceException
      */
-    private StringBuilder buildTagSearchUrl(EuPathDatabase database)
+    private void reportSearchResult(RetrieveCallback callback,
+                                    Response response, EuPathDatabase database)
             throws DatabaseServiceException {
-        StringBuilder url = new StringBuilder(getPrefixUrl(database));
-        url.append(EuPathDBConstants.WEB_SERVICE_SUFFIX_TAG_SEARCH_URL)
-                .append('.')
-                .append(EuPathDBConstants.WEB_SERVICE_RESPONSE_FORMAT)
-                .append('?').append(getSuffixUrl())
-                .append(EuPathDBConstants.WEB_SERVICE_PARAM_SEPARATOR)
-                .append(EuPathDBConstants.WEB_SERVICE_DS_GENE_IDS_PARAM);
+        if (!(response == null || response.getRecordset() == null || response
+                .getRecordset().getRecord() == null)) {
+            DefaultSequenceDocument document;
+            Map<String, String> docParams = new HashMap<String, String>(5);
 
-        return url;
+            List<Record> records = response.getRecordset().getRecord();
+            for (Record record : records) {
+                docParams.clear();
+                for (Field field : record.getField()) {
+                    docParams.put(field.getName(), field.getValue());
+                }
+                for (SequenceDocument.Alphabet alphabet : SequenceDocument.Alphabet
+                        .values()) {
+                    document = SequenceDocumentGenerator
+                            .getDefaultSequenceDocument(docParams,
+                                    getDBUrl(database), alphabet);
+                    if (document != null) {
+                        callback.add(document,
+                                Collections.<String, Object>emptyMap());
+                    }
+                }
+            }
+        }
     }
 
     /**
-     * Builds the text search url.
+     * Generates DatabaseServiceException if there is error in response from web service.
      *
-     * @param database the database
-     * @return the string builder
+     * @param response the Response
+     * @return DatabaseServiceException
+     */
+    private DatabaseServiceException getException(Response response) {
+        DatabaseServiceException exception = null;
+        if (!(response == null || response.getError() == null)) {
+            String errorMsg = getErrorMessage(response.getError());
+            exception = new DatabaseServiceException(errorMsg, false);
+        }
+        return exception;
+    }
+
+    /**
+     * Builds URI from paramMap, query text and end point decided based on query
+     * type.
+     *
+     * @param paramMap  the Map
+     * @param database  the EuPathDatabase
+     * @param queryText the queryText
+     * @return URI
+     * @throws DatabaseServiceException
+     */
+    private URI buildURI(Map<String, Object> paramMap, EuPathDatabase database,
+                         String queryText) throws DatabaseServiceException {
+        URI uri;
+        if (isQueryTextContainsTag(queryText, database)) {
+            uri = buildTagSearchUri(database);
+            populateTagSearchParameters(paramMap, queryText);
+        } else {
+            uri = buildTextSearchUri(database);
+            populateTextSearchParameters(paramMap, database, queryText);
+        }
+        return uri;
+    }
+
+    /**
+     * Builds the tag search uri.
+     *
+     * @param database the EuPathDatabase
+     * @return uri the URI
      * @throws DatabaseServiceException the database service exception
      */
-    private StringBuilder buildTextSearchUrl(EuPathDatabase database)
+    private URI buildTagSearchUri(EuPathDatabase database)
             throws DatabaseServiceException {
-        StringBuilder url = new StringBuilder(getPrefixUrl(database));
-        url.append(EuPathDBConstants.WEB_SERVICE_SUFFIX_TEXT_SEARCH_URL)
-                .append('.')
-                .append(EuPathDBConstants.WEB_SERVICE_RESPONSE_FORMAT)
-                .append('?').append(getSuffixUrl())
-                .append(EuPathDBConstants.WEB_SERVICE_PARAM_SEPARATOR)
-                .append(addTextSearchParams(database))
-                .append(EuPathDBConstants.WEB_SERVICE_PARAM_SEPARATOR)
-                .append(EuPathDBConstants.WEB_SERVICE_TEXT_EXPRESSION_PARAM);
+        UriBuilder uriBuilder = UriBuilder.fromUri(getPrefixUri(database));
+        uriBuilder = uriBuilder
+                .path(EuPathDBConstants.WEB_SERVICE_PATH_XML_GENE_BY_LOCUS_TAG);
+        return uriBuilder.build();
+    }
 
-        return url;
+    /**
+     * Populates map with GeneByLocusTag parameters.
+     *
+     * @param paramMap  the Map
+     * @param queryText the query text
+     */
+    private void populateTagSearchParameters(Map<String, Object> paramMap,
+                                             String queryText) {
+        paramMap.put(EuPathDBConstants.WEB_SERVICE_O_FILEDS_PARAM,
+                EuPathDBConstants.WEB_SERVICE_OFILEDS_PARAM_VALUE);
+        paramMap.put(EuPathDBConstants.WEB_SERVICE_DS_GENE_IDS_PARAM, queryText);
+    }
+
+    /**
+     * Builds the text search uri.
+     *
+     * @param database the EuPathDatabase
+     * @return uri the URI
+     * @throws DatabaseServiceException the database service exception
+     */
+    private URI buildTextSearchUri(EuPathDatabase database)
+            throws DatabaseServiceException {
+        URI baseURI = URI.create(getPrefixUri(database));
+        UriBuilder uriBuilder = UriBuilder.fromUri(baseURI);
+        uriBuilder = uriBuilder
+                .path(EuPathDBConstants.WEB_SERVICE_PATH_XML_GENES_BY_TEXT_SEARCH);
+        return uriBuilder.build();
+    }
+
+    /**
+     * Populates map with GeneByTextSearch parameters.
+     *
+     * @param paramMap  the Map
+     * @param database  the EuPathDatabase
+     * @param queryText the query text
+     * @throws DatabaseServiceException the database service exception
+     */
+    private void populateTextSearchParameters(Map<String, Object> paramMap,
+                                              EuPathDatabase database, String queryText)
+            throws DatabaseServiceException {
+        String organism;
+        try {
+            organism = EuPathDBUtilities
+                    .getValue(database
+                            + EuPathDBConstants.WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE_KEY);
+        } catch (IOException e) {
+            throw new DatabaseServiceException(e, SEARCH_FAILED + ": "
+                    + e.getMessage(), false);
+        }
+        paramMap.put(EuPathDBConstants.WEB_SERVICE_O_FILEDS_PARAM,
+                EuPathDBConstants.WEB_SERVICE_OFILEDS_PARAM_VALUE);
+        paramMap.put(EuPathDBConstants.WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM,
+                organism);
+        paramMap.put(EuPathDBConstants.WEB_SERVICE_TEXT_FIELDS_PARAM,
+                EuPathDBConstants.WEB_SERVICE_TEXT_FILEDS_PARAM_VALUE);
+        paramMap.put(EuPathDBConstants.WEB_SERVICE_MAX_PVALUE_PARAM,
+                EuPathDBConstants.WEB_SERVICE_MAX_PVALUE_PARAM_VALUE);
+        paramMap.put(EuPathDBConstants.WEB_SERVICE_TEXT_EXPRESSION_PARAM,
+                queryText + WILDCARD);
+
     }
 
     /**
@@ -160,63 +240,15 @@ public class PluginHelper {
      * @return the prefix url
      * @throws DatabaseServiceException the database service exception
      */
-    private String getPrefixUrl(EuPathDatabase database)
+    private String getPrefixUri(EuPathDatabase database)
             throws DatabaseServiceException {
         try {
-            return PluginUtilities.getValue(database
-                    + EuPathDBConstants.WEB_SERVICE_PREFIX_URL);
+            return EuPathDBUtilities.getValue(database
+                    + EuPathDBConstants.WEB_SERVICE_URI);
         } catch (IOException e) {
-            throw new DatabaseServiceException(e, SEARCH_FAILED+": "
+            throw new DatabaseServiceException(e, SEARCH_FAILED + ": "
                     + e.getMessage(), false);
         }
-    }
-
-    /**
-     * Gets the suffix url.
-     *
-     * @return the suffix url
-     */
-    private String getSuffixUrl() {
-        return EuPathDBConstants.WEB_SERVICE_O_FILEDS_PARAM
-                + EuPathDBConstants.WEB_SERVICE_OFILEDS_PARAM_VALUE;
-    }
-
-    /**
-     * Adds the text search params.
-     *
-     * @param database the database
-     * @return the string
-     * @throws DatabaseServiceException the database service exception
-     */
-    private String addTextSearchParams(EuPathDatabase database)
-            throws DatabaseServiceException {
-        StringBuilder url = new StringBuilder();
-
-        String species;
-        String textFields;
-        try {
-            species = PluginUtilities.getValue(database
-                    + EuPathDBConstants.WEB_SERVICE_SPECIES_PARAM_VALUE);
-            textFields = PluginUtilities
-                    .encode(EuPathDBConstants.WEB_SERVICE_TEXT_FILEDS_PARAM_VALUE);
-            species = PluginUtilities.encode(species);
-        } catch (UnsupportedEncodingException e) {
-            throw new DatabaseServiceException(e, SEARCH_FAILED+": "
-                    + e.getMessage(), false);
-        } catch (IOException e) {
-            throw new DatabaseServiceException(e, SEARCH_FAILED+": "
-                    + e.getMessage(), false);
-        }
-
-        url.append(EuPathDBConstants.WEB_SERVICE_SPECIES_PARAM).append(species)
-                .append(EuPathDBConstants.WEB_SERVICE_PARAM_SEPARATOR)
-                .append(EuPathDBConstants.WEB_SERVICE_TEXT_FIELDS_PARAM)
-                .append(textFields)
-                .append(EuPathDBConstants.WEB_SERVICE_PARAM_SEPARATOR)
-                .append(EuPathDBConstants.WEB_SERVICE_MAX_PVALUE_PARAM)
-                .append(EuPathDBConstants.WEB_SERVICE_MAX_PVALUE_PARAM_VALUE);
-
-        return url.toString();
     }
 
     /**
@@ -229,10 +261,31 @@ public class PluginHelper {
     private String getDBUrl(EuPathDatabase database)
             throws DatabaseServiceException {
         try {
-            return PluginUtilities.getValue(database + EuPathDBConstants.DBURL);
+            return EuPathDBUtilities.getValue(database
+                    + EuPathDBConstants.DBURL);
         } catch (IOException e) {
-            throw new DatabaseServiceException(e, SEARCH_FAILED+": "
+            throw new DatabaseServiceException(e, SEARCH_FAILED + ": "
                     + e.getMessage(), false);
         }
+    }
+
+    /**
+     * Get the error message string.
+     *
+     * @param error the Error
+     * @return String
+     */
+    private String getErrorMessage(Error error) {
+        String type = error.getType();
+        String code = error.getCode();
+        StringBuilder errorMsg = new StringBuilder(error.getMsg());
+
+        if (!(type == null || type.isEmpty())) {
+            errorMsg.append("<br><b>Type: </b>").append(type);
+        }
+        if (!(code == null || code.isEmpty())) {
+            errorMsg.append("<br><b>Code: </b>").append(code);
+        }
+        return errorMsg.toString();
     }
 }

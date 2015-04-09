@@ -1,10 +1,6 @@
 package com.biomatters.plugins.eupathdb.services;
 
-import com.biomatters.geneious.publicapi.databaseservice.DatabaseService;
-import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
-import com.biomatters.geneious.publicapi.databaseservice.Query;
-import com.biomatters.geneious.publicapi.databaseservice.QueryField;
-import com.biomatters.geneious.publicapi.databaseservice.RetrieveCallback;
+import com.biomatters.geneious.publicapi.databaseservice.*;
 import com.biomatters.geneious.publicapi.documents.URN;
 import com.biomatters.geneious.publicapi.plugin.Icons;
 import com.biomatters.geneious.publicapi.utilities.IconUtilities;
