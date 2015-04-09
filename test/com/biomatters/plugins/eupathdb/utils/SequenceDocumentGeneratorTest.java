@@ -1,5 +1,6 @@
 package com.biomatters.plugins.eupathdb.utils;
 
+import com.biomatters.geneious.publicapi.documents.sequence.SequenceDocument;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultAminoAcidSequence;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultNucleotideSequence;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultSequenceDocument;
@@ -20,10 +21,10 @@ import java.util.Map;
  */
 public class SequenceDocumentGeneratorTest {
 
-    private String dbUrl;
+    /**
+     * Map of parameters required to generate DefaultSequenceDocument.
+     */
     private Map<String, String> parameters;
-    private DefaultSequenceDocument document;
-    private SequenceDocumentGenerator.DocType docType;
 
     /**
      * Perform pre-test initialization.
@@ -41,31 +42,35 @@ public class SequenceDocumentGeneratorTest {
     }
 
     /**
-     * Run the DefaultSequenceDocument getDefaultSequenceDocument(Map<String, String>, String, DocType) method test for DefaultNucleotideSequence document.
+     * Run the DefaultSequenceDocument getDefaultSequenceDocument(Map<String,
+     * String>, String, DocType) method test for DefaultNucleotideSequence
+     * document.
      *
      * @throws Exception
      */
     @Test
     public void testGetDefaultSequenceDocumentNucleotide() throws Exception {
-        dbUrl = PluginUtilities.getValue(EuPathDBGenes.EuPathDatabase.PLASMODB + EuPathDBConstants.DBURL);
-        docType = SequenceDocumentGenerator.DocType.NUCLEOTIDE;
+        String dbUrl = EuPathDBUtilities.getValue(EuPathDBGenes.EuPathDatabase.PLASMODB + EuPathDBConstants.DBURL);
+        SequenceDocument.Alphabet alphabet = SequenceDocument.Alphabet.NUCLEOTIDE;
 
-        document = SequenceDocumentGenerator.getDefaultSequenceDocument(parameters, dbUrl, docType);
+        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(parameters, dbUrl, alphabet);
         Assert.assertNotNull("getDefaultSequenceDocument method returned null. Expected is an instance of DefaultNucleotideSequence", document);
         Assert.assertTrue("An instance of DefaultNucleotideSequence should have been generated. Generated is an instance of " + document.getClass() + ".", document instanceof DefaultNucleotideSequence);
     }
 
     /**
-     * Run the DefaultSequenceDocument getDefaultSequenceDocument(Map<String, String>, String, DocType) method test for DefaultAminoAcidSequence document.
+     * Run the DefaultSequenceDocument getDefaultSequenceDocument(Map<String,
+     * String>, String, DocType) method test for DefaultAminoAcidSequence
+     * document.
      *
      * @throws Exception
      */
     @Test
     public void testGetDefaultSequenceDocumentAminoAcid() throws Exception {
-        dbUrl = PluginUtilities.getValue(EuPathDBGenes.EuPathDatabase.PIROPLASMADB + EuPathDBConstants.DBURL);
-        docType = SequenceDocumentGenerator.DocType.AMINOACID;
+        String dbUrl = EuPathDBUtilities.getValue(EuPathDBGenes.EuPathDatabase.PIROPLASMADB + EuPathDBConstants.DBURL);
+        SequenceDocument.Alphabet alphabet = SequenceDocument.Alphabet.PROTEIN;
 
-        document = SequenceDocumentGenerator.getDefaultSequenceDocument(parameters, dbUrl, docType);
+        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(parameters, dbUrl, alphabet);
         Assert.assertNotNull("getDefaultSequenceDocument method returned null. Expected is an instance of DefaultAminoAcidSequence", document);
         Assert.assertTrue("An instance of DefaultAminoAcidSequence should have been generated. Generated is an instance of " + document.getClass() + ".", document instanceof DefaultAminoAcidSequence);
     }

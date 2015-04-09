@@ -1,0 +1,5 @@
+<response>
+   <error type="User Error" code="020">
+      <msg>The input to parameter 'Text term (use * as wildcard)' is required</msg>
+   </error>
+</response>
