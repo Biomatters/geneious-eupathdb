@@ -157,7 +157,7 @@
 	<ivy:settings file="ivysettings.xml" id="eupathdb.ivy.config" />
 
 	<target name="retrieve-build-dependencies" description="Retrieve dependencies with ivy">
-		<ivy:retrieve conf="build" settingsref="eupathdb.ivy.config" />
+		<ivy:retrieve conf="build" settingsref="eupathdb.ivy.config" pattern="lib/[artifact]-[type]-[revision].[ext]"/>
 	</target>
 
 	<target name="retrieve-test-runtime-dependencies" description="Retrieve the Geneious runtime for running the tests" unless="GeneiousFiles.exists">
