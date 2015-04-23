@@ -1,6 +1,7 @@
 package com.biomatters.plugins.eupathdb.utils;
 
 import com.biomatters.geneious.publicapi.databaseservice.BasicSearchQuery;
+import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
 import com.biomatters.geneious.publicapi.databaseservice.Query;
 import com.biomatters.geneious.publicapi.databaseservice.RetrieveCallback;
 import com.biomatters.geneious.publicapi.documents.AnnotatedPluginDocument;
@@ -9,7 +10,9 @@ import com.biomatters.plugins.eupathdb.EuPathDBGenes;
 import com.biomatters.plugins.eupathdb.webservices.EuPathDBWebService;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
@@ -23,7 +26,7 @@ import java.util.Map;
 
 /**
  * The class <code>PluginHelperTest</code> contains test cases for the class
- * <code>{@link PluginHelper}</code>.
+ * <code>{@link com.biomatters.plugins.eupathdb.utils.PluginHelper}</code>.
  *
  * @author cybage
  * @version $Revision: 1.0 $
@@ -32,6 +35,13 @@ import java.util.Map;
 @PrepareForTest({EuPathDBWebService.class, PluginHelper.class})
 public class PluginHelperTest {
 
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
+    private Query query;
+    private Callback callback;
+    private PluginHelper pluginHelper;
+    private Response response;
+
     /**
      * Perform pre-test initialization.
      *
@@ -39,37 +49,66 @@ public class PluginHelperTest {
      */
     @Before
     public void setUp() throws Exception {
+        callback = new Callback();
+        pluginHelper = new PluginHelper();
+        query = Mockito.mock(BasicSearchQuery.class);
+        response = Mockito.mock(Response.class);
+
+        EuPathDBWebService service = Mockito.mock(EuPathDBWebService.class);
+        PowerMockito.whenNew(EuPathDBWebService.class).withAnyArguments().thenReturn(service);
+        Mockito.when(
+                service.post(Mockito.any(URI.class),
+                        Mockito.anyMapOf(String.class, String.class),
+                        Mockito.any(MessageBodyReader.class)))
+                .thenReturn(response);
     }
 
     /**
-     * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test.
+     * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test for search by tag.
      *
      * @throws Exception
      */
     @Test
-    public void testProcessSearch() throws Exception {
-        Callback callback = new Callback();
-        Query query = Mockito.mock(BasicSearchQuery.class);
-        Response response = Mockito.mock(Response.class);
-        EuPathDBWebService service = Mockito.mock(EuPathDBWebService.class);
-
+    public void testProcessSearchForSearchByTag() throws Exception {
         Mockito.doReturn("PF3D7_1133400").when((BasicSearchQuery) query).getSearchText();
-        PowerMockito.whenNew(EuPathDBWebService.class).withAnyArguments().thenReturn(service);
         Mockito.when(
                 response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
                 .thenReturn(TestUtilities.getWebServiceResponse());
-        Mockito.when(
-                service.post(Mockito.any(URI.class),
-                        Mockito.anyMapOf(String.class, Object.class),
-                        Mockito.any(MessageBodyReader.class))).thenReturn(
-                response);
-
-        PluginHelper pluginHelper = new PluginHelper();
         pluginHelper.processSearch(query, callback, EuPathDBGenes.EuPathDatabase.PIROPLASMADB);
-
         Assert.assertEquals(14, callback.addCount);
     }
 
+    /**
+     * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test for search by text.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testProcessSearchForSearchByText() throws Exception {
+        Mockito.doReturn("adc").when((BasicSearchQuery) query).getSearchText();
+        Mockito.when(
+                response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
+                .thenReturn(TestUtilities.getWebServiceResponse());
+        pluginHelper.processSearch(query, callback, EuPathDBGenes.EuPathDatabase.PLASMODB);
+        Assert.assertEquals(14, callback.addCount);
+    }
+
+    /**
+     * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test for error response.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testProcessSearch_ErrorResponse() throws Exception {
+        expectedEx.expect(DatabaseServiceException.class);
+        expectedEx.expectMessage("The input to parameter 'Text term (use * as wildcard)' is required<br><b>Type: </b>User Error<br><b>Code: </b>020");
+
+        Mockito.doReturn("adc").when((BasicSearchQuery) query).getSearchText();
+        Mockito.when(
+                response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
+                .thenReturn(TestUtilities.getWebServiceErrorResponse());
+        pluginHelper.processSearch(query, callback, EuPathDBGenes.EuPathDatabase.PIROPLASMADB);
+    }
 
     /**
      *

@@ -24,7 +24,7 @@ public class TestUtilities {
      *
      * @param filename the filename
      * @return String
-     * @throws IOException
+     * @throws java.io.IOException
      */
     public static String read(String filename) throws IOException {
         FileReader reader;
@@ -40,10 +40,21 @@ public class TestUtilities {
      * Returns dummy web service response string in xml format.
      *
      * @return String
-     * @throws IOException
+     * @throws java.io.IOException
      */
     public static Response getWebServiceResponse() throws IOException {
         String responseStr = TestUtilities.read("ResponseDataXML.txt");
+        return unmarshal(Response.class, responseStr);
+    }
+
+    /**
+     * Returns dummy web service response string in xml format.
+     *
+     * @return String
+     * @throws java.io.IOException
+     */
+    public static Response getWebServiceErrorResponse() throws IOException {
+        String responseStr = TestUtilities.read("ResponseDataXML_Error.txt");
         return unmarshal(Response.class, responseStr);
     }
 

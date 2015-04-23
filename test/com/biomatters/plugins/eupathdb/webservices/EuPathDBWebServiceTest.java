@@ -1,5 +1,6 @@
 package com.biomatters.plugins.eupathdb.webservices;
 
+import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
 import org.glassfish.jersey.client.JerseyInvocation;
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,7 +11,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -73,7 +73,7 @@ public class EuPathDBWebServiceTest {
     public void testPost() throws Exception {
         Mockito.when(response.getStatus()).thenReturn(Response.Status.OK.getStatusCode());
 
-        Map<String, Object> paramMap = new HashMap<String, Object>(2);
+        Map<String, String> paramMap = new HashMap<String, String>(2);
         paramMap.put("testParam1", "testVal1");
         paramMap.put("testParam2", "testVal2");
 
@@ -87,7 +87,7 @@ public class EuPathDBWebServiceTest {
      *
      * @throws Exception
      */
-    @Test(expected = WebApplicationException.class)
+    @Test(expected = DatabaseServiceException.class)
     public void testPost_WebApplicationException() throws Exception {
         Response.StatusType statusInfo = Response.Status.BAD_REQUEST;
 

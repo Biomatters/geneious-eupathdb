@@ -5,12 +5,14 @@ import com.biomatters.geneious.publicapi.implementations.sequence.DefaultAminoAc
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultNucleotideSequence;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultSequenceDocument;
 import com.biomatters.plugins.eupathdb.EuPathDBGenes;
+import com.biomatters.plugins.eupathdb.webservices.models.Field;
+import com.biomatters.plugins.eupathdb.webservices.models.Record;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The class <code>SequenceDocumentGeneratorTest</code> contains tests for the class
@@ -22,9 +24,9 @@ import java.util.Map;
 public class SequenceDocumentGeneratorTest {
 
     /**
-     * Map of parameters required to generate DefaultSequenceDocument.
+     * Record containing fields required to generate DefaultSequenceDocument.
      */
-    private Map<String, String> parameters;
+    private Record record;
 
     /**
      * Perform pre-test initialization.
@@ -33,12 +35,13 @@ public class SequenceDocumentGeneratorTest {
      */
     @Before
     public void setUp() throws Exception {
-        parameters = new HashMap<String, String>();
-        parameters.put("primary_key", "PF3D7_1133400");
-        parameters.put("organism", "P. falciparum 3D7");
-        parameters.put("product", "apical membrane antigen 1 AMA1");
-        parameters.put("cds", "ATGAAAATCGAATCTAAGGAAATACAGAACTCATCAAAACTTCCAAACATAATTATAACTGGGACGCCAGGAGTTGGTAAAAGCACCTTATGTGAAGAATTAGTTGAAATCATAAATAAAGATTTTGAAGAAAAGTTTAGAATAGATGGAAAAGAACAACTAAAAATGATACATTTAAATTTATCAAATATTATAAAAAATGAAAGATTATATGAAGAATATGATGACGAATTAGATGCAAGTATATTTAGTGAAGAACTAGTAAATCAAAAATTAAAAAAATTAAATTTACAAAATGGTGGTTATATAATAGATTTTCATGATGTTAATTTTTTATACGAAAATAAATATATCGATAAAATTTTTTTATTAACAGCATCAACAAATGTTTTATACGAACGTTTAGAAAAAAGAAATTACACGAAAGATAAAATTAAAAATAATATTGAATGTGAAATATTTCAGGTTATAAAAGAAGACATATTAGAGAATTATGACGATGAAAATATTTTTGTAGAGTTACAAAATAATAATTTAGAAGATCATGACAAAAACATTTCTTTTATTCAAAAATGGATTCATTCTTATATGACTCAAGGGTTCTAA");
-        parameters.put("protein_sequence", "MKIESKEIQNSSKLPNIIITGTPGVGKSTLCEELVEIINKDFEEKFRIDGKEQLKMIHLNLSNIIKNERLYEEYDDELDASIFSEELVNQKLKKLNLQNGGYIIDFHDVNFLYENKYIDKIFLLTASTNVLYERLEKRNYTKDKIKNNIECEIFQVIKEDILENYDDENIFVELQNNNLEDHDKNISFIQKWIHSYMTQGF");
+        List<Field> fields = new ArrayList<Field>(5);
+        fields.add(new Field("primary_key", "PF3D7_1133400"));
+        fields.add(new Field("organism", "P. falciparum 3D7"));
+        fields.add(new Field("product", "apical membrane antigen 1 AMA1"));
+        fields.add(new Field("cds", "ATGAAAATCGAATCTAAGGAAATACAGAACTCATCAAAACTTCCAAACATAATTATAACTGGGACGCCAGGAGTTGGTAAAAGCACCTTATGTGAAGAATTAGTTGAAATCATAAATAAAGATTTTGAAGAAAAGTTTAGAATAGATGGAAAAGAACAACTAAAAATGATACATTTAAATTTATCAAATATTATAAAAAATGAAAGATTATATGAAGAATATGATGACGAATTAGATGCAAGTATATTTAGTGAAGAACTAGTAAATCAAAAATTAAAAAAATTAAATTTACAAAATGGTGGTTATATAATAGATTTTCATGATGTTAATTTTTTATACGAAAATAAATATATCGATAAAATTTTTTTATTAACAGCATCAACAAATGTTTTATACGAACGTTTAGAAAAAAGAAATTACACGAAAGATAAAATTAAAAATAATATTGAATGTGAAATATTTCAGGTTATAAAAGAAGACATATTAGAGAATTATGACGATGAAAATATTTTTGTAGAGTTACAAAATAATAATTTAGAAGATCATGACAAAAACATTTCTTTTATTCAAAAATGGATTCATTCTTATATGACTCAAGGGTTCTAA"));
+        fields.add(new Field("protein_sequence", "MKIESKEIQNSSKLPNIIITGTPGVGKSTLCEELVEIINKDFEEKFRIDGKEQLKMIHLNLSNIIKNERLYEEYDDELDASIFSEELVNQKLKKLNLQNGGYIIDFHDVNFLYENKYIDKIFLLTASTNVLYERLEKRNYTKDKIKNNIECEIFQVIKEDILENYDDENIFVELQNNNLEDHDKNISFIQKWIHSYMTQGF"));
+        record = new Record("",fields);
     }
 
     /**
@@ -53,7 +56,7 @@ public class SequenceDocumentGeneratorTest {
         String dbUrl = EuPathDBUtilities.getValue(EuPathDBGenes.EuPathDatabase.PLASMODB + EuPathDBConstants.DBURL);
         SequenceDocument.Alphabet alphabet = SequenceDocument.Alphabet.NUCLEOTIDE;
 
-        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(parameters, dbUrl, alphabet);
+        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(record, dbUrl, alphabet);
         Assert.assertNotNull("getDefaultSequenceDocument method returned null. Expected is an instance of DefaultNucleotideSequence", document);
         Assert.assertTrue("An instance of DefaultNucleotideSequence should have been generated. Generated is an instance of " + document.getClass() + ".", document instanceof DefaultNucleotideSequence);
     }
@@ -70,7 +73,7 @@ public class SequenceDocumentGeneratorTest {
         String dbUrl = EuPathDBUtilities.getValue(EuPathDBGenes.EuPathDatabase.PIROPLASMADB + EuPathDBConstants.DBURL);
         SequenceDocument.Alphabet alphabet = SequenceDocument.Alphabet.PROTEIN;
 
-        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(parameters, dbUrl, alphabet);
+        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(record, dbUrl, alphabet);
         Assert.assertNotNull("getDefaultSequenceDocument method returned null. Expected is an instance of DefaultAminoAcidSequence", document);
         Assert.assertTrue("An instance of DefaultAminoAcidSequence should have been generated. Generated is an instance of " + document.getClass() + ".", document instanceof DefaultAminoAcidSequence);
     }
