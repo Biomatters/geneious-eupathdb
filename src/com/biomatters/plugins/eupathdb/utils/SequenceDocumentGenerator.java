@@ -8,10 +8,11 @@ import com.biomatters.geneious.publicapi.documents.sequence.SequenceDocument;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultAminoAcidSequence;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultNucleotideSequence;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultSequenceDocument;
+import com.biomatters.plugins.eupathdb.webservices.models.Field;
+import com.biomatters.plugins.eupathdb.webservices.models.Record;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * The Class <code>SequenceDocumentGenerator</code> generates Nucleotide
@@ -39,22 +40,34 @@ public class SequenceDocumentGenerator {
     /**
      * Gets the default sequence document.
      *
-     * @param parameters the parameters
+     * @param record the Record
      * @param dbUrl      the db url
-     * @param alphabet   the type
-     * @return the default sequence document
+     * @param alphabet   the type   @return the default sequence document
      */
     public static DefaultSequenceDocument getDefaultSequenceDocument(
-            Map<String, String> parameters, String dbUrl, SequenceDocument.Alphabet alphabet) {
+            Record record, String dbUrl, SequenceDocument.Alphabet alphabet) {
+
+        String geneId = "";
+        String product = "";
+        String cds = "";
+        String speciesId = "";
+        String proSeq = "";
+
+        for (Field field: record.getField()) {
+            if (field.getName().equalsIgnoreCase(PRIMARY_KEY)) {
+                geneId = field.getValue();
+            } else if (field.getName().equalsIgnoreCase(PRODUCT)) {
+                product = field.getValue();
+            } else if (field.getName().equalsIgnoreCase(CDS)) {
+                cds = field.getValue();
+            } else if (field.getName().equalsIgnoreCase(ORGANISM)) {
+                speciesId = field.getValue();
+            } else if (field.getName().equalsIgnoreCase(PROTEIN_SEQUENCE)) {
+                proSeq = field.getValue();
+            }
+        }
 
         DefaultSequenceDocument doc;
-
-        String geneId = parameters.get(PRIMARY_KEY);
-        String product = parameters.get(PRODUCT);
-        String cds = parameters.get(CDS);
-        String speciesId = parameters.get(ORGANISM);
-        String proSeq = parameters.get(PROTEIN_SEQUENCE);
-
         doc = alphabet.equals(SequenceDocument.Alphabet.NUCLEOTIDE) ? new DefaultNucleotideSequence(
                 geneId, product, cds, new Date())
                 : new DefaultAminoAcidSequence(geneId, product, proSeq,

@@ -1,5 +1,8 @@
 package com.biomatters.plugins.eupathdb.webservices;
 
+import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
+
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -43,17 +46,27 @@ public class EuPathDBWebService {
      * @param paramMap the Map
      * @return Response
      */
-    private Response post(Client client, URI uri, Map<String, Object> paramMap) {
+    private Response post(Client client, URI uri, Map<String, String> paramMap) throws DatabaseServiceException {
         UriBuilder uriBuilder = UriBuilder.fromUri(uri);
-        for (Entry<String, Object> entry : paramMap.entrySet()) {
+        for (Entry<String, String> entry : paramMap.entrySet()) {
             uriBuilder.queryParam(entry.getKey(), entry.getValue());
         }
         URI paramURI = uriBuilder.build();
-        WebTarget target = client.target(paramURI);
-        Response response = target.request(MediaType.APPLICATION_XML).post(Entity.text(""));
-        if (response.getStatus() >= HTTP_ERROR_CODE) {
-            throw new WebApplicationException(response);
+        Response response;
+        WebApplicationException we;
+        try {
+            WebTarget target = client.target(paramURI);
+            response = target.request(MediaType.APPLICATION_XML).post(Entity.text(""));
+            if (response.getStatus() >= HTTP_ERROR_CODE) {
+                we = new WebApplicationException(response);
+                throw new DatabaseServiceException(we, we.getMessage(), true);
+            }
+        } catch (WebApplicationException e) {
+            throw new DatabaseServiceException(e, e.getMessage(), true);
+        } catch (ProcessingException e) {
+            throw new DatabaseServiceException(e, e.getMessage(), true);
         }
+
         return response;
     }
 
@@ -66,7 +79,7 @@ public class EuPathDBWebService {
      * @param reader   the MessageBodyReader
      * @return Response
      */
-    public Response post(URI uri, Map<String, Object> paramMap, MessageBodyReader<?> reader) {
+    public Response post(URI uri, Map<String, String> paramMap, MessageBodyReader<?> reader) throws DatabaseServiceException {
         Client client = createClient().register(reader);
         return post(client, uri, paramMap);
     }
@@ -79,7 +92,7 @@ public class EuPathDBWebService {
      * @param paramMap the Map
      * @return Response
      */
-    public Response post(URI uri, Map<String, Object> paramMap) {
+    public Response post(URI uri, Map<String, String> paramMap) throws DatabaseServiceException {
         return post(createClient(), uri, paramMap);
     }
 
@@ -89,7 +102,7 @@ public class EuPathDBWebService {
      * @param uri the URI
      * @return Response
      */
-    public Response post(URI uri) {
-        return post(uri, new HashMap<String, Object>());
+    public Response post(URI uri) throws DatabaseServiceException {
+        return post(uri, new HashMap<String, String>());
     }
 }

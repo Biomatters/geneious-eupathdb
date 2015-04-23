@@ -9,10 +9,10 @@ import com.biomatters.geneious.publicapi.implementations.sequence.DefaultSequenc
 import com.biomatters.plugins.eupathdb.EuPathDBGenes.EuPathDatabase;
 import com.biomatters.plugins.eupathdb.webservices.EuPathDBWebService;
 import com.biomatters.plugins.eupathdb.webservices.models.Error;
-import com.biomatters.plugins.eupathdb.webservices.models.Field;
 import com.biomatters.plugins.eupathdb.webservices.models.Record;
 import com.biomatters.plugins.eupathdb.webservices.models.Response;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.net.URI;
@@ -44,14 +44,22 @@ public class PluginHelper {
     public void processSearch(Query paramQuery,
                               RetrieveCallback paramRetrieveCallback, EuPathDatabase database)
             throws DatabaseServiceException {
-
-        Map<String, Object> paramMap = new HashMap<String, Object>(5);
         String queryText = ((BasicSearchQuery) paramQuery).getSearchText();
+        Map<String, String> paramMap = isQueryTextContainsTag(queryText,
+                database) ? getParametersMapForSearchByTag(queryText)
+                : getParametersMapForSearchByText(database, queryText);
 
-        URI uri = buildURI(paramMap, database, queryText);
+        URI uri = buildURI(database, queryText);
         EuPathDBWebService service = new EuPathDBWebService();
-        Response wsResponse = service.post(uri, paramMap,
-                new ResponseMessageBodyReader()).readEntity(Response.class);
+        Response wsResponse;
+        try{
+            wsResponse = service.post(uri, paramMap,
+                    new ResponseMessageBodyReader()).readEntity(Response.class);
+        } catch (ProcessingException e) {
+            throw new DatabaseServiceException(e, e.getMessage(), false);
+        } catch (IllegalStateException e) {
+            throw new DatabaseServiceException(e, e.getMessage(), false);
+        }
 
         DatabaseServiceException exception = getException(wsResponse);
         if (exception != null) {
@@ -96,18 +104,12 @@ public class PluginHelper {
         if (!(response == null || response.getRecordset() == null || response
                 .getRecordset().getRecord() == null)) {
             DefaultSequenceDocument document;
-            Map<String, String> docParams = new HashMap<String, String>(5);
-
             List<Record> records = response.getRecordset().getRecord();
             for (Record record : records) {
-                docParams.clear();
-                for (Field field : record.getField()) {
-                    docParams.put(field.getName(), field.getValue());
-                }
                 for (SequenceDocument.Alphabet alphabet : SequenceDocument.Alphabet
                         .values()) {
                     document = SequenceDocumentGenerator
-                            .getDefaultSequenceDocument(docParams,
+                            .getDefaultSequenceDocument(record,
                                     getDBUrl(database), alphabet);
                     if (document != null) {
                         callback.add(document,
@@ -119,7 +121,8 @@ public class PluginHelper {
     }
 
     /**
-     * Generates DatabaseServiceException if there is error in response from web service.
+     * Generates DatabaseServiceException if there is error in response from web
+     * service.
      *
      * @param response the Response
      * @return DatabaseServiceException
@@ -134,26 +137,17 @@ public class PluginHelper {
     }
 
     /**
-     * Builds URI from paramMap, query text and end point decided based on query
-     * type.
+     * Builds URI from query text and end point decided based on query search type.
      *
-     * @param paramMap  the Map
      * @param database  the EuPathDatabase
      * @param queryText the queryText
-     * @return URI
+     * @return uri the URI
      * @throws DatabaseServiceException
      */
-    private URI buildURI(Map<String, Object> paramMap, EuPathDatabase database,
+    private URI buildURI(EuPathDatabase database,
                          String queryText) throws DatabaseServiceException {
-        URI uri;
-        if (isQueryTextContainsTag(queryText, database)) {
-            uri = buildTagSearchUri(database);
-            populateTagSearchParameters(paramMap, queryText);
-        } else {
-            uri = buildTextSearchUri(database);
-            populateTextSearchParameters(paramMap, database, queryText);
-        }
-        return uri;
+        return isQueryTextContainsTag(queryText, database) ? buildTagSearchUri(database)
+                : buildTextSearchUri(database);
     }
 
     /**
@@ -161,27 +155,28 @@ public class PluginHelper {
      *
      * @param database the EuPathDatabase
      * @return uri the URI
-     * @throws DatabaseServiceException the database service exception
+     * @throws DatabaseServiceException
      */
     private URI buildTagSearchUri(EuPathDatabase database)
             throws DatabaseServiceException {
-        UriBuilder uriBuilder = UriBuilder.fromUri(getPrefixUri(database));
+        UriBuilder uriBuilder = UriBuilder.fromUri(getEndPointUri(database));
         uriBuilder = uriBuilder
                 .path(EuPathDBConstants.WEB_SERVICE_PATH_XML_GENE_BY_LOCUS_TAG);
         return uriBuilder.build();
     }
 
     /**
-     * Populates map with GeneByLocusTag parameters.
+     * Generates a map containing parameter and value pairs for tag based search.
      *
-     * @param paramMap  the Map
      * @param queryText the query text
+     * @return paramMap the Map
      */
-    private void populateTagSearchParameters(Map<String, Object> paramMap,
-                                             String queryText) {
+    private Map<String, String> getParametersMapForSearchByTag(String queryText) {
+        Map<String, String> paramMap = new HashMap<String, String>(2);
         paramMap.put(EuPathDBConstants.WEB_SERVICE_O_FILEDS_PARAM,
                 EuPathDBConstants.WEB_SERVICE_OFILEDS_PARAM_VALUE);
         paramMap.put(EuPathDBConstants.WEB_SERVICE_DS_GENE_IDS_PARAM, queryText);
+        return paramMap;
     }
 
     /**
@@ -189,11 +184,11 @@ public class PluginHelper {
      *
      * @param database the EuPathDatabase
      * @return uri the URI
-     * @throws DatabaseServiceException the database service exception
+     * @throws DatabaseServiceException
      */
     private URI buildTextSearchUri(EuPathDatabase database)
             throws DatabaseServiceException {
-        URI baseURI = URI.create(getPrefixUri(database));
+        URI baseURI = URI.create(getEndPointUri(database));
         UriBuilder uriBuilder = UriBuilder.fromUri(baseURI);
         uriBuilder = uriBuilder
                 .path(EuPathDBConstants.WEB_SERVICE_PATH_XML_GENES_BY_TEXT_SEARCH);
@@ -201,15 +196,14 @@ public class PluginHelper {
     }
 
     /**
-     * Populates map with GeneByTextSearch parameters.
+     * Generates a map containing parameter and value pairs for tag based search.
      *
-     * @param paramMap  the Map
      * @param database  the EuPathDatabase
      * @param queryText the query text
-     * @throws DatabaseServiceException the database service exception
+     * @return paramMap the Map
+     * @throws DatabaseServiceException
      */
-    private void populateTextSearchParameters(Map<String, Object> paramMap,
-                                              EuPathDatabase database, String queryText)
+    private Map<String, String> getParametersMapForSearchByText(EuPathDatabase database, String queryText)
             throws DatabaseServiceException {
         String organism;
         try {
@@ -220,6 +214,7 @@ public class PluginHelper {
             throw new DatabaseServiceException(e, SEARCH_FAILED + ": "
                     + e.getMessage(), false);
         }
+        Map<String, String> paramMap = new HashMap<String, String>(5);
         paramMap.put(EuPathDBConstants.WEB_SERVICE_O_FILEDS_PARAM,
                 EuPathDBConstants.WEB_SERVICE_OFILEDS_PARAM_VALUE);
         paramMap.put(EuPathDBConstants.WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM,
@@ -230,17 +225,17 @@ public class PluginHelper {
                 EuPathDBConstants.WEB_SERVICE_MAX_PVALUE_PARAM_VALUE);
         paramMap.put(EuPathDBConstants.WEB_SERVICE_TEXT_EXPRESSION_PARAM,
                 queryText + WILDCARD);
-
+        return paramMap;
     }
 
     /**
-     * Gets the prefix url.
+     * Get an endpoint uri of the EuPathDB or its child DB.
      *
      * @param database the database
-     * @return the prefix url
+     * @return endpoint uri The String
      * @throws DatabaseServiceException the database service exception
      */
-    private String getPrefixUri(EuPathDatabase database)
+    private String getEndPointUri(EuPathDatabase database)
             throws DatabaseServiceException {
         try {
             return EuPathDBUtilities.getValue(database
@@ -252,7 +247,7 @@ public class PluginHelper {
     }
 
     /**
-     * Gets the DB url.
+     * Get EuPathDB ot its child DB URL.
      *
      * @param database the database
      * @return the DB url
