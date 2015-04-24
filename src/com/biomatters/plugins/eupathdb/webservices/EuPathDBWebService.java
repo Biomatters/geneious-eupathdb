@@ -53,12 +53,11 @@ public class EuPathDBWebService {
         }
         URI paramURI = uriBuilder.build();
         Response response;
-        WebApplicationException we;
         try {
             WebTarget target = client.target(paramURI);
             response = target.request(MediaType.APPLICATION_XML).post(Entity.text(""));
             if (response.getStatus() >= HTTP_ERROR_CODE) {
-                we = new WebApplicationException(response);
+                WebApplicationException we = new WebApplicationException(response);
                 throw new DatabaseServiceException(we, we.getMessage(), true);
             }
         } catch (WebApplicationException e) {
