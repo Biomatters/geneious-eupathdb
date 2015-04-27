@@ -57,8 +57,6 @@ public class PluginHelper {
                     new ResponseMessageBodyReader()).readEntity(Response.class);
         } catch (ProcessingException e) {
             throw new DatabaseServiceException(e, e.getMessage(), false);
-        } catch (IllegalStateException e) {
-            throw new DatabaseServiceException(e, e.getMessage(), false);
         }
 
         DatabaseServiceException exception = getException(wsResponse);
