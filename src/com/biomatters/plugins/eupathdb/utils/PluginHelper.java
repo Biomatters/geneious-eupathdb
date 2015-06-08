@@ -52,7 +52,7 @@ public class PluginHelper {
         URI uri = buildURI(database, queryText);
         EuPathDBWebService service = new EuPathDBWebService();
         Response wsResponse;
-        try{
+        try {
             wsResponse = service.post(uri, paramMap,
                     new ResponseMessageBodyReader()).readEntity(Response.class);
         } catch (ProcessingException e) {
@@ -204,10 +204,15 @@ public class PluginHelper {
     private Map<String, String> getParametersMapForSearchByText(EuPathDatabase database, String queryText)
             throws DatabaseServiceException {
         String organism;
+        String textFields;
         try {
             organism = EuPathDBUtilities
                     .getValue(database
                             + EuPathDBConstants.WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE_KEY);
+            textFields = EuPathDBUtilities
+                    .getValue(database
+                            + EuPathDBConstants.WEB_SERVICE_TEXT_FIELD_PARAM_VALUE_KEY);
+
         } catch (IOException e) {
             throw new DatabaseServiceException(e, SEARCH_FAILED + ": "
                     + e.getMessage(), false);
@@ -218,7 +223,7 @@ public class PluginHelper {
         paramMap.put(EuPathDBConstants.WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM,
                 organism);
         paramMap.put(EuPathDBConstants.WEB_SERVICE_TEXT_FIELDS_PARAM,
-                EuPathDBConstants.WEB_SERVICE_TEXT_FILEDS_PARAM_VALUE);
+                textFields);
         paramMap.put(EuPathDBConstants.WEB_SERVICE_MAX_PVALUE_PARAM,
                 EuPathDBConstants.WEB_SERVICE_MAX_PVALUE_PARAM_VALUE);
         paramMap.put(EuPathDBConstants.WEB_SERVICE_TEXT_EXPRESSION_PARAM,

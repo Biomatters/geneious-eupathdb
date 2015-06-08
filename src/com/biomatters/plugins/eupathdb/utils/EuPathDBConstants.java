@@ -34,7 +34,7 @@ public final class EuPathDBConstants {
     public static final String WEB_SERVICE_MAX_PVALUE_PARAM = "max_pvalue";
     /* Web service parameter values */
     public static final String WEB_SERVICE_OFILEDS_PARAM_VALUE = "primary_key,organism,product,cds,protein_sequence";
-    public static final String WEB_SERVICE_TEXT_FILEDS_PARAM_VALUE = "Gene product";
+    public static final String WEB_SERVICE_TEXT_FIELD_PARAM_VALUE_KEY = ".WEB_SERVICE_TEXT_FIELD_PARAM_VALUE";
     public static final String WEB_SERVICE_MAX_PVALUE_PARAM_VALUE = "-30";
     public static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE_KEY = ".WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE";
     public static final String EUPATHDB_PROPERTIES = "eupathdb.properties";
