@@ -4,9 +4,8 @@ import com.biomatters.geneious.publicapi.databaseservice.*;
 import com.biomatters.geneious.publicapi.documents.URN;
 import com.biomatters.geneious.publicapi.plugin.Icons;
 import com.biomatters.geneious.publicapi.utilities.IconUtilities;
-import com.biomatters.plugins.eupathdb.EuPathDBGenes.EuPathDatabase;
-import com.biomatters.plugins.eupathdb.utils.EuPathDBConstants;
-import com.biomatters.plugins.eupathdb.utils.PluginHelper;
+import com.biomatters.plugins.eupathdb.database.EukaryoticDatabase;
+import com.biomatters.plugins.eupathdb.database.PlasmoDatabase;
 
 /**
  * The Class <code>PlasmoDB</code> provides documents in response to a search
@@ -69,7 +68,7 @@ public class PlasmoDB extends DatabaseService {
      */
     @Override
     public Icons getIcons() {
-        return IconUtilities.getIcons(EuPathDBConstants.PLUGIN_ICON);
+        return IconUtilities.getIcons(EukaryoticDatabase.PLUGIN_ICON);
     }
 
     /**
@@ -93,9 +92,7 @@ public class PlasmoDB extends DatabaseService {
     @Override
     public void retrieve(Query paramQuery, RetrieveCallback callback,
                          URN[] paramArrayOfURN) throws DatabaseServiceException {
-
-        PluginHelper pluginHelper = new PluginHelper();
-        pluginHelper.processSearch(paramQuery, callback,
-                EuPathDatabase.PLASMODB);
+        PlasmoDatabase plasmoDatabase = new PlasmoDatabase();
+        plasmoDatabase.search(paramQuery, callback);
     }
 }

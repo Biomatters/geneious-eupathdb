@@ -4,13 +4,12 @@ import com.biomatters.geneious.publicapi.databaseservice.*;
 import com.biomatters.geneious.publicapi.documents.URN;
 import com.biomatters.geneious.publicapi.plugin.Icons;
 import com.biomatters.geneious.publicapi.utilities.IconUtilities;
-import com.biomatters.plugins.eupathdb.EuPathDBGenes.EuPathDatabase;
-import com.biomatters.plugins.eupathdb.utils.EuPathDBConstants;
-import com.biomatters.plugins.eupathdb.utils.PluginHelper;
+import com.biomatters.plugins.eupathdb.database.EukaryoticDatabase;
+import com.biomatters.plugins.eupathdb.database.PiroPlasmaDatabase;
 
 /**
  * The Class <code>PiroplasmaDB</code> provides documents in response to a
- * search query executed on the genome database PiroplasmaDB.
+ * search query executed on the genome database PiroPlasmaDB.
  *
  * @author cybage
  * @version $Revision: 1.0 $
@@ -69,7 +68,7 @@ public class PiroplasmaDB extends DatabaseService {
      */
     @Override
     public Icons getIcons() {
-        return IconUtilities.getIcons(EuPathDBConstants.PLUGIN_ICON);
+        return IconUtilities.getIcons(EukaryoticDatabase.PLUGIN_ICON);
     }
 
     /**
@@ -94,8 +93,7 @@ public class PiroplasmaDB extends DatabaseService {
     public void retrieve(Query paramQuery, RetrieveCallback callback,
                          URN[] paramArrayOfURN) throws DatabaseServiceException {
 
-        PluginHelper pluginHelper = new PluginHelper();
-        pluginHelper.processSearch(paramQuery, callback,
-                EuPathDatabase.PIROPLASMADB);
+        PiroPlasmaDatabase piroPlasmaDatabase = new PiroPlasmaDatabase();
+        piroPlasmaDatabase.search(paramQuery, callback);
     }
 }

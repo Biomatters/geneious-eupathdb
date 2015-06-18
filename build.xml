@@ -2,7 +2,7 @@
 
 	<property name="version-regex-pattern" value=".*PLUGIN_VERSION\s+=\s+&quot;(\d+\.\d)&quot;;.*" />
 
-	<loadfile property="plugin.version" srcfile="src/com/biomatters/plugins/eupathdb/utils/EuPathDBConstants.java">
+	<loadfile property="plugin.version" srcfile="src/com/biomatters/plugins/eupathdb/EuPathDBPlugin.java">
 		<filterchain>
 			<linecontainsregexp>
 				<regexp pattern="${version-regex-pattern}" />
@@ -19,7 +19,6 @@
 	<property name="build" location="build" />
 	<property name="classes" location="classes" />
 	<property name="lib" location="lib" />
-	<property name="resources" location="resources" />
 	<property name="src" location="src" />
 	<property name="test.src" location="test" />
 	<property name="test.classes" location="testclasses" />
@@ -71,7 +70,6 @@
 				<exclude name="junit*.jar" />
 				<exclude name="hamcrest*.jar" />
 			</fileset>
-			<fileset dir="resources" />
 		</copy>
 	</target>
 
@@ -122,7 +120,6 @@
 				<file file="${GeneiousFiles}/iSeek.jar" />
 				<fileset dir="${GeneiousFiles}/lib" />
 				<pathelement location="${classes}" />
-				<pathelement location="${resources}" />
 				<pathelement location="${test.classes}" />
 				<pathelement location="${test.data}" />
 				<pathelement location="${GeneiousFiles}/resources" />

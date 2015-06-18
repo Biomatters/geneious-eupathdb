@@ -6,7 +6,8 @@ import com.biomatters.geneious.publicapi.databaseservice.Query;
 import com.biomatters.geneious.publicapi.databaseservice.RetrieveCallback;
 import com.biomatters.geneious.publicapi.documents.AnnotatedPluginDocument;
 import com.biomatters.geneious.publicapi.documents.PluginDocument;
-import com.biomatters.plugins.eupathdb.EuPathDBGenes;
+import com.biomatters.plugins.eupathdb.database.EuPathDatabase;
+import com.biomatters.plugins.eupathdb.database.EukaryoticDatabase;
 import com.biomatters.plugins.eupathdb.webservices.EuPathDBWebService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,21 +26,21 @@ import java.net.URI;
 import java.util.Map;
 
 /**
- * The class <code>PluginHelperTest</code> contains test cases for the class
- * <code>{@link com.biomatters.plugins.eupathdb.utils.PluginHelper}</code>.
+ * The class <code>EukaryoticDatabaseTest</code> contains test cases for the class
+ * <code>{@link com.biomatters.plugins.eupathdb.utils.EukaryoticDatabaseTest}</code>.
  *
  * @author cybage
  * @version $Revision: 1.0 $
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({EuPathDBWebService.class, PluginHelper.class})
-public class PluginHelperTest {
+@PrepareForTest({EuPathDBWebService.class, EukaryoticDatabase.class})
+public class EukaryoticDatabaseTest {
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
     private Query query;
     private Callback callback;
-    private PluginHelper pluginHelper;
+    private EukaryoticDatabase eukaryoticDatabase;
     private Response response;
 
     /**
@@ -50,7 +51,7 @@ public class PluginHelperTest {
     @Before
     public void setUp() throws Exception {
         callback = new Callback();
-        pluginHelper = new PluginHelper();
+        eukaryoticDatabase = new EuPathDatabase();
         query = Mockito.mock(BasicSearchQuery.class);
         response = Mockito.mock(Response.class);
 
@@ -74,7 +75,7 @@ public class PluginHelperTest {
         Mockito.when(
                 response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
                 .thenReturn(TestUtilities.getWebServiceResponse());
-        pluginHelper.processSearch(query, callback, EuPathDBGenes.EuPathDatabase.PIROPLASMADB);
+        eukaryoticDatabase.search(query, callback);
         Assert.assertEquals(14, callback.addCount);
     }
 
@@ -89,7 +90,7 @@ public class PluginHelperTest {
         Mockito.when(
                 response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
                 .thenReturn(TestUtilities.getWebServiceResponse());
-        pluginHelper.processSearch(query, callback, EuPathDBGenes.EuPathDatabase.PLASMODB);
+        eukaryoticDatabase.search(query, callback);
         Assert.assertEquals(14, callback.addCount);
     }
 
@@ -107,7 +108,7 @@ public class PluginHelperTest {
         Mockito.when(
                 response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
                 .thenReturn(TestUtilities.getWebServiceErrorResponse());
-        pluginHelper.processSearch(query, callback, EuPathDBGenes.EuPathDatabase.PIROPLASMADB);
+        eukaryoticDatabase.search(query, callback);
     }
 
     /**

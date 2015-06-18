@@ -3,7 +3,7 @@ package com.biomatters.plugins.eupathdb;
 import com.biomatters.geneious.publicapi.plugin.GeneiousPlugin;
 import com.biomatters.geneious.publicapi.plugin.GeneiousService;
 import com.biomatters.geneious.publicapi.plugin.Icons;
-import com.biomatters.plugins.eupathdb.utils.EuPathDBConstants;
+import com.biomatters.plugins.eupathdb.services.EuPathDB;
 
 /**
  * The Class <code>EuPathDBPlugin</code> represents the EuPathDB service for
@@ -13,6 +13,13 @@ import com.biomatters.plugins.eupathdb.utils.EuPathDBConstants;
  * @version $Revision: 1.0 $
  */
 public class EuPathDBPlugin extends GeneiousPlugin {
+    /* Plugin specific constants */
+    private static final String PLUGIN_NAME = "EuPathDB Plugin";
+    private static final String PLUGIN_VERSION = "0.1";
+    private static final String PLUGIN_DESCRIPTION = "Provides services to search for genes in various EuPathDB databases";
+    private static final String PLUGIN_AUTHORS = "Biomatters Ltd, Charles Ma and Svenja Gunther";
+    private static final String PLUGIN_MIN_API_VERSION = "4.715";
+    private static final int PLUGIN_MAX_API_VERSION = 4;
 
     /**
      * Gets the description.
@@ -21,7 +28,7 @@ public class EuPathDBPlugin extends GeneiousPlugin {
      */
     @Override
     public String getDescription() {
-        return EuPathDBConstants.PLUGIN_DESCRIPTION;
+        return PLUGIN_DESCRIPTION;
     }
 
     /**
@@ -51,7 +58,7 @@ public class EuPathDBPlugin extends GeneiousPlugin {
      */
     @Override
     public String getName() {
-        return EuPathDBConstants.PLUGIN_NAME;
+        return PLUGIN_NAME;
     }
 
     /**
@@ -61,7 +68,7 @@ public class EuPathDBPlugin extends GeneiousPlugin {
      */
     @Override
     public String getAuthors() {
-        return EuPathDBConstants.PLUGIN_AUTHORS;
+        return PLUGIN_AUTHORS;
     }
 
     /**
@@ -71,7 +78,7 @@ public class EuPathDBPlugin extends GeneiousPlugin {
      */
     @Override
     public int getMaximumApiVersion() {
-        return EuPathDBConstants.PLUGIN_MAX_API_VERSION;
+        return PLUGIN_MAX_API_VERSION;
     }
 
     /**
@@ -81,7 +88,7 @@ public class EuPathDBPlugin extends GeneiousPlugin {
      */
     @Override
     public String getMinimumApiVersion() {
-        return EuPathDBConstants.PLUGIN_MIN_API_VERSION;
+        return PLUGIN_MIN_API_VERSION;
     }
 
     /**
@@ -91,7 +98,7 @@ public class EuPathDBPlugin extends GeneiousPlugin {
      */
     @Override
     public String getVersion() {
-        return EuPathDBConstants.PLUGIN_VERSION;
+        return PLUGIN_VERSION;
     }
 
     /**
@@ -101,6 +108,6 @@ public class EuPathDBPlugin extends GeneiousPlugin {
      */
     @Override
     public GeneiousService[] getServices() {
-        return new GeneiousService[]{new EuPathDBGenes()};
+        return new GeneiousService[]{new EuPathDB()};
     }
 }

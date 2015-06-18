@@ -26,6 +26,7 @@ public class SequenceDocumentGenerator {
 
     private static final String URL = "URL";
     private static final String PROTEIN_SEQUENCE = "protein_sequence";
+    private static final String SEQUENCE = "sequence";
     private static final String ORGANISM = "organism";
     private static final String CDS = "cds";
     private static final String PRODUCT = "product";
@@ -40,9 +41,9 @@ public class SequenceDocumentGenerator {
     /**
      * Gets the default sequence document.
      *
-     * @param record the Record
-     * @param dbUrl      the db url
-     * @param alphabet   the type   @return the default sequence document
+     * @param record   the Record
+     * @param dbUrl    the db url
+     * @param alphabet the type   @return the default sequence document
      */
     public static DefaultSequenceDocument getDefaultSequenceDocument(
             Record record, String dbUrl, SequenceDocument.Alphabet alphabet) {
@@ -53,7 +54,7 @@ public class SequenceDocumentGenerator {
         String speciesId = "";
         String proSeq = "";
 
-        for (Field field: record.getField()) {
+        for (Field field : record.getField()) {
             if (field.getName().equalsIgnoreCase(PRIMARY_KEY)) {
                 geneId = field.getValue();
             } else if (field.getName().equalsIgnoreCase(PRODUCT)) {
@@ -62,7 +63,7 @@ public class SequenceDocumentGenerator {
                 cds = field.getValue();
             } else if (field.getName().equalsIgnoreCase(ORGANISM)) {
                 speciesId = field.getValue();
-            } else if (field.getName().equalsIgnoreCase(PROTEIN_SEQUENCE)) {
+            } else if (field.getName().equalsIgnoreCase(PROTEIN_SEQUENCE) || field.getName().equalsIgnoreCase(SEQUENCE)) {
                 proSeq = field.getValue();
             }
         }
