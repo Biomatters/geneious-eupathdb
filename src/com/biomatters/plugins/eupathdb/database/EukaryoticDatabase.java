@@ -32,7 +32,6 @@ public abstract class EukaryoticDatabase {
     public static final String PLUGIN_ICON = "database32.png";
 
     /* Web service parameters */
-    private static final String WILDCARD = "*";
     private static final String WEB_SERVICE_O_FIELDS_PARAM = "o-fields";
     private static final String WEB_SERVICE_MAX_P_VALUE_PARAM = "max_pvalue";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM = "text_fields";
@@ -196,6 +195,8 @@ public abstract class EukaryoticDatabase {
                     }
                 }
             }
+        } else {
+            callback.setFinalStatus("No results found. Consider using * to search for partial words. For example CO*I matches COI and COXI", false);
         }
     }
 
@@ -291,8 +292,7 @@ public abstract class EukaryoticDatabase {
                 getWebServiceTextFieldsParamValue());
         paramMap.put(WEB_SERVICE_MAX_P_VALUE_PARAM,
                 WEB_SERVICE_MAX_P_VALUE_PARAM_VALUE);
-        paramMap.put(WEB_SERVICE_TEXT_EXPRESSION_PARAM,
-                queryText + WILDCARD);
+        paramMap.put(WEB_SERVICE_TEXT_EXPRESSION_PARAM, queryText);
         return paramMap;
     }
 }

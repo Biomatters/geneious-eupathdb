@@ -20,7 +20,6 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
     private static final String PATH_XML_BY_ID_LIST = "ByIdList.xml";
     private static final String PATH_XML_BY_TEXT_SEARCH = "ByTextSearch.xml";
 
-    private static final String WILDCARD = "*";
     private static final String WEB_SERVICE_WDK_RECORD_TYPE_PARAM = "wdk_record_type";
     private static final String WEB_SERVICE_TEXT_EXPRESSION_PARAM = "text_expression";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM = "text_fields";
@@ -132,7 +131,7 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
         paramMap.put(WEB_SERVICE_PRIMARY_KEY_COLUMN_PARAM, WEB_SERVICE_PRIMARY_KEY_COLUMN_PARAM_VALUE);
         paramMap.put(WEB_SERVICE_PROJECT_ID_PARAM, WEB_SERVICE_PROJECT_ID_PARAM_VALUE);
         paramMap.put(WEB_SERVICE_O_FIELDS_PARAM, WEB_SERVICE_O_FIELDS_PARAM_VALUE);
-        paramMap.put(WEB_SERVICE_TEXT_EXPRESSION_PARAM, queryText + WILDCARD);
+        paramMap.put(WEB_SERVICE_TEXT_EXPRESSION_PARAM, queryText);
         return paramMap;
     }
 }
