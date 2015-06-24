@@ -80,7 +80,7 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
 
     @Override
     URI buildURI(String queryText) {
-        return super.isQueryTextContainsTag(queryText) ? buildURIForByIdList() : buildURIForByTextSearch();
+        return super.isQueryTextStartsWithTag(queryText) ? buildURIForByIdList() : buildURIForByTextSearch();
     }
 
     /**

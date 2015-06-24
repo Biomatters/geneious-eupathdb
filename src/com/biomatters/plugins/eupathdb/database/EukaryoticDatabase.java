@@ -147,25 +147,27 @@ public abstract class EukaryoticDatabase {
      */
     public void search(Query paramQuery, RetrieveCallback paramRetrieveCallback) throws DatabaseServiceException {
         String queryText = ((BasicSearchQuery) paramQuery).getSearchText();
-        Map<String, String> paramMap = isQueryTextContainsTag(queryText)
-                ? getParametersMapForSearchByTag(queryText)
-                : getParametersMapForSearchByText(queryText);
+        if (!(queryText == null || (queryText = queryText.trim()).isEmpty())) {
+            Map<String, String> paramMap = isQueryTextStartsWithTag(queryText)
+                    ? getParametersMapForSearchByTag(queryText)
+                    : getParametersMapForSearchByText(queryText);
 
-        URI uri = buildURI(queryText);
-        EuPathDBWebService service = new EuPathDBWebService();
-        com.biomatters.plugins.eupathdb.webservices.models.Response wsResponse;
-        try {
-            wsResponse = service.post(uri, paramMap,
-                    new ResponseMessageBodyReader()).readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class);
-        } catch (ProcessingException e) {
-            throw new DatabaseServiceException(e, e.getMessage(), false);
-        }
+            URI uri = buildURI(queryText);
+            EuPathDBWebService service = new EuPathDBWebService();
+            com.biomatters.plugins.eupathdb.webservices.models.Response wsResponse;
+            try {
+                wsResponse = service.post(uri, paramMap,
+                        new ResponseMessageBodyReader()).readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class);
+            } catch (ProcessingException e) {
+                throw new DatabaseServiceException(e, e.getMessage(), false);
+            }
 
-        DatabaseServiceException exception = getException(wsResponse);
-        if (exception != null) {
-            throw exception;
+            DatabaseServiceException databaseServiceException = getException(wsResponse);
+            if (databaseServiceException != null) {
+                throw databaseServiceException;
+            }
+            reportSearchResult(paramRetrieveCallback, wsResponse);
         }
-        reportSearchResult(paramRetrieveCallback, wsResponse);
     }
 
     /**
@@ -237,14 +239,14 @@ public abstract class EukaryoticDatabase {
     }
 
     /**
-     * Checks if the query text contains the tag.
+     * Checks if the query text starts with the tag.
      *
      * @param queryText the query text
-     * @return true, if is query text contains tag
+     * @return true, if query text starts with tag
      */
-    boolean isQueryTextContainsTag(String queryText) {
+    boolean isQueryTextStartsWithTag(String queryText) {
         for (String tag : getTags()) {
-            if (queryText.contains(tag)) {
+            if (queryText.startsWith(tag)) {
                 return true;
             }
         }
@@ -258,7 +260,7 @@ public abstract class EukaryoticDatabase {
      * @return uri the URI
      */
     URI buildURI(String queryText) {
-        return isQueryTextContainsTag(queryText) ? buildURIForGenesByLocusTag()
+        return isQueryTextStartsWithTag(queryText) ? buildURIForGenesByLocusTag()
                 : buildURIForGenesByTextSearch();
     }
 
