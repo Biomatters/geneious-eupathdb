@@ -147,7 +147,7 @@ public abstract class EukaryoticDatabase {
      */
     public void search(Query paramQuery, RetrieveCallback paramRetrieveCallback) throws DatabaseServiceException {
         String queryText = ((BasicSearchQuery) paramQuery).getSearchText();
-        if (!(queryText == null || queryText.trim().isEmpty())) {
+        if (!(queryText == null || (queryText = queryText.trim()).isEmpty())) {
             Map<String, String> paramMap = isQueryTextStartsWithTag(queryText)
                     ? getParametersMapForSearchByTag(queryText)
                     : getParametersMapForSearchByText(queryText);
