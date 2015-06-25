@@ -1,5 +1,8 @@
 package com.biomatters.plugins.eupathdb.database;
 
+import com.biomatters.geneious.publicapi.plugin.Icons;
+import com.biomatters.geneious.publicapi.utilities.IconUtilities;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,12 +14,67 @@ import java.util.List;
  * @version $Revision: 1.0 $
  */
 public class PlasmoDatabase extends EukaryoticDatabase {
+    private static final String HELP = "Provides services to search for genes in PlasmoDB.PlasmoDB is a genome database for the genus Plasmodium, a set of single-celled eukaryotic pathogens that cause human and animal diseases, including malaria.";
+    private static final String DESCRIPTION = "Provides services to search for genes in PlasmoDB";
+    private static final String NAME = "PlasmoDB Service";
+    private static final String UNIQUE_ID = "PlasmoDB Service";
+    private static final String PLUGIN_ICON = "plasmodb16.png";
     private static final String WEB_SERVICE_URI = "http://plasmodb.org/webservices/GeneQuestions";
-    private static final String DBURL = "http://plasmodb.org";
+    private static final String DB_URL = "http://plasmodb.org";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Plasmodium berghei ANKA,Plasmodium chabaudi chabaudi,Plasmodium cynomolgi strain B,Plasmodium falciparum 3D7,Plasmodium falciparum IT,Plasmodium gallinaceum 8A,Plasmodium knowlesi strain H,Plasmodium reichenowi CDC,Plasmodium vivax Sal-1,Plasmodium yoelii yoelii 17X,Plasmodium yoelii yoelii 17XNL,Plasmodium yoelii yoelii YM";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Genes of previous release,Gene product,GO terms and definitions,Metabolic pathway names and descriptions,Protein domain names and descriptions,Rodent Malaria Phenotype,User comments";
     private static final String[] TAGS = {"PF", "MAL", "PV", "PY",
             "PB", "PC", "PK"};
+
+    /**
+     * Gets the unique id.
+     *
+     * @return the unique id
+     */
+    @Override
+    public String getUniqueID() {
+        return UNIQUE_ID;
+    }
+
+    /**
+     * Gets the name.
+     *
+     * @return the name
+     */
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    /**
+     * Gets the description.
+     *
+     * @return the description
+     */
+    @Override
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    /**
+     * Gets the help.
+     *
+     * @return the help
+     */
+    @Override
+    public String getHelp() {
+        return HELP;
+    }
+
+    /**
+     * Gets the icons.
+     *
+     * @return the icons
+     */
+    @Override
+    public Icons getIcons() {
+        return IconUtilities.getIcons(PLUGIN_ICON);
+    }
 
     /**
      * Overridden method to define DB specific service end point.
@@ -24,7 +82,7 @@ public class PlasmoDatabase extends EukaryoticDatabase {
      * @return WEB_SERVICE_URI the String
      */
     @Override
-    public String getEndPointURI() {
+    protected String getEndPointURI() {
         return WEB_SERVICE_URI;
     }
 
@@ -33,18 +91,18 @@ public class PlasmoDatabase extends EukaryoticDatabase {
      *
      * @return TAGS the List<String>
      */
-    public List<String> getTags() {
+    protected List<String> getTags() {
         return Arrays.asList(TAGS);
     }
 
     /**
      * Overridden method to define DB URL.
      *
-     * @return DBURL the String
+     * @return DB_URL the String
      */
     @Override
-    public String getDBUrl() {
-        return DBURL;
+    protected String getDBUrl() {
+        return DB_URL;
     }
 
     /**
@@ -53,7 +111,7 @@ public class PlasmoDatabase extends EukaryoticDatabase {
      * @return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE the String
      */
     @Override
-    public String getWebServiceTextSearchOrganismParamValue() {
+    protected String getWebServiceTextSearchOrganismParamValue() {
         return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE;
     }
 
@@ -63,7 +121,7 @@ public class PlasmoDatabase extends EukaryoticDatabase {
      * @return WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE the String
      */
     @Override
-    public String getWebServiceTextFieldsParamValue() {
+    protected String getWebServiceTextFieldsParamValue() {
         return WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE;
     }
 

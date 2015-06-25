@@ -5,7 +5,7 @@ import com.biomatters.geneious.publicapi.documents.URN;
 import com.biomatters.geneious.publicapi.plugin.GeneiousServiceListener;
 import com.biomatters.geneious.publicapi.plugin.Icons;
 import com.biomatters.geneious.publicapi.utilities.IconUtilities;
-import com.biomatters.plugins.eupathdb.database.EuPathDatabase;
+import com.biomatters.plugins.eupathdb.database.*;
 
 /**
  * The Class <code>EuPathDB</code> provides documents in response to a search
@@ -83,17 +83,17 @@ public class EuPathDB extends DatabaseService {
 
     @Override
     protected void initialize(GeneiousServiceListener geneiousServiceListener) {
-        geneiousServiceListener.childServiceAdded(new AmoebaDB());
-        geneiousServiceListener.childServiceAdded(new CryptoDB());
-        geneiousServiceListener.childServiceAdded(new FungiDB());
-        geneiousServiceListener.childServiceAdded(new GiardiaDB());
-        geneiousServiceListener.childServiceAdded(new MicrosporidiaDB());
-        geneiousServiceListener.childServiceAdded(new PiroplasmaDB());
-        geneiousServiceListener.childServiceAdded(new PlasmoDB());
-        geneiousServiceListener.childServiceAdded(new ToxoDB());
-        geneiousServiceListener.childServiceAdded(new TrichDB());
-        geneiousServiceListener.childServiceAdded(new TriTrypDB());
-        geneiousServiceListener.childServiceAdded(new OrthoMCLDB());
+        geneiousServiceListener.childServiceAdded(new EuPathDatabaseService(new AmoebaDatabase()));
+        geneiousServiceListener.childServiceAdded(new EuPathDatabaseService(new CryptoDatabase()));
+        geneiousServiceListener.childServiceAdded(new EuPathDatabaseService(new FungiDatabase()));
+        geneiousServiceListener.childServiceAdded(new EuPathDatabaseService(new GiardiaDatabase()));
+        geneiousServiceListener.childServiceAdded(new EuPathDatabaseService(new MicrosporidiaDatabase()));
+        geneiousServiceListener.childServiceAdded(new EuPathDatabaseService(new PiroPlasmaDatabase()));
+        geneiousServiceListener.childServiceAdded(new EuPathDatabaseService(new PlasmoDatabase()));
+        geneiousServiceListener.childServiceAdded(new EuPathDatabaseService(new ToxoDatabase()));
+        geneiousServiceListener.childServiceAdded(new EuPathDatabaseService(new TrichDatabase()));
+        geneiousServiceListener.childServiceAdded(new EuPathDatabaseService(new TriTrypDatabase()));
+        geneiousServiceListener.childServiceAdded(new EuPathDatabaseService(new OrthoMCLDatabase()));
         super.initialize(geneiousServiceListener);
     }
 

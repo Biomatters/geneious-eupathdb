@@ -1,5 +1,8 @@
 package com.biomatters.plugins.eupathdb.database;
 
+import com.biomatters.geneious.publicapi.plugin.Icons;
+import com.biomatters.geneious.publicapi.utilities.IconUtilities;
+
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.Arrays;
@@ -15,8 +18,13 @@ import java.util.Map;
  * @version $Revision: 1.0 $
  */
 public class OrthoMCLDatabase extends EukaryoticDatabase {
+    private static final String HELP = "Provides services to search for sequences in OrthoMCL. OrthoMCL belongs to the EuPathDB family of databases.";
+    private static final String DESCRIPTION = "Provides services to search for sequences in OrthoMCL";
+    private static final String NAME = "OrthoMCL Service";
+    private static final String UNIQUE_ID = "OrthoMCL Service";
+    private static final String PLUGIN_ICON = "orthomcldb16.png";
     private static final String WEB_SERVICE_URI = "http://orthomcl.org/webservices/SequenceQuestions";
-    private static final String DBURL = "http://orthomcl.org";
+    private static final String DB_URL = "http://orthomcl.org";
     private static final String PATH_XML_BY_ID_LIST = "ByIdList.xml";
     private static final String PATH_XML_BY_TEXT_SEARCH = "ByTextSearch.xml";
 
@@ -40,12 +48,62 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
     private static final String[] TAGS = {"PF", "AAE", "NP", "Afu", "AGA", "XP", "ENS", "EBI", "AAL", "AAR", "ABL", "ACL", "AGO", "AGR", "ATG", "EHI", "EIN", "ENS", "GL5", "GLP"};
 
     /**
+     * Gets the unique id.
+     *
+     * @return the unique id
+     */
+    @Override
+    public String getUniqueID() {
+        return UNIQUE_ID;
+    }
+
+    /**
+     * Gets the name.
+     *
+     * @return the name
+     */
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    /**
+     * Gets the description.
+     *
+     * @return the description
+     */
+    @Override
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    /**
+     * Gets the help.
+     *
+     * @return the help
+     */
+    @Override
+    public String getHelp() {
+        return HELP;
+    }
+
+    /**
+     * Gets the icons.
+     *
+     * @return the icons
+     */
+    @Override
+    public Icons getIcons() {
+        return IconUtilities.getIcons(PLUGIN_ICON);
+    }
+
+    /**
      * Overridden method to define DB specific service end point.
      *
      * @return WEB_SERVICE_URI the String
      */
     @Override
-    public String getEndPointURI() {
+    protected String getEndPointURI() {
         return WEB_SERVICE_URI;
     }
 
@@ -54,18 +112,18 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
      *
      * @return TAGS the List<String>
      */
-    public List<String> getTags() {
+    protected List<String> getTags() {
         return Arrays.asList(TAGS);
     }
 
     /**
      * Overridden method to define DB URL.
      *
-     * @return DBURL the String
+     * @return DB_URL the String
      */
     @Override
-    public String getDBUrl() {
-        return DBURL;
+    protected String getDBUrl() {
+        return DB_URL;
     }
 
     @Override

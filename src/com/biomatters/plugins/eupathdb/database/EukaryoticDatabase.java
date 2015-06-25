@@ -6,6 +6,7 @@ import com.biomatters.geneious.publicapi.databaseservice.Query;
 import com.biomatters.geneious.publicapi.databaseservice.RetrieveCallback;
 import com.biomatters.geneious.publicapi.documents.sequence.SequenceDocument;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultSequenceDocument;
+import com.biomatters.geneious.publicapi.plugin.Icons;
 import com.biomatters.plugins.eupathdb.utils.ResponseMessageBodyReader;
 import com.biomatters.plugins.eupathdb.utils.SequenceDocumentGenerator;
 import com.biomatters.plugins.eupathdb.webservices.EuPathDBWebService;
@@ -28,8 +29,6 @@ import java.util.Map;
  * @version $Revision: 1.0 $
  */
 public abstract class EukaryoticDatabase {
-    /* Icon for all plugin*/
-    public static final String PLUGIN_ICON = "database32.png";
 
     /* Web service parameters */
     private static final String WEB_SERVICE_O_FIELDS_PARAM = "o-fields";
@@ -47,6 +46,41 @@ public abstract class EukaryoticDatabase {
     private static final String PATH_XML_GENES_WITH_USER_COMMENTS = "GenesWithUserComments.xml";
     private static final String PATH_XML_GENES_WITH_UPDATED_ANNOTATIONS = "GenesWithUpdatedAnnotation.xml";
     private static final String PATH_XML_GENES_BY_MR4_REAGENTS = "GenesByMr4Reagents.xml";
+
+    /**
+     * Gets the unique id.
+     *
+     * @return the unique id
+     */
+    public abstract String getUniqueID();
+
+    /**
+     * Gets the name.
+     *
+     * @return the name
+     */
+    public abstract String getName();
+
+    /**
+     * Gets the description.
+     *
+     * @return the description
+     */
+    public abstract String getDescription();
+
+    /**
+     * Gets the help.
+     *
+     * @return the help
+     */
+    public abstract String getHelp();
+
+    /**
+     * Gets the icons.
+     *
+     * @return the icons
+     */
+    public abstract Icons getIcons();
 
     /**
      * Abstract method to define DB specific service end point.
@@ -102,6 +136,7 @@ public abstract class EukaryoticDatabase {
     }
 
     // all unused buildURI* methods are tend to be used with advanced query implementation.
+
     /**
      * Builds the text search uri.
      *

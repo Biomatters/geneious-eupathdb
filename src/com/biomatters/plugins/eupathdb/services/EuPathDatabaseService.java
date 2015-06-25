@@ -3,23 +3,21 @@ package com.biomatters.plugins.eupathdb.services;
 import com.biomatters.geneious.publicapi.databaseservice.*;
 import com.biomatters.geneious.publicapi.documents.URN;
 import com.biomatters.geneious.publicapi.plugin.Icons;
-import com.biomatters.geneious.publicapi.utilities.IconUtilities;
 import com.biomatters.plugins.eupathdb.database.EukaryoticDatabase;
-import com.biomatters.plugins.eupathdb.database.GiardiaDatabase;
 
 /**
- * The Class <code>GiardiaDB</code> provides documents in response to a
- * search query executed on the genome database GiardiaDB.
+ * The Class <code>EuPathDatabaseService</code> provides documents in response to a search
+ * query executed on the genome database services.
  *
  * @author cybage
  * @version $Revision: 1.0 $
  */
-public class GiardiaDB extends DatabaseService {
+public class EuPathDatabaseService extends DatabaseService {
+    private EukaryoticDatabase eukaryoticDatabase;
 
-    private static final String GIARDIADB_DB_HELP = "Provides services to search for genes in GiardiaDB. Giardia lamblia is a significant, environmentally transmitted, human pathogen and an amitochondriate protist.";
-    private static final String GIARDIADB_DB_DESCRIPTION = "Provides services to search for genes in GiardiaDB";
-    private static final String GIARDIADB_DB = "GiardiaDB Service";
-    private static final String GIARDIADB_DB_PLUGIN = "GiardiaDB Service";
+    public EuPathDatabaseService(EukaryoticDatabase eukaryoticDatabase) {
+        this.eukaryoticDatabase = eukaryoticDatabase;
+    }
 
     /**
      * Gets the unique id.
@@ -28,7 +26,7 @@ public class GiardiaDB extends DatabaseService {
      */
     @Override
     public String getUniqueID() {
-        return GIARDIADB_DB_PLUGIN;
+        return eukaryoticDatabase.getUniqueID();
     }
 
     /**
@@ -38,7 +36,7 @@ public class GiardiaDB extends DatabaseService {
      */
     @Override
     public String getName() {
-        return GIARDIADB_DB;
+        return eukaryoticDatabase.getName();
     }
 
     /**
@@ -48,7 +46,7 @@ public class GiardiaDB extends DatabaseService {
      */
     @Override
     public String getDescription() {
-        return GIARDIADB_DB_DESCRIPTION;
+        return eukaryoticDatabase.getDescription();
     }
 
     /**
@@ -58,7 +56,7 @@ public class GiardiaDB extends DatabaseService {
      */
     @Override
     public String getHelp() {
-        return GIARDIADB_DB_HELP;
+        return eukaryoticDatabase.getHelp();
     }
 
     /**
@@ -68,7 +66,7 @@ public class GiardiaDB extends DatabaseService {
      */
     @Override
     public Icons getIcons() {
-        return IconUtilities.getIcons(EukaryoticDatabase.PLUGIN_ICON);
+        return eukaryoticDatabase.getIcons();
     }
 
     /**
@@ -82,7 +80,7 @@ public class GiardiaDB extends DatabaseService {
     }
 
     /**
-     * Search for data from GiardiaDB.
+     * Search for data from EuPathDB.
      *
      * @param paramQuery      Contains the search criteria
      * @param callback        Reports the documents obtained from DatabaseService search
@@ -92,7 +90,6 @@ public class GiardiaDB extends DatabaseService {
     @Override
     public void retrieve(Query paramQuery, RetrieveCallback callback,
                          URN[] paramArrayOfURN) throws DatabaseServiceException {
-        GiardiaDatabase giardiaDatabase = new GiardiaDatabase();
-        giardiaDatabase.search(paramQuery, callback);
+        eukaryoticDatabase.search(paramQuery, callback);
     }
 }
