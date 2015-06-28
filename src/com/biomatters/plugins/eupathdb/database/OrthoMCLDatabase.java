@@ -1,8 +1,5 @@
 package com.biomatters.plugins.eupathdb.database;
 
-import com.biomatters.geneious.publicapi.plugin.Icons;
-import com.biomatters.geneious.publicapi.utilities.IconUtilities;
-
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.Arrays;
@@ -87,14 +84,9 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
         return HELP;
     }
 
-    /**
-     * Gets the icons.
-     *
-     * @return the icons
-     */
     @Override
-    public Icons getIcons() {
-        return IconUtilities.getIcons(PLUGIN_ICON);
+    public String getIconName() {
+        return PLUGIN_ICON;
     }
 
     /**

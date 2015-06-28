@@ -1,8 +1,5 @@
 package com.biomatters.plugins.eupathdb.database;
 
-import com.biomatters.geneious.publicapi.plugin.Icons;
-import com.biomatters.geneious.publicapi.utilities.IconUtilities;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,14 +62,9 @@ public class TriTrypDatabase extends EukaryoticDatabase {
         return HELP;
     }
 
-    /**
-     * Gets the icons.
-     *
-     * @return the icons
-     */
     @Override
-    public Icons getIcons() {
-        return IconUtilities.getIcons(PLUGIN_ICON);
+    public String getIconName() {
+        return PLUGIN_ICON;
     }
 
     /**

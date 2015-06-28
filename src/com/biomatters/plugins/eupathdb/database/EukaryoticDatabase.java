@@ -7,6 +7,8 @@ import com.biomatters.geneious.publicapi.databaseservice.RetrieveCallback;
 import com.biomatters.geneious.publicapi.documents.sequence.SequenceDocument;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultSequenceDocument;
 import com.biomatters.geneious.publicapi.plugin.Icons;
+import com.biomatters.geneious.publicapi.utilities.IconUtilities;
+import com.biomatters.plugins.eupathdb.EuPathDBPlugin;
 import com.biomatters.plugins.eupathdb.utils.ResponseMessageBodyReader;
 import com.biomatters.plugins.eupathdb.utils.SequenceDocumentGenerator;
 import com.biomatters.plugins.eupathdb.webservices.EuPathDBWebService;
@@ -80,7 +82,19 @@ public abstract class EukaryoticDatabase {
      *
      * @return the icons
      */
-    public abstract Icons getIcons();
+    public Icons getIcons() {
+        String iconName = getIconName();
+        if(iconName == null) {
+            return IconUtilities.getIcons("nucleotideOrProtein32.png");
+        }
+        return IconUtilities.getIconsFromJar(EuPathDBPlugin.class, iconName);
+    }
+
+    /**
+     *
+     * @return The name of the icon image file.  The file must be in the classpath.
+     */
+    protected abstract String getIconName();
 
     /**
      * Abstract method to define DB specific service end point.
