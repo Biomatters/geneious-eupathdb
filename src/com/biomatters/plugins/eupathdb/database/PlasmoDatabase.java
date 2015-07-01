@@ -13,7 +13,7 @@ import java.util.List;
 public class PlasmoDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in PlasmoDB.PlasmoDB is a genome database for the genus Plasmodium, a set of single-celled eukaryotic pathogens that cause human and animal diseases, including malaria.";
     private static final String DESCRIPTION = "Provides services to search for genes in PlasmoDB";
-    private static final String NAME = "PlasmoDB Service";
+    private static final String NAME = "PlasmoDB";
     private static final String UNIQUE_ID = "PlasmoDB Service";
     private static final String PLUGIN_ICON = "plasmodb16.png";
     private static final String WEB_SERVICE_URI = "http://plasmodb.org/webservices/GeneQuestions";

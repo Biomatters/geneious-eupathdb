@@ -13,7 +13,7 @@ import java.util.List;
 public class AmoebaDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in AmoebaDB. AmoebaDB belongs to the EuPathDB family of databases and is an integrated genomic and functional genomic database for Entamoeba and Acanthamoeba parasites.";
     private static final String DESCRIPTION = "Provides services to search for genes in AmoebaDB";
-    private static final String NAME = "AmoebaDB Service";
+    private static final String NAME = "AmoebaDB";
     private static final String UNIQUE_ID = "AmoebaDB Service";
     private static final String PLUGIN_ICON = "amoebadb16.png";
     private static final String WEB_SERVICE_URI = "http://amoebadb.org/webservices/GeneQuestions";

@@ -13,7 +13,7 @@ import java.util.List;
 public class PiroPlasmaDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in PiroPlasmaDB. PiroplasmaDB is a genome database for the genus Piroplasma";
     private static final String DESCRIPTION = "Provides services to search for genes in PiroPlasmaDB";
-    private static final String NAME = "PiroplasmaDB Service";
+    private static final String NAME = "PiroplasmaDB";
     private static final String UNIQUE_ID = "PiroplasmaDB Service";
     private static final String PLUGIN_ICON = "piroplasmadb16.png";
     private static final String WEB_SERVICE_URI = "http://piroplasmadb.org/webservices/GeneQuestions";

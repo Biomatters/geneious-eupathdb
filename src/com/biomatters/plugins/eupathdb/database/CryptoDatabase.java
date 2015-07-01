@@ -13,7 +13,7 @@ import java.util.List;
 public class CryptoDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in CryptoDB. CryptoDB is an integrated genomic and functional genomic database for the parasite Cryptosporidium.";
     private static final String DESCRIPTION = "Provides services to search for genes in CryptoDB";
-    private static final String NAME = "CryptoDB Service";
+    private static final String NAME = "CryptoDB";
     private static final String UNIQUE_ID = "CryptoDB Service";
     private static final String PLUGIN_ICON = "cryptodb16.png";
     private static final String WEB_SERVICE_URI = "http://cryptodb.org/webservices/GeneQuestions";

@@ -17,7 +17,7 @@ import java.util.Map;
 public class OrthoMCLDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for sequences in OrthoMCL. OrthoMCL belongs to the EuPathDB family of databases.";
     private static final String DESCRIPTION = "Provides services to search for sequences in OrthoMCL";
-    private static final String NAME = "OrthoMCL Service";
+    private static final String NAME = "OrthoMCL";
     private static final String UNIQUE_ID = "OrthoMCL Service";
     private static final String PLUGIN_ICON = "orthomcldb16.png";
     private static final String WEB_SERVICE_URI = "http://orthomcl.org/webservices/SequenceQuestions";

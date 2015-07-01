@@ -13,7 +13,7 @@ import java.util.List;
 public class TriTrypDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in TriTrypDB. TriTrypDB is an integrated genomic and functional genomic database for pathogens of the family Trypanosomatidae, including organisms in both Leishmania and Trypanosoma genera.";
     private static final String DESCRIPTION = "Provides services to search for genes in TriTrypDB";
-    private static final String NAME = "TriTrypDB Service";
+    private static final String NAME = "TriTrypDB";
     private static final String UNIQUE_ID = "TriTrypDB Service";
     private static final String PLUGIN_ICON = "tritrypdb16.png";
     private static final String WEB_SERVICE_URI = "http://tritrypdb.org/webservices/GeneQuestions";

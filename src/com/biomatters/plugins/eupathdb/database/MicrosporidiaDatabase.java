@@ -13,7 +13,7 @@ import java.util.List;
 public class MicrosporidiaDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in MicrosporidiaDB. MicrosporidiaDB belongs to the EuPathDB family of databases and is an integrated genomic and functional genomic database for the phylum Microsporidia.";
     private static final String DESCRIPTION = "Provides services to search for genes in MicrosporidiaDB";
-    private static final String NAME = "MicrosporidiaDB Service";
+    private static final String NAME = "MicrosporidiaDB";
     private static final String UNIQUE_ID = "MicrosporidiaDB Service";
     private static final String PLUGIN_ICON = "microsporidiadb16.png";
     private static final String WEB_SERVICE_URI = "http://microsporidiadb.org/webservices/GeneQuestions";

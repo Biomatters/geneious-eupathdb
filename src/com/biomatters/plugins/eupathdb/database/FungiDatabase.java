@@ -13,7 +13,7 @@ import java.util.List;
 public class FungiDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in FungiDB. FungiDB belongs to the EuPathDB family of databases and is an integrated genomic and functional genomic database for the kingdom Fungi.";
     private static final String DESCRIPTION = "Provides services to search for genes in FungiDB";
-    private static final String NAME = "FungiDB Service";
+    private static final String NAME = "FungiDB";
     private static final String UNIQUE_ID = "FungiDB Service";
     private static final String PLUGIN_ICON = "fungidb16.png";
     private static final String WEB_SERVICE_URI = "http://fungidb.org/webservices/GeneQuestions";

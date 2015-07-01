@@ -13,7 +13,7 @@ import java.util.List;
 public class ToxoDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in ToxoDB. ToxoDB is a genome database for the genus Toxoplasma, a set of single-celled eukaryotic pathogens that cause human and animal diseases, including toxoplasmosis.";
     private static final String DESCRIPTION = "Provides services to search for genes in ToxoDB";
-    private static final String NAME = "ToxoDB Service";
+    private static final String NAME = "ToxoDB";
     private static final String UNIQUE_ID = "ToxoDB Service";
     private static final String PLUGIN_ICON = "toxodb16.png";
     private static final String WEB_SERVICE_URI = "http://toxodb.org/webservices/GeneQuestions";

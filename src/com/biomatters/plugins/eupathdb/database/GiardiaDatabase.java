@@ -13,7 +13,7 @@ import java.util.List;
 public class GiardiaDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in GiardiaDB. Giardia lamblia is a significant, environmentally transmitted, human pathogen and an amitochondriate protist.";
     private static final String DESCRIPTION = "Provides services to search for genes in GiardiaDB";
-    private static final String NAME = "GiardiaDB Service";
+    private static final String NAME = "GiardiaDB";
     private static final String UNIQUE_ID = "GiardiaDB Service";
     private static final String PLUGIN_ICON = "giardiadb16.png";
     private static final String WEB_SERVICE_URI = "http://giardiadb.org/webservices/GeneQuestions";
