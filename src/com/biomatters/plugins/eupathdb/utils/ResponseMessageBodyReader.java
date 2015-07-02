@@ -59,9 +59,9 @@ public class ResponseMessageBodyReader implements
             JAXBContext jaxbContext = JAXBContext.newInstance(Response.class);
             return (Response) jaxbContext.createUnmarshaller().unmarshal(entityStream);
         } catch (JAXBException jaxbException) {
-            String msg = "Failed to download results from server: ";
+            String msg = "Failed to download results from server";
             if(jaxbException.getMessage() != null){
-                msg += jaxbException.getMessage();
+                msg += ": " + jaxbException.getMessage();
             }
             throw new ProcessingException(msg, jaxbException);
         }
