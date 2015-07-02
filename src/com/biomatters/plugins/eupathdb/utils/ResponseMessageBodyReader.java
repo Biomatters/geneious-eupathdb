@@ -59,7 +59,7 @@ public class ResponseMessageBodyReader implements
             JAXBContext jaxbContext = JAXBContext.newInstance(Response.class);
             return (Response) jaxbContext.createUnmarshaller().unmarshal(entityStream);
         } catch (JAXBException jaxbException) {
-            throw new ProcessingException("Error in deserializing a Response.", jaxbException);
+            throw new ProcessingException("Failed to download results from server.", jaxbException);
         }
     }
 }
