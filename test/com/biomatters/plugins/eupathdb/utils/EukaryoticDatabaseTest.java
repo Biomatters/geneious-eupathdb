@@ -76,7 +76,7 @@ public class EukaryoticDatabaseTest {
                 response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
                 .thenReturn(TestUtilities.getWebServiceResponse());
         eukaryoticDatabase.search(query, callback);
-        Assert.assertEquals(14, callback.addCount);
+        Assert.assertEquals(7, callback.addCount);
     }
 
     /**
@@ -91,7 +91,7 @@ public class EukaryoticDatabaseTest {
                 response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
                 .thenReturn(TestUtilities.getWebServiceResponse());
         eukaryoticDatabase.search(query, callback);
-        Assert.assertEquals(14, callback.addCount);
+        Assert.assertEquals(7, callback.addCount);
     }
 
     /**

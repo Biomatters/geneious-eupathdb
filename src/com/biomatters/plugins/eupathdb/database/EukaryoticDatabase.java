@@ -230,20 +230,19 @@ public abstract class EukaryoticDatabase {
         if (!(response == null || response.getRecordset() == null || response
                 .getRecordset().getRecord() == null)) {
             DefaultSequenceDocument document;
+            SequenceDocument.Alphabet alphabet = SequenceDocument.Alphabet.NUCLEOTIDE;
+            if (response.getRecordset().getType().equalsIgnoreCase("sequence")) {
+                alphabet = SequenceDocument.Alphabet.PROTEIN;
+            }
+
             List<Record> records = response.getRecordset().getRecord();
             for (Record record : records) {
-                for (SequenceDocument.Alphabet alphabet : SequenceDocument.Alphabet
-                        .values()) {
-                    if (response.getRecordset().getType().equalsIgnoreCase("sequence") && alphabet.equals(SequenceDocument.Alphabet.NUCLEOTIDE)) {
-                        continue;
-                    }
-                    document = SequenceDocumentGenerator
-                            .getDefaultSequenceDocument(record,
-                                    getDBUrl(), alphabet);
-                    if (document != null) {
-                        callback.add(document,
-                                Collections.<String, Object>emptyMap());
-                    }
+                document = SequenceDocumentGenerator
+                        .getDefaultSequenceDocument(record,
+                                getDBUrl(), alphabet);
+                if (document != null) {
+                    callback.add(document,
+                            Collections.<String, Object>emptyMap());
                 }
             }
         } else {
