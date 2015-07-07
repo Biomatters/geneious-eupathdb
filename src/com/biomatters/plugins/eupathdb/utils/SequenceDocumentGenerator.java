@@ -25,7 +25,6 @@ import java.util.Date;
 public class SequenceDocumentGenerator {
 
     private static final String URL = "URL";
-    private static final String PROTEIN_SEQUENCE = "protein_sequence";
     private static final String SEQUENCE = "sequence";
     private static final String ORGANISM = "organism";
     private static final String CDS = "cds";
@@ -63,7 +62,7 @@ public class SequenceDocumentGenerator {
                 cds = field.getValue();
             } else if (field.getName().equalsIgnoreCase(ORGANISM)) {
                 speciesId = field.getValue();
-            } else if (field.getName().equalsIgnoreCase(PROTEIN_SEQUENCE) || field.getName().equalsIgnoreCase(SEQUENCE)) {
+            } else if (field.getName().equalsIgnoreCase(SEQUENCE)) {
                 proSeq = field.getValue();
             }
         }

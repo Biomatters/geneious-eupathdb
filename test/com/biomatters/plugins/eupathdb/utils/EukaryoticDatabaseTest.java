@@ -22,6 +22,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyReader;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
@@ -71,11 +72,7 @@ public class EukaryoticDatabaseTest {
      */
     @Test
     public void testProcessSearchForSearchByTag() throws Exception {
-        Mockito.doReturn("PF3D7_1133400").when((BasicSearchQuery) query).getSearchText();
-        Mockito.when(
-                response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
-                .thenReturn(TestUtilities.getWebServiceResponse());
-        eukaryoticDatabase.search(query, callback);
+        mockAndProcessSearch("PF3D7_1133400", "ResponseDataXML.txt");
         Assert.assertEquals(7, callback.addCount);
     }
 
@@ -86,12 +83,30 @@ public class EukaryoticDatabaseTest {
      */
     @Test
     public void testProcessSearchForSearchByText() throws Exception {
-        Mockito.doReturn("adc").when((BasicSearchQuery) query).getSearchText();
-        Mockito.when(
-                response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
-                .thenReturn(TestUtilities.getWebServiceResponse());
-        eukaryoticDatabase.search(query, callback);
+        mockAndProcessSearch("adc", "ResponseDataXML.txt");
         Assert.assertEquals(7, callback.addCount);
+    }
+
+    /**
+     * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test for search by tag for OrthoMCL DB Service.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testProcessSearchForSearchByTagWhenOrthoMClDbService() throws Exception {
+        mockAndProcessSearch("OG5_228447", "ResponseDataXMLByTag_forOrthoMCL.txt");
+        Assert.assertEquals(2, callback.addCount);
+    }
+
+    /**
+     * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test for search by text for OrthoMCL DB Service.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testProcessSearchForSearchByTextWhenOrthoMClDbService() throws Exception {
+        mockAndProcessSearch("OG5_228447", "ResponseDataXMLByText_forOrthoMCL.txt");
+        Assert.assertEquals(1, callback.addCount);
     }
 
     /**
@@ -104,10 +119,23 @@ public class EukaryoticDatabaseTest {
         expectedEx.expect(DatabaseServiceException.class);
         expectedEx.expectMessage("The input to parameter 'Text term (use * as wildcard)' is required<br><b>Type: </b>User Error<br><b>Code: </b>020");
 
-        Mockito.doReturn("adc").when((BasicSearchQuery) query).getSearchText();
+        mockAndProcessSearch("adc", "ResponseDataXML_Error.txt");
+    }
+
+    /**
+     * Mocking search-query and readEntity.
+     * Hit search based on mocking data.
+     *
+     * @param searchQuery - search query.
+     * @param fileName    - test-data file name.
+     * @throws IOException
+     * @throws DatabaseServiceException
+     */
+    private void mockAndProcessSearch(String searchQuery, String fileName) throws IOException, DatabaseServiceException {
+        Mockito.doReturn(searchQuery).when((BasicSearchQuery) query).getSearchText();
         Mockito.when(
                 response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
-                .thenReturn(TestUtilities.getWebServiceErrorResponse());
+                .thenReturn(TestUtilities.getWebServiceResponse(fileName));
         eukaryoticDatabase.search(query, callback);
     }
 

@@ -21,6 +21,9 @@ import java.util.List;
  */
 public class SequenceDocumentGeneratorTest {
 
+    private static final String NUCLEOTIDE_SEQUENCE = "ATGAAAATCGAAT";
+    private static final String PROTEIN_SEQUENCE = "MKIESKEIQNSS";
+
     /**
      * Run the DefaultSequenceDocument getDefaultSequenceDocument(Map<String,
      * String>, String, DocType) method test for DefaultNucleotideSequence
@@ -35,6 +38,7 @@ public class SequenceDocumentGeneratorTest {
         DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(getRecord(), "", alphabet);
         Assert.assertNotNull("getDefaultSequenceDocument method returned null. Expected is an instance of DefaultNucleotideSequence", document);
         Assert.assertTrue("An instance of DefaultNucleotideSequence should have been generated. Generated is an instance of " + document.getClass() + ".", document instanceof DefaultNucleotideSequence);
+        Assert.assertEquals(NUCLEOTIDE_SEQUENCE, document.getSequenceString());
     }
 
     /**
@@ -51,6 +55,7 @@ public class SequenceDocumentGeneratorTest {
         DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(getRecord(), "", alphabet);
         Assert.assertNotNull("getDefaultSequenceDocument method returned null. Expected is an instance of DefaultAminoAcidSequence", document);
         Assert.assertTrue("An instance of DefaultAminoAcidSequence should have been generated. Generated is an instance of " + document.getClass() + ".", document instanceof DefaultAminoAcidSequence);
+        Assert.assertEquals(PROTEIN_SEQUENCE, document.getSequenceString());
     }
 
     /**
@@ -62,8 +67,8 @@ public class SequenceDocumentGeneratorTest {
         fields.add(new Field("primary_key", "PF3D7_1133400"));
         fields.add(new Field("organism", "P. falciparum 3D7"));
         fields.add(new Field("product", "apical membrane antigen 1 AMA1"));
-        fields.add(new Field("cds", "ATGAAAATCGAATCTAAGGAAATACAGAACTCATCAAAACTTCCAAACATAATTATAACTGGGACGCCAGGAGTTGGTAAAAGCACCTTATGTGAAGAATTAGTTGAAATCATAAATAAAGATTTTGAAGAAAAGTTTAGAATAGATGGAAAAGAACAACTAAAAATGATACATTTAAATTTATCAAATATTATAAAAAATGAAAGATTATATGAAGAATATGATGACGAATTAGATGCAAGTATATTTAGTGAAGAACTAGTAAATCAAAAATTAAAAAAATTAAATTTACAAAATGGTGGTTATATAATAGATTTTCATGATGTTAATTTTTTATACGAAAATAAATATATCGATAAAATTTTTTTATTAACAGCATCAACAAATGTTTTATACGAACGTTTAGAAAAAAGAAATTACACGAAAGATAAAATTAAAAATAATATTGAATGTGAAATATTTCAGGTTATAAAAGAAGACATATTAGAGAATTATGACGATGAAAATATTTTTGTAGAGTTACAAAATAATAATTTAGAAGATCATGACAAAAACATTTCTTTTATTCAAAAATGGATTCATTCTTATATGACTCAAGGGTTCTAA"));
-        fields.add(new Field("protein_sequence", "MKIESKEIQNSSKLPNIIITGTPGVGKSTLCEELVEIINKDFEEKFRIDGKEQLKMIHLNLSNIIKNERLYEEYDDELDASIFSEELVNQKLKKLNLQNGGYIIDFHDVNFLYENKYIDKIFLLTASTNVLYERLEKRNYTKDKIKNNIECEIFQVIKEDILENYDDENIFVELQNNNLEDHDKNISFIQKWIHSYMTQGF"));
+        fields.add(new Field("cds", NUCLEOTIDE_SEQUENCE));
+        fields.add(new Field("sequence", PROTEIN_SEQUENCE));
         return new Record("",fields);
     }
 }

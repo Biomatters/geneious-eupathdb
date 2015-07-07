@@ -39,7 +39,7 @@ public abstract class EukaryoticDatabase {
     private static final String WEB_SERVICE_DS_GENE_IDS_PARAM = "ds_gene_ids_data";
     private static final String WEB_SERVICE_TEXT_EXPRESSION_PARAM = "text_expression";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM = "text_search_organism";
-    private static final String WEB_SERVICE_O_FIELDS_PARAM_VALUE = "primary_key,organism,product,cds,protein_sequence";
+    private static final String WEB_SERVICE_O_FIELDS_PARAM_VALUE = "primary_key,organism,product,cds";
     private static final String WEB_SERVICE_MAX_P_VALUE_PARAM_VALUE = "-30";
 
     private static final String PATH_XML_GENE_BY_LOCUS_TAG = "GeneByLocusTag.xml";

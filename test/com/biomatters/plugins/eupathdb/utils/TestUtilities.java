@@ -42,19 +42,8 @@ public class TestUtilities {
      * @return String
      * @throws java.io.IOException
      */
-    public static Response getWebServiceResponse() throws IOException {
-        String responseStr = TestUtilities.read("ResponseDataXML.txt");
-        return unmarshal(Response.class, responseStr);
-    }
-
-    /**
-     * Returns dummy web service response string in xml format.
-     *
-     * @return String
-     * @throws java.io.IOException
-     */
-    public static Response getWebServiceErrorResponse() throws IOException {
-        String responseStr = TestUtilities.read("ResponseDataXML_Error.txt");
+    public static Response getWebServiceResponse(String fileName) throws IOException {
+        String responseStr = TestUtilities.read(fileName);
         return unmarshal(Response.class, responseStr);
     }
 
