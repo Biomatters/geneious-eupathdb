@@ -88,25 +88,14 @@ public class EukaryoticDatabaseTest {
     }
 
     /**
-     * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test for search by tag for OrthoMCL DB Service.
+     * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test for search on OrthoMCL DB Service.
      *
      * @throws Exception
      */
     @Test
-    public void testProcessSearchForSearchByTagWhenOrthoMClDbService() throws Exception {
-        mockAndProcessSearch("OG5_228447", "ResponseDataXMLByTag_forOrthoMCL.txt");
+    public void testProcessSearchForOrthoMCL() throws Exception {
+        mockAndProcessSearch("OG5_228447", "ResponseDataXMLForOrthoMCL.txt");
         Assert.assertEquals(2, callback.addCount);
-    }
-
-    /**
-     * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test for search by text for OrthoMCL DB Service.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testProcessSearchForSearchByTextWhenOrthoMClDbService() throws Exception {
-        mockAndProcessSearch("OG5_228447", "ResponseDataXMLByText_forOrthoMCL.txt");
-        Assert.assertEquals(1, callback.addCount);
     }
 
     /**
