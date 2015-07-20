@@ -1,5 +1,6 @@
 package com.biomatters.plugins.eupathdb.database;
 
+import com.biomatters.geneious.publicapi.components.Dialogs;
 import com.biomatters.geneious.publicapi.databaseservice.BasicSearchQuery;
 import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
 import com.biomatters.geneious.publicapi.databaseservice.Query;
@@ -52,6 +53,7 @@ public abstract class EukaryoticDatabase {
 
     private static final int BATCH_SIZE = 100;
     private static final String FINAL_MESSAGE = "\"No results found. Consider using * to search for partial words. For example CO*I matches COI and COXI\"";
+    private static final String INFO_MESSAGE = "\"EuPathDB does not support searching for a single wildcard '*'. Please use a more specific search term.\"";
 
     /**
      * Gets the unique id.
@@ -210,6 +212,11 @@ public abstract class EukaryoticDatabase {
     public void search(Query paramQuery, RetrieveCallback paramRetrieveCallback) throws DatabaseServiceException {
         String queryText = ((BasicSearchQuery) paramQuery).getSearchText();
         if (!(queryText == null || (queryText = queryText.trim()).isEmpty())) {
+            if(queryText.trim().equals("*")) {
+                Dialogs.showMessageDialog(INFO_MESSAGE, "EuPath Database Info", null, Dialogs.DialogIcon.INFORMATION);
+                paramRetrieveCallback.setFinalStatus(INFO_MESSAGE, false);
+                return;
+            }
             Map<String, String> paramMap = isQueryTextStartsWithTag(queryText)
                     ? getParametersMapForSearchByTag(queryText)
                     : getParametersMapForSearchByText(queryText);
@@ -372,14 +379,15 @@ public abstract class EukaryoticDatabase {
     private String getErrorMessage(com.biomatters.plugins.eupathdb.webservices.models.Error error) {
         String type = error.getType();
         String code = error.getCode();
-        StringBuilder errorMsg = new StringBuilder(error.getMsg());
+        StringBuilder errorMsg = new StringBuilder("<br>The EuPathDB server responded with an error message:<br>");
 
         if (!(type == null || type.isEmpty())) {
-            errorMsg.append("<br><b>Type: </b>").append(type);
+            errorMsg.append(type).append(" - ");
         }
         if (!(code == null || code.isEmpty())) {
-            errorMsg.append("<br><b>Code: </b>").append(code);
+            errorMsg.append("(").append(code).append("): ");
         }
+        errorMsg.append(error.getMsg());
         return errorMsg.toString();
     }
 
