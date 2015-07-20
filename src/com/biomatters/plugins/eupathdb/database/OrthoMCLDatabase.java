@@ -133,6 +133,10 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
         return super.isQueryTextStartsWithTag(queryText) ? buildURIForByIdList() : buildURIForByTextSearch();
     }
 
+    @Override
+    URI buildURIForIDListSearch() {
+        return buildURIForByIdList();
+    }
     /**
      * Builds uri for the search by ID list.
      *

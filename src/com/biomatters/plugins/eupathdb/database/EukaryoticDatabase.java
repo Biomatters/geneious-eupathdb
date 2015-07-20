@@ -40,6 +40,7 @@ public abstract class EukaryoticDatabase {
     private static final String WEB_SERVICE_TEXT_EXPRESSION_PARAM = "text_expression";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM = "text_search_organism";
     private static final String WEB_SERVICE_O_FIELDS_PARAM_VALUE = "primary_key,organism,product,cds";
+    private static final String WEB_SERVICE_O_FIELDS_PARAM_VALUE_FOR_ID = "primary_key";
     private static final String WEB_SERVICE_MAX_P_VALUE_PARAM_VALUE = "-30";
 
     private static final String PATH_XML_GENE_BY_LOCUS_TAG = "GeneByLocusTag.xml";
@@ -48,6 +49,9 @@ public abstract class EukaryoticDatabase {
     private static final String PATH_XML_GENES_WITH_USER_COMMENTS = "GenesWithUserComments.xml";
     private static final String PATH_XML_GENES_WITH_UPDATED_ANNOTATIONS = "GenesWithUpdatedAnnotation.xml";
     private static final String PATH_XML_GENES_BY_MR4_REAGENTS = "GenesByMr4Reagents.xml";
+
+    private static final int BATCH_SIZE = 100;
+    private static final String FINAL_MESSAGE = "\"No results found. Consider using * to search for partial words. For example CO*I matches COI and COXI\"";
 
     /**
      * Gets the unique id.
@@ -132,6 +136,15 @@ public abstract class EukaryoticDatabase {
     protected abstract String getWebServiceTextFieldsParamValue();
 
     /**
+     * Builds uri for ID-List Search.
+     *
+     * @return uri the URI
+     */
+    URI buildURIForIDListSearch() {
+        return buildURIForGenesByLocusTag();
+    }
+
+    /**
      * Builds the tag search uri.
      *
      * @return uri the URI
@@ -201,32 +214,86 @@ public abstract class EukaryoticDatabase {
                     ? getParametersMapForSearchByTag(queryText)
                     : getParametersMapForSearchByText(queryText);
 
+            Map<String, String> paramMapOfId = updateParameterMapThatRetrieveOnlyID(paramMap);
             URI uri = buildURI(queryText);
             EuPathDBWebService service = new EuPathDBWebService();
-            com.biomatters.plugins.eupathdb.webservices.models.Response wsResponse;
-            try {
-                wsResponse = service.post(uri, paramMap,
-                        new ResponseMessageBodyReader()).readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class);
-            } catch (ProcessingException e) {
-                throw new DatabaseServiceException(e, e.getMessage(), false);
-            }
+            Response response = getResponse(paramMapOfId, uri, service);
 
-            DatabaseServiceException databaseServiceException = getException(wsResponse);
-            if (databaseServiceException != null) {
-                throw databaseServiceException;
+            List<Record> records = response.getRecordset().getRecord();
+            if (!(records == null || records.isEmpty())) {
+                int documentCount = 0;
+                int uptoDocument = 0;
+                int totalDocument = records.size();
+                paramRetrieveCallback.setMessage("Downloading " + totalDocument + " matching sequence");
+                while (!paramRetrieveCallback.isCanceled() && uptoDocument < totalDocument) {
+                    uptoDocument = documentCount + BATCH_SIZE;
+                    if (uptoDocument > totalDocument) {
+                        uptoDocument = totalDocument;
+                    }
+                    executeInBatch(records, documentCount, uptoDocument, totalDocument, paramRetrieveCallback, service);
+                    documentCount = uptoDocument;
+                }
+            } else {
+                paramRetrieveCallback.setFinalStatus(FINAL_MESSAGE, false);
             }
-            reportSearchResult(paramRetrieveCallback, wsResponse);
         }
+    }
+
+    /**
+     * Retrive the x id in batch and execute the search.
+     *
+     * @param records               - whole records.
+     * @param documentCount         - count of document
+     * @param uptoCount             - used to retrive record upto the count.
+     * @param totalCount            - total count of record
+     * @param paramRetrieveCallback - RetrieveCallback
+     * @param service               - EuPathDBWebService
+     * @throws DatabaseServiceException
+     */
+    private void executeInBatch(List<Record> records, int documentCount, int uptoCount, int totalCount, RetrieveCallback paramRetrieveCallback, EuPathDBWebService service) throws DatabaseServiceException {
+        List<Record> recordInBatch = records.subList(documentCount, uptoCount);
+        String idList = getAllId(recordInBatch);
+        Map<String, String> parameterMap = getParametersMapForSearchByTag(idList);
+        Response response = getResponse(parameterMap, buildURIForIDListSearch(), service);
+        reportSearchResult(paramRetrieveCallback, response, documentCount, totalCount);
+    }
+
+    /**
+     * Get all the Id in string format from the list separated by delimiter ','
+     *
+     * @param recordInBatch - Record containing ID
+     * @return - ALL Id separated by comma.
+     */
+    protected String getAllId(List<Record> recordInBatch) {
+        StringBuilder idList = new StringBuilder();
+        String delimiter = ",";
+        for (Record record : recordInBatch) {
+            String id = record.getId();
+            //To get Id for OrthoMCL Database as its contain id followed by pipe '|'.
+            if (id.contains("|")) {
+                String[] splitID = id.trim().split("\\|");
+                if (splitID.length > 1) {
+                    id = splitID[1];
+                }
+            }
+            idList.append(id);
+            if (!record.equals(recordInBatch.get(recordInBatch.size() - 1))) {
+                idList.append(delimiter);
+            }
+        }
+        return idList.toString();
     }
 
     /**
      * Prepares search result from each record and report back to the caller
      * using RetrieveCallback.
      *
-     * @param callback the RetrieveCallback
-     * @param response the Response
+     * @param callback       - the RetrieveCallback
+     * @param response       - the Response
+     * @param documentCount  - count of document
+     * @param totalDocuments - total count of record
      */
-    private void reportSearchResult(RetrieveCallback callback, Response response) {
+    private void reportSearchResult(RetrieveCallback callback, Response response, int documentCount, int totalDocuments) {
         if (!(response == null || response.getRecordset() == null || response
                 .getRecordset().getRecord() == null)) {
             DefaultSequenceDocument document;
@@ -237,17 +304,47 @@ public abstract class EukaryoticDatabase {
 
             List<Record> records = response.getRecordset().getRecord();
             for (Record record : records) {
+                if (callback.isCanceled()) {
+                    return;
+                }
                 document = SequenceDocumentGenerator
                         .getDefaultSequenceDocument(record,
                                 getDBUrl(), alphabet);
                 if (document != null) {
                     callback.add(document,
                             Collections.<String, Object>emptyMap());
+
+                    documentCount++;
+                    double progress = (double) documentCount / totalDocuments;
+                    callback.setProgress(progress);
+                    callback.setMessage("Downloading sequence " + documentCount + " of " + totalDocuments);
                 }
             }
-        } else {
-            callback.setFinalStatus("No results found. Consider using * to search for partial words. For example CO*I matches COI and COXI", false);
         }
+    }
+
+    /**
+     * Get the response of the service.
+     *
+     * @param paramMap - parameter value map
+     * @param uri      - URI
+     * @param service  - EuPathDBWebService
+     * @return {@link com.biomatters.plugins.eupathdb.webservices.models.Response}
+     * @throws DatabaseServiceException
+     */
+    private Response getResponse(Map<String, String> paramMap, URI uri, EuPathDBWebService service) throws DatabaseServiceException {
+        Response response;
+        try {
+            response = service.post(uri, paramMap,
+                    new ResponseMessageBodyReader()).readEntity(Response.class);
+        } catch (ProcessingException e) {
+            throw new DatabaseServiceException(e, e.getMessage(), false);
+        }
+        DatabaseServiceException databaseServiceException = getException(response);
+        if (databaseServiceException != null) {
+            throw databaseServiceException;
+        }
+        return response;
     }
 
     /**
@@ -345,4 +442,18 @@ public abstract class EukaryoticDatabase {
         paramMap.put(WEB_SERVICE_TEXT_EXPRESSION_PARAM, queryText);
         return paramMap;
     }
+
+    /**
+     * Override the WEB_SERVICE_O_FIELDS_PARAM value of the passing map to get only ID at first request.
+     *
+     * @param paramMap - parameter Map.
+     * @return resultParamMap - Updated Parameter-Map to retierve only ID
+     */
+    Map<String, String> updateParameterMapThatRetrieveOnlyID(Map<String, String> paramMap) {
+        Map<String, String> resultParamMap = paramMap;
+        resultParamMap.put(WEB_SERVICE_O_FIELDS_PARAM,
+                WEB_SERVICE_O_FIELDS_PARAM_VALUE_FOR_ID);
+        return resultParamMap;
+    }
+
 }

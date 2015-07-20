@@ -1,6 +1,7 @@
 package com.biomatters.plugins.eupathdb.webservices;
 
 import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
+import org.glassfish.jersey.client.ClientProperties;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
@@ -29,13 +30,18 @@ public class EuPathDBWebService {
 
     private static final int HTTP_ERROR_CODE = 400;
 
+    private static final int TIMEOUT_FIVE_MINUTE = 300000;
+
     /**
      * Builds client.
      *
      * @return Client
      */
     private Client createClient() {
-        return ClientBuilder.newBuilder().build();
+        Client client = ClientBuilder.newClient();
+        client.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT_FIVE_MINUTE);
+        client.property(ClientProperties.READ_TIMEOUT, TIMEOUT_FIVE_MINUTE);
+        return client;
     }
 
     /**
