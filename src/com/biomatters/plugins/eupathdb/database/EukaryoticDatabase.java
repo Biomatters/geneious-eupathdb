@@ -379,13 +379,13 @@ public abstract class EukaryoticDatabase {
     private String getErrorMessage(com.biomatters.plugins.eupathdb.webservices.models.Error error) {
         String type = error.getType();
         String code = error.getCode();
-        StringBuilder errorMsg = new StringBuilder("<br>The EuPathDB server responded with an error message:<br>");
+        StringBuilder errorMsg = new StringBuilder("The EuPathDB server responded with an error message:\n");
 
         if (!(type == null || type.isEmpty())) {
-            errorMsg.append(type).append(" - ");
+            errorMsg.append(type).append(" ");
         }
         if (!(code == null || code.isEmpty())) {
-            errorMsg.append("(").append(code).append("): ");
+            errorMsg.append("(#").append(code).append("): ");
         }
         errorMsg.append(error.getMsg());
         return errorMsg.toString();
