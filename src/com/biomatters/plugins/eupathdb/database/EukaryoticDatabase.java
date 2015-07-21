@@ -53,7 +53,7 @@ public abstract class EukaryoticDatabase {
 
     private static final int BATCH_SIZE = 100;
     private static final String FINAL_MESSAGE = "\"No results found. Consider using * to search for partial words. For example CO*I matches COI and COXI\"";
-    private static final String INFO_MESSAGE = "\"EuPathDB does not support searching for a single wildcard '*'. Please use a more specific search term.\"";
+    private static final String INFO_MESSAGE = "EuPathDB does not support searching for a single wildcard '*'. Please use a more specific search term.";
 
     /**
      * Gets the unique id.
@@ -212,9 +212,9 @@ public abstract class EukaryoticDatabase {
     public void search(Query paramQuery, RetrieveCallback paramRetrieveCallback) throws DatabaseServiceException {
         String queryText = ((BasicSearchQuery) paramQuery).getSearchText();
         if (!(queryText == null || (queryText = queryText.trim()).isEmpty())) {
-            if(queryText.trim().equals("*")) {
+            if(queryText.equals("*")) {
                 Dialogs.showMessageDialog(INFO_MESSAGE, "EuPath Database Info", null, Dialogs.DialogIcon.INFORMATION);
-                paramRetrieveCallback.setFinalStatus(INFO_MESSAGE, false);
+                paramRetrieveCallback.setFinalStatus("\"" + INFO_MESSAGE + "\"", false);
                 return;
             }
             Map<String, String> paramMap = isQueryTextStartsWithTag(queryText)
