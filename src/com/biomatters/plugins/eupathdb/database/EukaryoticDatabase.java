@@ -138,15 +138,6 @@ public abstract class EukaryoticDatabase {
     protected abstract String getWebServiceTextFieldsParamValue();
 
     /**
-     * Builds uri for ID-List Search.
-     *
-     * @return uri the URI
-     */
-    URI buildURIForIDListSearch() {
-        return buildURIForGenesByLocusTag();
-    }
-
-    /**
      * Builds the tag search uri.
      *
      * @return uri the URI
@@ -221,10 +212,11 @@ public abstract class EukaryoticDatabase {
                     ? getParametersMapForSearchByTag(queryText)
                     : getParametersMapForSearchByText(queryText);
 
-            Map<String, String> paramMapOfId = updateParameterMapThatRetrieveOnlyID(paramMap);
+            //Override the O_FIELDS value of the parameterMap to get only ID at first request.
+            paramMap.put(WEB_SERVICE_O_FIELDS_PARAM, WEB_SERVICE_O_FIELDS_PARAM_VALUE_FOR_ID);
             URI uri = buildURI(queryText);
             EuPathDBWebService service = new EuPathDBWebService();
-            Response response = getResponse(paramMapOfId, uri, service);
+            Response response = getResponseFromWebService(paramMap, uri, service);
 
             List<Record> records = response.getRecordset().getRecord();
             if (!(records == null || records.isEmpty())) {
@@ -259,9 +251,9 @@ public abstract class EukaryoticDatabase {
      */
     private void executeInBatch(List<Record> records, int documentCount, int uptoCount, int totalCount, RetrieveCallback paramRetrieveCallback, EuPathDBWebService service) throws DatabaseServiceException {
         List<Record> recordInBatch = records.subList(documentCount, uptoCount);
-        String idList = getAllId(recordInBatch);
+        String idList = retrieveIDsInCSVString(recordInBatch);
         Map<String, String> parameterMap = getParametersMapForSearchByTag(idList);
-        Response response = getResponse(parameterMap, buildURIForIDListSearch(), service);
+        Response response = getResponseFromWebService(parameterMap, buildURIForGenesByLocusTag(), service);
         reportSearchResult(paramRetrieveCallback, response, documentCount, totalCount);
     }
 
@@ -271,7 +263,7 @@ public abstract class EukaryoticDatabase {
      * @param recordInBatch - Record containing ID
      * @return - ALL Id separated by comma.
      */
-    protected String getAllId(List<Record> recordInBatch) {
+    protected String retrieveIDsInCSVString(List<Record> recordInBatch) {
         StringBuilder idList = new StringBuilder();
         String delimiter = ",";
         for (Record record : recordInBatch) {
@@ -314,6 +306,11 @@ public abstract class EukaryoticDatabase {
                 if (callback.isCanceled()) {
                     return;
                 }
+                documentCount++;
+                double progress = (double) documentCount / totalDocuments;
+                callback.setProgress(progress);
+                callback.setMessage("Downloading sequence " + documentCount + " of " + totalDocuments);
+
                 document = SequenceDocumentGenerator
                         .getDefaultSequenceDocument(record,
                                 getDBUrl(), alphabet);
@@ -321,10 +318,6 @@ public abstract class EukaryoticDatabase {
                     callback.add(document,
                             Collections.<String, Object>emptyMap());
 
-                    documentCount++;
-                    double progress = (double) documentCount / totalDocuments;
-                    callback.setProgress(progress);
-                    callback.setMessage("Downloading sequence " + documentCount + " of " + totalDocuments);
                 }
             }
         }
@@ -339,7 +332,7 @@ public abstract class EukaryoticDatabase {
      * @return {@link com.biomatters.plugins.eupathdb.webservices.models.Response}
      * @throws DatabaseServiceException
      */
-    private Response getResponse(Map<String, String> paramMap, URI uri, EuPathDBWebService service) throws DatabaseServiceException {
+    private Response getResponseFromWebService(Map<String, String> paramMap, URI uri, EuPathDBWebService service) throws DatabaseServiceException {
         Response response;
         try {
             response = service.post(uri, paramMap,
@@ -449,19 +442,6 @@ public abstract class EukaryoticDatabase {
                 WEB_SERVICE_MAX_P_VALUE_PARAM_VALUE);
         paramMap.put(WEB_SERVICE_TEXT_EXPRESSION_PARAM, queryText);
         return paramMap;
-    }
-
-    /**
-     * Override the WEB_SERVICE_O_FIELDS_PARAM value of the passing map to get only ID at first request.
-     *
-     * @param paramMap - parameter Map.
-     * @return resultParamMap - Updated Parameter-Map to retierve only ID
-     */
-    Map<String, String> updateParameterMapThatRetrieveOnlyID(Map<String, String> paramMap) {
-        Map<String, String> resultParamMap = paramMap;
-        resultParamMap.put(WEB_SERVICE_O_FIELDS_PARAM,
-                WEB_SERVICE_O_FIELDS_PARAM_VALUE_FOR_ID);
-        return resultParamMap;
     }
 
 }

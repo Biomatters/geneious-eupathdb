@@ -114,11 +114,11 @@ public class EukaryoticDatabaseTest {
     }
 
     /**
-     * Test getAllId to retrieve Id Correctly.
+     * Test retrieveIDsInCSVString to retrieve Id Correctly.
      */
     @Test
-    public void testGetAllTest() {
-        String result = eukaryoticDatabase.getAllId(getRecords());
+    public void testRetrieveIDsInCSVStringTest() {
+        String result = eukaryoticDatabase.retrieveIDsInCSVString(getRecords());
         Assert.assertEquals("PF3D7_1111,PF3D7_1112,PF3D7_1113|,PF3D7_1114", result);
     }
 

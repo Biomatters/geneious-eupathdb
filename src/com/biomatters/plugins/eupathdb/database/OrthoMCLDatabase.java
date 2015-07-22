@@ -129,29 +129,12 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
     }
 
     @Override
-    URI buildURI(String queryText) {
-        return super.isQueryTextStartsWithTag(queryText) ? buildURIForByIdList() : buildURIForByTextSearch();
-    }
-
-    @Override
-    URI buildURIForIDListSearch() {
-        return buildURIForByIdList();
-    }
-    /**
-     * Builds uri for the search by ID list.
-     *
-     * @return uri the URI
-     */
-    URI buildURIForByIdList() {
+    URI buildURIForGenesByLocusTag() {
         return UriBuilder.fromUri(getEndPointURI()).path(PATH_XML_BY_ID_LIST).build();
     }
 
-    /**
-     * Builds uri for the search by text.
-     *
-     * @return uri the URI
-     */
-    URI buildURIForByTextSearch() {
+    @Override
+    URI buildURIForGenesByTextSearch() {
         return UriBuilder.fromUri(getEndPointURI()).path(PATH_XML_BY_TEXT_SEARCH).build();
     }
 
