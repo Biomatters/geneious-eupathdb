@@ -1,6 +1,7 @@
 package com.biomatters.plugins.eupathdb.utils;
 
 import com.biomatters.geneious.publicapi.documents.DocumentField;
+import com.biomatters.geneious.publicapi.documents.URN;
 import com.biomatters.geneious.publicapi.documents.sequence.SequenceAnnotation;
 import com.biomatters.geneious.publicapi.documents.sequence.SequenceAnnotationInterval;
 import com.biomatters.geneious.publicapi.documents.sequence.SequenceAnnotationQualifier;
@@ -68,10 +69,11 @@ public class SequenceDocumentGenerator {
         }
 
         DefaultSequenceDocument doc;
+        URN urn = new URN("Sequence", "EupathDB", record.getId());
         doc = alphabet.equals(SequenceDocument.Alphabet.NUCLEOTIDE) ? new DefaultNucleotideSequence(
-                geneId, product, cds, new Date())
+                geneId, product, cds, new Date(), urn)
                 : new DefaultAminoAcidSequence(geneId, product, proSeq,
-                new Date());
+                new Date(), urn);
 
         SequenceAnnotationInterval interval = new SequenceAnnotationInterval(1,
                 doc.getSequenceLength());
