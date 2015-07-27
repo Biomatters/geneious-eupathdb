@@ -109,6 +109,6 @@ public class EuPathDB extends DatabaseService {
     public void retrieve(Query paramQuery, RetrieveCallback callback,
                          URN[] paramArrayOfURN) throws DatabaseServiceException {
         EuPathDatabase EuPathDatabase = new EuPathDatabase();
-        EuPathDatabase.search(paramQuery, callback);
+        EuPathDatabase.search(paramQuery, callback, paramArrayOfURN);
     }
 }

@@ -31,6 +31,8 @@ public class SequenceDocumentGenerator {
     private static final String CDS = "cds";
     private static final String PRODUCT = "product";
     private static final String PRIMARY_KEY = "primary_key";
+    private static final String URN_NAMESPACE = "sequence" ;
+    private static final String URN_ASSIGNER = "eupathdb" ;
 
     /**
      * Utility class
@@ -69,7 +71,7 @@ public class SequenceDocumentGenerator {
         }
 
         DefaultSequenceDocument doc;
-        URN urn = new URN("Sequence", "EupathDB", record.getId());
+        URN urn = new URN(URN_NAMESPACE, URN_ASSIGNER, record.getId());
         doc = alphabet.equals(SequenceDocument.Alphabet.NUCLEOTIDE) ? new DefaultNucleotideSequence(
                 geneId, product, cds, new Date(), urn)
                 : new DefaultAminoAcidSequence(geneId, product, proSeq,

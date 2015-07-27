@@ -5,6 +5,7 @@ import com.biomatters.geneious.publicapi.databaseservice.BasicSearchQuery;
 import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
 import com.biomatters.geneious.publicapi.databaseservice.Query;
 import com.biomatters.geneious.publicapi.databaseservice.RetrieveCallback;
+import com.biomatters.geneious.publicapi.documents.URN;
 import com.biomatters.geneious.publicapi.documents.sequence.SequenceDocument;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultSequenceDocument;
 import com.biomatters.geneious.publicapi.plugin.Icons;
@@ -19,6 +20,7 @@ import com.biomatters.plugins.eupathdb.webservices.models.Response;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -199,14 +201,23 @@ public abstract class EukaryoticDatabase {
      *
      * @param paramQuery            the param query
      * @param paramRetrieveCallback the param retrieve callback
+     * @param paramArrayOfURN       URN array
+     * @throws com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException
      */
-    public void search(Query paramQuery, RetrieveCallback paramRetrieveCallback) throws DatabaseServiceException {
+    public void search(Query paramQuery, RetrieveCallback paramRetrieveCallback, URN[] paramArrayOfURN) throws DatabaseServiceException {
         String queryText = ((BasicSearchQuery) paramQuery).getSearchText();
         if (!(queryText == null || (queryText = queryText.trim()).isEmpty())) {
             if(queryText.equals("*")) {
                 Dialogs.showMessageDialog(INFO_MESSAGE, "EuPath Database Info", null, Dialogs.DialogIcon.INFORMATION);
                 paramRetrieveCallback.setFinalStatus("\"" + INFO_MESSAGE + "\"", false);
                 return;
+            }
+            //get URN element from paramArrayOfURN which is used when Agent is re-run.
+            List<String> urnElementList = new ArrayList<String>();
+            if (paramArrayOfURN.length > 0) {
+                for (URN urn : paramArrayOfURN) {
+                    urnElementList.add(urn.element);
+                }
             }
             Map<String, String> paramMap = isQueryTextStartsWithTag(queryText)
                     ? getParametersMapForSearchByTag(queryText)
@@ -229,7 +240,7 @@ public abstract class EukaryoticDatabase {
                     if (uptoDocument > totalDocument) {
                         uptoDocument = totalDocument;
                     }
-                    executeInBatch(records, documentCount, uptoDocument, totalDocument, paramRetrieveCallback, service);
+                    executeInBatch(records, documentCount, uptoDocument, totalDocument, paramRetrieveCallback, service, urnElementList);
                     documentCount = uptoDocument;
                 }
             } else {
@@ -247,37 +258,43 @@ public abstract class EukaryoticDatabase {
      * @param totalCount            - total count of record
      * @param paramRetrieveCallback - RetrieveCallback
      * @param service               - EuPathDBWebService
+     * @param urnElementList        - URN element list
      * @throws DatabaseServiceException
      */
-    private void executeInBatch(List<Record> records, int documentCount, int uptoCount, int totalCount, RetrieveCallback paramRetrieveCallback, EuPathDBWebService service) throws DatabaseServiceException {
+    private void executeInBatch(List<Record> records, int documentCount, int uptoCount, int totalCount, RetrieveCallback paramRetrieveCallback, EuPathDBWebService service, List<String> urnElementList) throws DatabaseServiceException {
         List<Record> recordInBatch = records.subList(documentCount, uptoCount);
-        String idList = retrieveIDsInCSVString(recordInBatch);
+        String idList = retrieveIDsInCSVString(recordInBatch, urnElementList);
         Map<String, String> parameterMap = getParametersMapForSearchByTag(idList);
-        Response response = getResponseFromWebService(parameterMap, buildURIForGenesByLocusTag(), service);
-        reportSearchResult(paramRetrieveCallback, response, documentCount, totalCount);
+        if (!idList.isEmpty()) {
+            Response response = getResponseFromWebService(parameterMap, buildURIForGenesByLocusTag(), service);
+            reportSearchResult(paramRetrieveCallback, response, documentCount, totalCount);
+        }
     }
 
     /**
      * Get all the Id in string format from the list separated by delimiter ','
      *
-     * @param recordInBatch - Record containing ID
+     * @param recordInBatch  - Record containing ID
+     * @param urnElementList - URN element list
      * @return - ALL Id separated by comma.
      */
-    protected String retrieveIDsInCSVString(List<Record> recordInBatch) {
+    protected String retrieveIDsInCSVString(List<Record> recordInBatch, List<String> urnElementList) {
         StringBuilder idList = new StringBuilder();
         String delimiter = ",";
         for (Record record : recordInBatch) {
             String id = record.getId();
-            //To get Id for OrthoMCL Database as its contain id followed by pipe '|'.
-            if (id.contains("|")) {
-                String[] splitID = id.trim().split("\\|");
-                if (splitID.length > 1) {
-                    id = splitID[1];
+            if (!urnElementList.contains(id)) {
+                //To get Id for OrthoMCL Database as its contain id followed by pipe '|'.
+                if (id.contains("|")) {
+                    String[] splitID = id.trim().split("\\|");
+                    if (splitID.length > 1) {
+                        id = splitID[1];
+                    }
                 }
-            }
-            idList.append(id);
-            if (!record.equals(recordInBatch.get(recordInBatch.size() - 1))) {
-                idList.append(delimiter);
+                idList.append(id);
+                if (!record.equals(recordInBatch.get(recordInBatch.size() - 1))) {
+                    idList.append(delimiter);
+                }
             }
         }
         return idList.toString();

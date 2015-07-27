@@ -6,6 +6,7 @@ import com.biomatters.geneious.publicapi.databaseservice.Query;
 import com.biomatters.geneious.publicapi.databaseservice.RetrieveCallback;
 import com.biomatters.geneious.publicapi.documents.AnnotatedPluginDocument;
 import com.biomatters.geneious.publicapi.documents.PluginDocument;
+import com.biomatters.geneious.publicapi.documents.URN;
 import com.biomatters.plugins.eupathdb.utils.TestUtilities;
 import com.biomatters.plugins.eupathdb.webservices.EuPathDBWebService;
 import com.biomatters.plugins.eupathdb.webservices.models.Record;
@@ -118,8 +119,20 @@ public class EukaryoticDatabaseTest {
      */
     @Test
     public void testRetrieveIDsInCSVStringTest() {
-        String result = eukaryoticDatabase.retrieveIDsInCSVString(getRecords());
+        String result = eukaryoticDatabase.retrieveIDsInCSVString(getRecords(), new ArrayList<String>());
         Assert.assertEquals("PF3D7_1111,PF3D7_1112,PF3D7_1113|,PF3D7_1114", result);
+    }
+
+    /**
+     * Test retrieveIDsInCSVString to only retrieve Id which are not in URN-List
+     */
+    @Test
+    public void testRetrieveIDsInCSVStringTestWithURN() {
+        List<String> urnList = new ArrayList<String>();
+        urnList.add("PF3D7_1111");
+        urnList.add("PF3D7_1113|");
+        String result = eukaryoticDatabase.retrieveIDsInCSVString(getRecords(), urnList);
+        Assert.assertEquals("PF3D7_1112,PF3D7_1114", result);
     }
 
     /**
@@ -150,7 +163,7 @@ public class EukaryoticDatabaseTest {
         Mockito.when(
                 response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
                 .thenReturn(TestUtilities.getWebServiceResponse(fileName));
-        eukaryoticDatabase.search(query, callback);
+        eukaryoticDatabase.search(query, callback, new URN[]{});
     }
 
     /**

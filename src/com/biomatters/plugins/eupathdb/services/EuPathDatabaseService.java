@@ -90,6 +90,6 @@ public class EuPathDatabaseService extends DatabaseService {
     @Override
     public void retrieve(Query paramQuery, RetrieveCallback callback,
                          URN[] paramArrayOfURN) throws DatabaseServiceException {
-        eukaryoticDatabase.search(paramQuery, callback);
+        eukaryoticDatabase.search(paramQuery, callback, paramArrayOfURN);
     }
 }
