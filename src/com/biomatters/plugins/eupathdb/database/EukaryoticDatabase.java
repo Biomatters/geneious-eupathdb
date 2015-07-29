@@ -264,8 +264,8 @@ public abstract class EukaryoticDatabase {
     private void executeInBatch(List<Record> records, int documentCount, int uptoCount, int totalCount, RetrieveCallback paramRetrieveCallback, EuPathDBWebService service, List<String> urnElementList) throws DatabaseServiceException {
         List<Record> recordInBatch = records.subList(documentCount, uptoCount);
         String idList = retrieveIDsInCSVString(recordInBatch, urnElementList);
-        Map<String, String> parameterMap = getParametersMapForSearchByTag(idList);
         if (!idList.isEmpty()) {
+            Map<String, String> parameterMap = getParametersMapForSearchByTag(idList);
             Response response = getResponseFromWebService(parameterMap, buildURIForGenesByLocusTag(), service);
             reportSearchResult(paramRetrieveCallback, response, documentCount, totalCount);
         }
@@ -283,7 +283,7 @@ public abstract class EukaryoticDatabase {
         String delimiter = ",";
         for (Record record : recordInBatch) {
             String id = record.getId();
-            if (!urnElementList.contains(id)) {
+            if (!urnElementList.isEmpty() && !urnElementList.contains(id)) {
                 //To get Id for OrthoMCL Database as its contain id followed by pipe '|'.
                 if (id.contains("|")) {
                     String[] splitID = id.trim().split("\\|");
