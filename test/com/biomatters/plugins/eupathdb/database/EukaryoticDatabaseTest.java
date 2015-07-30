@@ -109,7 +109,7 @@ public class EukaryoticDatabaseTest {
     @Test
     public void testProcessSearch_ErrorResponse() throws Exception {
         expectedEx.expect(DatabaseServiceException.class);
-        expectedEx.expectMessage("The input to parameter 'Text term (use * as wildcard)' is required<br><b>Type: </b>User Error<br><b>Code: </b>020");
+        expectedEx.expectMessage("User Error (#020): The input to parameter 'Text term (use * as wildcard)' is required");
 
         mockAndProcessSearch("adc", "ResponseDataXML_Error.txt");
     }
