@@ -283,7 +283,7 @@ public abstract class EukaryoticDatabase {
         String delimiter = ",";
         for (Record record : recordInBatch) {
             String id = record.getId();
-            if (!urnElementList.isEmpty() && !urnElementList.contains(id)) {
+            if (!urnElementList.contains(id)) {
                 //To get Id for OrthoMCL Database as its contain id followed by pipe '|'.
                 if (id.contains("|")) {
                     String[] splitID = id.trim().split("\\|");
