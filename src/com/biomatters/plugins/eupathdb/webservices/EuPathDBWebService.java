@@ -1,7 +1,9 @@
 package com.biomatters.plugins.eupathdb.webservices;
 
 import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
+import com.biomatters.plugins.eupathdb.EuPathDBPlugin;
 import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.filter.LoggingFilter;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
@@ -17,6 +19,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 /**
  * The Class <code>EuPathDBWebService</code> provides interfaces to call post
@@ -41,6 +44,7 @@ public class EuPathDBWebService {
         Client client = ClientBuilder.newClient();
         client.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT_FIVE_MINUTE);
         client.property(ClientProperties.READ_TIMEOUT, TIMEOUT_FIVE_MINUTE);
+        client.register(new LoggingFilter(Logger.getLogger(EuPathDBPlugin.class.getName()), false));
         return client;
     }
 
