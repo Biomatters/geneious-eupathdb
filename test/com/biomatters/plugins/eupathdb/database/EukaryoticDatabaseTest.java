@@ -143,6 +143,8 @@ public class EukaryoticDatabaseTest {
     private List<Record> getRecords() {
         List<Record> records = new ArrayList<Record>();
         records.add(new Record("PF3D7_1111", null));
+        records.add(new Record("PF3D7_1111", null));
+        records.add(new Record("abc|PF3D7_1112", null));
         records.add(new Record("abc|PF3D7_1112", null));
         records.add(new Record("PF3D7_1113|", null));
         records.add(new Record("|PF3D7_1114", null));

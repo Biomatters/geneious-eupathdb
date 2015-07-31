@@ -53,7 +53,7 @@ public abstract class EukaryoticDatabase {
     private static final String PATH_XML_GENES_WITH_UPDATED_ANNOTATIONS = "GenesWithUpdatedAnnotation.xml";
     private static final String PATH_XML_GENES_BY_MR4_REAGENTS = "GenesByMr4Reagents.xml";
 
-    private static final int BATCH_SIZE = 100;
+    private static final int BATCH_SIZE = 250;
     private static final String FINAL_MESSAGE = "\"No results found. Consider using * to search for partial words. For example CO*I matches COI and COXI\"";
     private static final String INFO_MESSAGE = "EuPathDB does not support searching for a single wildcard '*'. Please use a more specific search term.";
 
@@ -291,9 +291,11 @@ public abstract class EukaryoticDatabase {
                         id = splitID[1];
                     }
                 }
-                idList.append(id);
-                if (!record.equals(recordInBatch.get(recordInBatch.size() - 1))) {
-                    idList.append(delimiter);
+                if (idList.indexOf(id) == -1) {
+                    idList.append(id);
+                    if (!record.equals(recordInBatch.get(recordInBatch.size() - 1))) {
+                        idList.append(delimiter);
+                    }
                 }
             }
         }
