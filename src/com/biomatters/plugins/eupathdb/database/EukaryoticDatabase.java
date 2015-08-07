@@ -411,7 +411,7 @@ public abstract class EukaryoticDatabase {
     private String getErrorMessage(com.biomatters.plugins.eupathdb.webservices.models.Error error) {
         String type = error.getType();
         String code = error.getCode();
-        StringBuilder errorMsg = new StringBuilder("The EuPathDB server responded with an error message:\n");
+        StringBuilder errorMsg = new StringBuilder("The EuPathDB server responded with an error message:\n\n");
 
         if (!(type == null || type.isEmpty())) {
             errorMsg.append(type).append(" ");
