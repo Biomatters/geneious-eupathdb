@@ -207,7 +207,7 @@ public abstract class EukaryoticDatabase {
      */
     public void search(Query paramQuery, RetrieveCallback paramRetrieveCallback, URN[] paramArrayOfURN) throws DatabaseServiceException {
         String queryText = ((BasicSearchQuery) paramQuery).getSearchText();
-        List<Record> AllMissingRecordID = new ArrayList<Record>();
+        List<Record> allMissingRecordIDs = new ArrayList<Record>();
         if (!(queryText == null || (queryText = queryText.trim()).isEmpty())) {
             if(queryText.equals("*")) {
                 Dialogs.showMessageDialog(INFO_MESSAGE, "EuPath Database Info", null, Dialogs.DialogIcon.INFORMATION);
@@ -243,11 +243,11 @@ public abstract class EukaryoticDatabase {
                         uptoDocument = totalDocument;
                     }
                     List<Record> missingRecordId = executeInBatch(records, documentCount, uptoDocument, totalDocument, paramRetrieveCallback, service, urnElementList);
-                    AllMissingRecordID.addAll(missingRecordId);
+                    allMissingRecordIDs.addAll(missingRecordId);
                     documentCount = uptoDocument;
                 }
-                if(!(paramRetrieveCallback.isCanceled() || AllMissingRecordID.isEmpty())) {
-                    String missingIDList = getRecordIdsInString(AllMissingRecordID);
+                if(!(paramRetrieveCallback.isCanceled() || allMissingRecordIDs.isEmpty())) {
+                    String missingIDList = getRecordIdsInString(allMissingRecordIDs);
                     Dialogs.showMessageDialog(MISSING_RESULT_MESSAGE + "\n" + missingIDList, "Search Results Missing in " + getName(), null, Dialogs.DialogIcon.INFORMATION);
                 }
             } else {
@@ -493,10 +493,11 @@ public abstract class EukaryoticDatabase {
         StringBuilder ids = new StringBuilder();
         if(!(records == null || records.isEmpty())) {
             int size = records.size();
+            ids.append("\n");
             for (int i = 0; i < size; i++) {
                 ids.append(records.get(i).getId());
                 if (i != size - 1) {
-                    ids.append(", ");
+                    ids.append("\n");
                 }
             }
         }
