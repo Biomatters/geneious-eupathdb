@@ -56,6 +56,7 @@ public abstract class EukaryoticDatabase {
     private static final int BATCH_SIZE = 250;
     private static final String FINAL_MESSAGE = "\"No results found. Consider using * to search for partial words. For example CO*I matches COI and COXI\"";
     private static final String INFO_MESSAGE = "EuPathDB does not support searching for a single wildcard '*'. Please use a more specific search term.";
+    private static final String MISSING_RESULT_MESSAGE = "Failed to download all matching sequences. The following sequences are missing from the search results:";
 
     /**
      * Gets the unique id.
@@ -206,6 +207,7 @@ public abstract class EukaryoticDatabase {
      */
     public void search(Query paramQuery, RetrieveCallback paramRetrieveCallback, URN[] paramArrayOfURN) throws DatabaseServiceException {
         String queryText = ((BasicSearchQuery) paramQuery).getSearchText();
+        List<Record> AllMissingRecordID = new ArrayList<Record>();
         if (!(queryText == null || (queryText = queryText.trim()).isEmpty())) {
             if(queryText.equals("*")) {
                 Dialogs.showMessageDialog(INFO_MESSAGE, "EuPath Database Info", null, Dialogs.DialogIcon.INFORMATION);
@@ -240,8 +242,13 @@ public abstract class EukaryoticDatabase {
                     if (uptoDocument > totalDocument) {
                         uptoDocument = totalDocument;
                     }
-                    executeInBatch(records, documentCount, uptoDocument, totalDocument, paramRetrieveCallback, service, urnElementList);
+                    List<Record> missingRecordId = executeInBatch(records, documentCount, uptoDocument, totalDocument, paramRetrieveCallback, service, urnElementList);
+                    AllMissingRecordID.addAll(missingRecordId);
                     documentCount = uptoDocument;
+                }
+                if(!(paramRetrieveCallback.isCanceled() || AllMissingRecordID.isEmpty())) {
+                    String missingIDList = getRecordIdsInString(AllMissingRecordID);
+                    Dialogs.showMessageDialog(MISSING_RESULT_MESSAGE + "\n" + missingIDList, "Search Results Missing in " + getName(), null, Dialogs.DialogIcon.INFORMATION);
                 }
             } else {
                 paramRetrieveCallback.setFinalStatus(FINAL_MESSAGE, false);
@@ -259,16 +266,19 @@ public abstract class EukaryoticDatabase {
      * @param paramRetrieveCallback - RetrieveCallback
      * @param service               - EuPathDBWebService
      * @param urnElementList        - URN element list
+     * @return - Missing Records which is expected to be retrieved from response but didn't retrieved.
      * @throws DatabaseServiceException
      */
-    private void executeInBatch(List<Record> records, int documentCount, int uptoCount, int totalCount, RetrieveCallback paramRetrieveCallback, EuPathDBWebService service, List<String> urnElementList) throws DatabaseServiceException {
+    private List<Record> executeInBatch(List<Record> records, int documentCount, int uptoCount, int totalCount, RetrieveCallback paramRetrieveCallback, EuPathDBWebService service, List<String> urnElementList) throws DatabaseServiceException {
+        List<Record> misMatchRecord = new ArrayList<Record>();
         List<Record> recordInBatch = records.subList(documentCount, uptoCount);
-        String idList = retrieveIDsInCSVString(recordInBatch, urnElementList);
-        if (!idList.isEmpty()) {
-            Map<String, String> parameterMap = getParametersMapForSearchByTag(idList);
+        String recordIds = retrieveIDsInCSVString(recordInBatch, urnElementList);
+        if (!recordIds.isEmpty()) {
+            Map<String, String> parameterMap = getParametersMapForSearchByTag(recordIds);
             Response response = getResponseFromWebService(parameterMap, buildURIForGenesByLocusTag(), service);
-            reportSearchResult(paramRetrieveCallback, response, documentCount, totalCount);
+            misMatchRecord = reportSearchResult(recordInBatch, paramRetrieveCallback, response, documentCount, totalCount);
         }
+        return misMatchRecord;
     }
 
     /**
@@ -306,12 +316,15 @@ public abstract class EukaryoticDatabase {
      * Prepares search result from each record and report back to the caller
      * using RetrieveCallback.
      *
+     * @param recordInBatch  - Batch records
      * @param callback       - the RetrieveCallback
      * @param response       - the Response
      * @param documentCount  - count of document
      * @param totalDocuments - total count of record
+     * @return - Missing Records which is expected to be retrieved from response but didn't retrieved.
      */
-    private void reportSearchResult(RetrieveCallback callback, Response response, int documentCount, int totalDocuments) {
+    private List<Record> reportSearchResult(List<Record> recordInBatch, RetrieveCallback callback, Response response, int documentCount, int totalDocuments) {
+        List<Record> missingRecords = new ArrayList<Record>();
         if (!(response == null || response.getRecordset() == null || response
                 .getRecordset().getRecord() == null)) {
             DefaultSequenceDocument document;
@@ -321,25 +334,32 @@ public abstract class EukaryoticDatabase {
             }
 
             List<Record> records = response.getRecordset().getRecord();
+            if (recordInBatch.size() > records.size()) {
+                missingRecords.addAll(recordInBatch);
+                missingRecords.removeAll(records);
+            }
             for (Record record : records) {
                 if (callback.isCanceled()) {
-                    return;
+                    break;
                 }
-                documentCount++;
-                double progress = (double) documentCount / totalDocuments;
-                callback.setProgress(progress);
-                callback.setMessage("Downloading sequence " + documentCount + " of " + totalDocuments);
+                if (recordInBatch.contains(record)) {
+                    documentCount++;
+                    double progress = (double) documentCount / totalDocuments;
+                    callback.setProgress(progress);
+                    callback.setMessage("Downloading sequence " + documentCount + " of " + totalDocuments);
 
-                document = SequenceDocumentGenerator
-                        .getDefaultSequenceDocument(record,
-                                getDBUrl(), alphabet);
-                if (document != null) {
-                    callback.add(document,
-                            Collections.<String, Object>emptyMap());
+                    document = SequenceDocumentGenerator
+                            .getDefaultSequenceDocument(record,
+                                    getDBUrl(), alphabet);
+                    if (document != null) {
+                        callback.add(document,
+                                Collections.<String, Object>emptyMap());
 
+                    }
                 }
             }
         }
+        return missingRecords;
     }
 
     /**
@@ -463,4 +483,23 @@ public abstract class EukaryoticDatabase {
         return paramMap;
     }
 
+    /**
+     * Append all record Id in String format.
+     *
+     * @param records - Record-list
+     * @return - All Record-Id in string format.
+     */
+    private String getRecordIdsInString(List<Record> records) {
+        StringBuilder ids = new StringBuilder();
+        if(!(records == null || records.isEmpty())) {
+            int size = records.size();
+            for (int i = 0; i < size; i++) {
+                ids.append(records.get(i).getId());
+                if (i != size - 1) {
+                    ids.append(", ");
+                }
+            }
+        }
+        return ids.toString();
+    }
 }
