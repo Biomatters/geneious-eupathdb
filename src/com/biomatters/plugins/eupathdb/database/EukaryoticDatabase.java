@@ -236,8 +236,10 @@ public abstract class EukaryoticDatabase {
                 int documentCount = 0;
                 int uptoDocument = 0;
                 int totalDocument = records.size();
-                while (!paramRetrieveCallback.isCanceled() && uptoDocument < totalDocument) {
+                if(!paramRetrieveCallback.isCanceled()) {
                     paramRetrieveCallback.setMessage("Downloading " + totalDocument + " matching sequence");
+                }
+                while (!paramRetrieveCallback.isCanceled() && uptoDocument < totalDocument) {
                     uptoDocument = documentCount + BATCH_SIZE;
                     if (uptoDocument > totalDocument) {
                         uptoDocument = totalDocument;
