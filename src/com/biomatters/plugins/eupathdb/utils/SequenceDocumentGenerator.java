@@ -33,6 +33,9 @@ public class SequenceDocumentGenerator {
     private static final String PRIMARY_KEY = "primary_key";
     private static final String URN_NAMESPACE = "sequence" ;
     private static final String URN_ASSIGNER = "eupathdb" ;
+    private static final String ORTHOMCL_DATABASE = "OrthoMCL";
+    private static final String EUPATH_DATABASE = "EuPathDB";
+    private static final String PROJECT_ID_PARAMETER_URL = "&project_id=";
 
     /**
      * Utility class
@@ -48,7 +51,7 @@ public class SequenceDocumentGenerator {
      * @param alphabet the type   @return the default sequence document
      */
     public static DefaultSequenceDocument getDefaultSequenceDocument(
-            Record record, String dbUrl, SequenceDocument.Alphabet alphabet) {
+            Record record, String dbUrl, SequenceDocument.Alphabet alphabet, String database) {
 
         String geneId = "";
         String product = "";
@@ -81,12 +84,33 @@ public class SequenceDocumentGenerator {
                 doc.getSequenceLength());
         SequenceAnnotation annotation = new SequenceAnnotation(geneId,
                 SequenceAnnotation.TYPE_GENE, interval);
-        annotation.addQualifier(new SequenceAnnotationQualifier(URL, dbUrl
-                + geneId));
+        String url = dbUrl + record.getId();
+        if (EUPATH_DATABASE.equals(database)) {
+            String EupathDbUrl = "";
+            if(!"".equals(speciesId)) {
+                String projectId = getDatabaseNameByOrganism(speciesId);
+                if(!"".equals(projectId)) {
+                    EupathDbUrl = url + PROJECT_ID_PARAMETER_URL + projectId;
+                }
+            }
+            url = EupathDbUrl;
+        }else if(!ORTHOMCL_DATABASE.equals(database)) {
+             url = url + PROJECT_ID_PARAMETER_URL + database;
+        }
+        if(!"".equals(url)) {
+            annotation.addQualifier(new SequenceAnnotationQualifier(URL, url));
+        }
         doc.setAnnotations(Arrays.asList(annotation));
         doc.addDisplayableField(DocumentField.ORGANISM_FIELD);
         doc.setFieldValue(DocumentField.ORGANISM_FIELD.getCode(), speciesId);
 
         return doc;
+    }
+
+    //Todo - get database name from Organism
+    private static String getDatabaseNameByOrganism(String Organism) {
+        String databaseName = "";
+
+        return  databaseName;
     }
 }

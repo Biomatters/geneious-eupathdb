@@ -352,7 +352,7 @@ public abstract class EukaryoticDatabase {
 
                     document = SequenceDocumentGenerator
                             .getDefaultSequenceDocument(record,
-                                    getDBUrl(), alphabet);
+                                    getDBUrl(), alphabet, getName());
                     if (document != null) {
                         callback.add(document,
                                 Collections.<String, Object>emptyMap());

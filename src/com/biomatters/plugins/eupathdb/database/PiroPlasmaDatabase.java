@@ -17,7 +17,7 @@ public class PiroPlasmaDatabase extends EukaryoticDatabase {
     private static final String UNIQUE_ID = "PiroplasmaDB Service";
     private static final String PLUGIN_ICON = "piroplasmadb16.png";
     private static final String WEB_SERVICE_URI = "http://piroplasmadb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "http://piroplasmadb.org";
+    private static final String DB_URL = "http://piroplasmadb.org/piro/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Babesia bigemina strain BOND,Babesia bovis T2Bo,Babesia microti strain RI,Cytauxzoon felis strain Winnie,Theileria annulata strain Ankara,Theileria equi strain WA,Theileria orientalis strain Shintoku,Theileria parva strain Muguga";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Metabolic pathway names and descriptions,Protein domain names and descriptions,User comments";
     private static final String[] TAGS = {"BB", "TA", "TP"};

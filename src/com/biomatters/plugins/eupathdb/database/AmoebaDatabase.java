@@ -17,7 +17,7 @@ public class AmoebaDatabase extends EukaryoticDatabase {
     private static final String UNIQUE_ID = "AmoebaDB Service";
     private static final String PLUGIN_ICON = "amoebadb16.png";
     private static final String WEB_SERVICE_URI = "http://amoebadb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "http://amoebadb.org";
+    private static final String DB_URL = "http://amoebadb.org/amoeba/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Acanthamoeba castellanii str. Neff,Entamoeba dispar SAW760,Entamoeba histolytica HM-1:IMSS,Entamoeba histolytica HM-1:IMSS-A,Entamoeba histolytica HM-1:IMSS-B,Entamoeba histolytica HM-3:IMSS,Entamoeba histolytica KU27,Entamoeba invadens IP1,Entamoeba moshkovskii Laredo,Entamoeba nuttalli P19,Naegleria fowleri ATCC 30863";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Metabolic pathway names and descriptions,Protein domain names and descriptions,User comments";
     private static final String[] TAGS = {"EDI", "EIN", "EHI"};

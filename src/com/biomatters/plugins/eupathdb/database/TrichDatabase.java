@@ -17,7 +17,7 @@ public class TrichDatabase extends EukaryoticDatabase {
     private static final String UNIQUE_ID = "TrichDB Service";
     private static final String PLUGIN_ICON = "trichdb16.png";
     private static final String WEB_SERVICE_URI = "http://trichdb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "http://trichdb.org";
+    private static final String DB_URL = "http://trichdb.org/trichdb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Trichomonas vaginalis G3";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Protein domain names and descriptions,User comments";
     private static final String[] TAGS = {"TVAG"};

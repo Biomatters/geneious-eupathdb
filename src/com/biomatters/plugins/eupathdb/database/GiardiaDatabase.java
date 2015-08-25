@@ -17,7 +17,7 @@ public class GiardiaDatabase extends EukaryoticDatabase {
     private static final String UNIQUE_ID = "GiardiaDB Service";
     private static final String PLUGIN_ICON = "giardiadb16.png";
     private static final String WEB_SERVICE_URI = "http://giardiadb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "http://giardiadb.org";
+    private static final String DB_URL = "http://giardiadb.org/giardiadb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Giardia Assemblage A isolate WB,Giardia Assemblage A2 isolate DH,Giardia Assemblage B isolate GS,Giardia Assemblage B isolate GS_B,Giardia Assemblage E isolate P15,Spironucleus salmonicida ATCC50377";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,Cellular localization,Community annotation,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Protein domain names and descriptions,User comments";
     private static final String[] TAGS = {"GL"};

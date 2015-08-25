@@ -35,7 +35,7 @@ public class SequenceDocumentGeneratorTest {
     public void testGetDefaultSequenceDocumentNucleotide() throws Exception {
         SequenceDocument.Alphabet alphabet = SequenceDocument.Alphabet.NUCLEOTIDE;
 
-        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(getRecord(), "", alphabet);
+        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(getRecord(), "", alphabet,"");
         Assert.assertNotNull("getDefaultSequenceDocument method returned null. Expected is an instance of DefaultNucleotideSequence", document);
         Assert.assertTrue("An instance of DefaultNucleotideSequence should have been generated. Generated is an instance of " + document.getClass() + ".", document instanceof DefaultNucleotideSequence);
         Assert.assertEquals(NUCLEOTIDE_SEQUENCE, document.getSequenceString());
@@ -52,7 +52,7 @@ public class SequenceDocumentGeneratorTest {
     public void testGetDefaultSequenceDocumentAminoAcid() throws Exception {
         SequenceDocument.Alphabet alphabet = SequenceDocument.Alphabet.PROTEIN;
 
-        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(getRecord(), "", alphabet);
+        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(getRecord(), "", alphabet,"");
         Assert.assertNotNull("getDefaultSequenceDocument method returned null. Expected is an instance of DefaultAminoAcidSequence", document);
         Assert.assertTrue("An instance of DefaultAminoAcidSequence should have been generated. Generated is an instance of " + document.getClass() + ".", document instanceof DefaultAminoAcidSequence);
         Assert.assertEquals(PROTEIN_SEQUENCE, document.getSequenceString());

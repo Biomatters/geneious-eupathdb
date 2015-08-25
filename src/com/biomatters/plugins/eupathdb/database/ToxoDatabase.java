@@ -17,7 +17,7 @@ public class ToxoDatabase extends EukaryoticDatabase {
     private static final String UNIQUE_ID = "ToxoDB Service";
     private static final String PLUGIN_ICON = "toxodb16.png";
     private static final String WEB_SERVICE_URI = "http://toxodb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "http://toxodb.org";
+    private static final String DB_URL = "http://toxodb.org/toxo/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Eimeria acervulina Houghton,Eimeria brunetti Houghton,Eimeria falciformis Bayer Haberkorn 1970,Eimeria maxima Weybridge,Eimeria mitis Houghton,Eimeria necatrix Houghton,Eimeria praecox Houghton,Eimeria tenella strain Houghton,Hammondia hammondi strain H.H.34,Neospora caninum Liverpool,Toxoplasma gondii GT1,Toxoplasma gondii ME49,Toxoplasma gondii RH,Toxoplasma gondii VEG";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,Community annotation,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Metabolic pathway names and descriptions,Protein domain names and descriptions,User comments";
     private static final String[] TAGS = {"TGME", "NCLIV"};

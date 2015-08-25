@@ -21,7 +21,7 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
     private static final String UNIQUE_ID = "OrthoMCL Service";
     private static final String PLUGIN_ICON = "orthomcldb16.png";
     private static final String WEB_SERVICE_URI = "http://orthomcl.org/webservices/SequenceQuestions";
-    private static final String DB_URL = "http://orthomcl.org";
+    private static final String DB_URL = "http://orthomcl.org/orthomcl/showRecord.do?name=SequenceRecordClasses.SequenceRecordClass&full_id=";
     private static final String PATH_XML_BY_ID_LIST = "ByIdList.xml";
     private static final String PATH_XML_BY_TEXT_SEARCH = "ByTextSearch.xml";
 

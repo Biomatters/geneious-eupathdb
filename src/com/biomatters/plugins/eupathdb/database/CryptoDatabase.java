@@ -17,7 +17,7 @@ public class CryptoDatabase extends EukaryoticDatabase {
     private static final String UNIQUE_ID = "CryptoDB Service";
     private static final String PLUGIN_ICON = "cryptodb16.png";
     private static final String WEB_SERVICE_URI = "http://cryptodb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "http://cryptodb.org";
+    private static final String DB_URL = "http://cryptodb.org/cryptodb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Chromera velia CCMP2878,Cryptosporidium hominis TU502,Cryptosporidium muris RN66,Cryptosporidium parvum Iowa II,Gregarina niphandrodes Unknown strain,Vitrella brassicaformis CCMP3155";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Protein domain names and descriptions,User comments";
     private static final String[] TAGS = {"CGD"};

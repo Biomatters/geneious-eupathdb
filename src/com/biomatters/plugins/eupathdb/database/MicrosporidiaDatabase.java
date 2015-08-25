@@ -17,7 +17,7 @@ public class MicrosporidiaDatabase extends EukaryoticDatabase {
     private static final String UNIQUE_ID = "MicrosporidiaDB Service";
     private static final String PLUGIN_ICON = "microsporidiadb16.png";
     private static final String WEB_SERVICE_URI = "http://microsporidiadb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "http://microsporidiadb.org";
+    private static final String DB_URL = "http://microsporidiadb.org/micro/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Anncaliia algerae PRA109,Anncaliia algerae PRA339,Edhazardia aedis USNM 41457,Encephalitozoon cuniculi EC1,Encephalitozoon cuniculi EC2,Encephalitozoon cuniculi EC3,Encephalitozoon cuniculi GB-M1,Encephalitozoon hellem ATCC 50504,Encephalitozoon hellem Swiss,Encephalitozoon intestinalis ATCC 50506,Encephalitozoon romaleae SJ-2008,Enterocytozoon bieneusi H348,Mitosporidium daphniae UGP3,Nematocida parisii ERTm1,Nematocida parisii ERTm3,Nematocida sp. 1 ERTm2,Nematocida sp. 1 ERTm6,Nosema bombycis CQ1,Nosema ceranae BRL01,Ordospora colligata OC4,Spraguea lophii 42_110,Trachipleistophora hominis Unknown strain,Vavraia culicis floridensis,Vittaforma corneae ATCC 50505";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Metabolic pathway names and descriptions,Protein domain names and descriptions,User comments";
     private static final String[] TAGS = {"ECU", "Eint", "EBI"};
