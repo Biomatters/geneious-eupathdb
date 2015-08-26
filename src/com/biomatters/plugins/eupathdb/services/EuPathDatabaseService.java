@@ -20,6 +20,15 @@ public class EuPathDatabaseService extends DatabaseService {
     }
 
     /**
+     * Get the EukaryoticDatabase
+     *
+     * @return - EukaryoticDatabase
+     */
+    public EukaryoticDatabase getEukaryoticDatabase() {
+        return eukaryoticDatabase;
+    }
+
+    /**
      * Gets the unique id.
      *
      * @return the unique id
@@ -90,6 +99,6 @@ public class EuPathDatabaseService extends DatabaseService {
     @Override
     public void retrieve(Query paramQuery, RetrieveCallback callback,
                          URN[] paramArrayOfURN) throws DatabaseServiceException {
-        eukaryoticDatabase.search(paramQuery, callback, paramArrayOfURN);
+        eukaryoticDatabase.search(paramQuery, callback, paramArrayOfURN, getChildServices());
     }
 }

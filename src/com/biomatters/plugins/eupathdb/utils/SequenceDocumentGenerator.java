@@ -9,11 +9,14 @@ import com.biomatters.geneious.publicapi.documents.sequence.SequenceDocument;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultAminoAcidSequence;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultNucleotideSequence;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultSequenceDocument;
+import com.biomatters.geneious.publicapi.plugin.GeneiousService;
+import com.biomatters.plugins.eupathdb.services.EuPathDatabaseService;
 import com.biomatters.plugins.eupathdb.webservices.models.Field;
 import com.biomatters.plugins.eupathdb.webservices.models.Record;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * The Class <code>SequenceDocumentGenerator</code> generates Nucleotide
@@ -49,9 +52,12 @@ public class SequenceDocumentGenerator {
      * @param record   the Record
      * @param dbUrl    the db url
      * @param alphabet the type   @return the default sequence document
+     * @param database database-name
+     * @param childServiceList - child services
+     * @return Sequence Document
      */
     public static DefaultSequenceDocument getDefaultSequenceDocument(
-            Record record, String dbUrl, SequenceDocument.Alphabet alphabet, String database) {
+            Record record, String dbUrl, SequenceDocument.Alphabet alphabet, String database, List<GeneiousService> childServiceList) {
 
         String geneId = "";
         String product = "";
@@ -88,7 +94,7 @@ public class SequenceDocumentGenerator {
         if (EUPATH_DATABASE.equals(database)) {
             String EupathDbUrl = "";
             if(!"".equals(speciesId)) {
-                String projectId = getDatabaseNameByOrganism(speciesId);
+                String projectId = getDatabaseNameByOrganism(speciesId, childServiceList);
                 if(!"".equals(projectId)) {
                     EupathDbUrl = url + PROJECT_ID_PARAMETER_URL + projectId;
                 }
@@ -107,10 +113,31 @@ public class SequenceDocumentGenerator {
         return doc;
     }
 
-    //Todo - get database name from Organism
-    private static String getDatabaseNameByOrganism(String Organism) {
-        String databaseName = "";
 
-        return  databaseName;
+    /**
+     * Get database-name from the organism value.
+     *
+     * @param organism         - organism name
+     * @param childServiceList - child -service
+     * @return - database name
+     */
+    private static String getDatabaseNameByOrganism(String organism, List<GeneiousService> childServiceList) {
+        String databaseName = "";
+        String organisms[] = organism.split("\\s");
+        organism = "";
+        if (organisms.length > 1) {
+            for (int i = 1; i < organisms.length; i++) {
+                organism = organism + " " + organisms[i];
+            }
+        }
+        for (GeneiousService geneiousService : childServiceList) {
+            EuPathDatabaseService euPathDatabaseService = (EuPathDatabaseService) geneiousService;
+            String allOrganism = euPathDatabaseService.getEukaryoticDatabase().getWebServiceTextSearchOrganismParamValue();
+            if (allOrganism != null && allOrganism.contains(organism)) {
+                databaseName = euPathDatabaseService.getName();
+                break;
+            }
+        }
+        return databaseName;
     }
 }

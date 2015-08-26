@@ -7,6 +7,7 @@ import com.biomatters.geneious.publicapi.databaseservice.RetrieveCallback;
 import com.biomatters.geneious.publicapi.documents.AnnotatedPluginDocument;
 import com.biomatters.geneious.publicapi.documents.PluginDocument;
 import com.biomatters.geneious.publicapi.documents.URN;
+import com.biomatters.geneious.publicapi.plugin.GeneiousService;
 import com.biomatters.plugins.eupathdb.utils.TestUtilities;
 import com.biomatters.plugins.eupathdb.webservices.EuPathDBWebService;
 import com.biomatters.plugins.eupathdb.webservices.models.Record;
@@ -165,7 +166,7 @@ public class EukaryoticDatabaseTest {
         Mockito.when(
                 response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
                 .thenReturn(TestUtilities.getWebServiceResponse(fileName));
-        eukaryoticDatabase.search(query, callback, new URN[]{});
+        eukaryoticDatabase.search(query, callback, new URN[]{}, new ArrayList<GeneiousService>());
     }
 
     /**

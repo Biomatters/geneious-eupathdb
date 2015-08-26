@@ -103,7 +103,7 @@ public class PlasmoDatabase extends EukaryoticDatabase {
      * @return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE the String
      */
     @Override
-    protected String getWebServiceTextSearchOrganismParamValue() {
+    public String getWebServiceTextSearchOrganismParamValue() {
         return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE;
     }
 

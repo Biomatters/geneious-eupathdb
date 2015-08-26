@@ -8,6 +8,7 @@ import com.biomatters.geneious.publicapi.databaseservice.RetrieveCallback;
 import com.biomatters.geneious.publicapi.documents.URN;
 import com.biomatters.geneious.publicapi.documents.sequence.SequenceDocument;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultSequenceDocument;
+import com.biomatters.geneious.publicapi.plugin.GeneiousService;
 import com.biomatters.geneious.publicapi.plugin.Icons;
 import com.biomatters.geneious.publicapi.utilities.IconUtilities;
 import com.biomatters.plugins.eupathdb.EuPathDBPlugin;
@@ -131,7 +132,7 @@ public abstract class EukaryoticDatabase {
      *
      * @return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE the String
      */
-    protected abstract String getWebServiceTextSearchOrganismParamValue();
+    public abstract String getWebServiceTextSearchOrganismParamValue();
 
     /**
      * Abstract method to define DB specific value for text_fields parameter.
@@ -203,9 +204,10 @@ public abstract class EukaryoticDatabase {
      * @param paramQuery            the param query
      * @param paramRetrieveCallback the param retrieve callback
      * @param paramArrayOfURN       URN array
+     * @param childServiceList      child Services
      * @throws com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException
      */
-    public void search(Query paramQuery, RetrieveCallback paramRetrieveCallback, URN[] paramArrayOfURN) throws DatabaseServiceException {
+    public void search(Query paramQuery, RetrieveCallback paramRetrieveCallback, URN[] paramArrayOfURN, List<GeneiousService> childServiceList) throws DatabaseServiceException {
         String queryText = ((BasicSearchQuery) paramQuery).getSearchText();
         List<Record> allMissingRecordIDs = new ArrayList<Record>();
         if (!(queryText == null || (queryText = queryText.trim()).isEmpty())) {
@@ -244,7 +246,7 @@ public abstract class EukaryoticDatabase {
                     if (uptoDocument > totalDocument) {
                         uptoDocument = totalDocument;
                     }
-                    List<Record> missingRecordId = executeInBatch(records, documentCount, uptoDocument, totalDocument, paramRetrieveCallback, service, urnElementList);
+                    List<Record> missingRecordId = executeInBatch(records, documentCount, uptoDocument, totalDocument, paramRetrieveCallback, service, urnElementList, childServiceList);
                     allMissingRecordIDs.addAll(missingRecordId);
                     documentCount = uptoDocument;
                 }
@@ -268,17 +270,18 @@ public abstract class EukaryoticDatabase {
      * @param paramRetrieveCallback - RetrieveCallback
      * @param service               - EuPathDBWebService
      * @param urnElementList        - URN element list
+     * @param childServiceList      - child Services
      * @return - Missing Records which is expected to be retrieved from response but didn't retrieved.
      * @throws DatabaseServiceException
      */
-    private List<Record> executeInBatch(List<Record> records, int documentCount, int uptoCount, int totalCount, RetrieveCallback paramRetrieveCallback, EuPathDBWebService service, List<String> urnElementList) throws DatabaseServiceException {
+    private List<Record> executeInBatch(List<Record> records, int documentCount, int uptoCount, int totalCount, RetrieveCallback paramRetrieveCallback, EuPathDBWebService service, List<String> urnElementList, List<GeneiousService> childServiceList) throws DatabaseServiceException {
         List<Record> misMatchRecord = new ArrayList<Record>();
         List<Record> recordInBatch = records.subList(documentCount, uptoCount);
         String recordIds = retrieveIDsInCSVString(recordInBatch, urnElementList);
         if (!recordIds.isEmpty()) {
             Map<String, String> parameterMap = getParametersMapForSearchByTag(recordIds);
             Response response = getResponseFromWebService(parameterMap, buildURIForGenesByLocusTag(), service);
-            misMatchRecord = reportSearchResult(recordInBatch, paramRetrieveCallback, response, documentCount, totalCount);
+            misMatchRecord = reportSearchResult(recordInBatch, paramRetrieveCallback, response, documentCount, totalCount, childServiceList);
         }
         return misMatchRecord;
     }
@@ -318,14 +321,15 @@ public abstract class EukaryoticDatabase {
      * Prepares search result from each record and report back to the caller
      * using RetrieveCallback.
      *
-     * @param recordInBatch  - Batch records
-     * @param callback       - the RetrieveCallback
-     * @param response       - the Response
-     * @param documentCount  - count of document
-     * @param totalDocuments - total count of record
+     * @param recordInBatch    - Batch records
+     * @param callback         - the RetrieveCallback
+     * @param response         - the Response
+     * @param documentCount    - count of document
+     * @param totalDocuments   - total count of record
+     * @param childServiceList - child Services
      * @return - Missing Records which is expected to be retrieved from response but didn't retrieved.
      */
-    private List<Record> reportSearchResult(List<Record> recordInBatch, RetrieveCallback callback, Response response, int documentCount, int totalDocuments) {
+    private List<Record> reportSearchResult(List<Record> recordInBatch, RetrieveCallback callback, Response response, int documentCount, int totalDocuments, List<GeneiousService> childServiceList) {
         List<Record> missingRecords = new ArrayList<Record>();
         if (!(response == null || response.getRecordset() == null || response
                 .getRecordset().getRecord() == null)) {
@@ -352,7 +356,7 @@ public abstract class EukaryoticDatabase {
 
                     document = SequenceDocumentGenerator
                             .getDefaultSequenceDocument(record,
-                                    getDBUrl(), alphabet, getName());
+                                    getDBUrl(), alphabet, getName(), childServiceList);
                     if (document != null) {
                         callback.add(document,
                                 Collections.<String, Object>emptyMap());

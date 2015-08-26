@@ -119,7 +119,7 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
     }
 
     @Override
-    protected String getWebServiceTextSearchOrganismParamValue() {
+    public String getWebServiceTextSearchOrganismParamValue() {
         return null;
     }
 

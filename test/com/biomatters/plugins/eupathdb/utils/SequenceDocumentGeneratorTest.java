@@ -1,5 +1,6 @@
 package com.biomatters.plugins.eupathdb.utils;
 
+import com.biomatters.geneious.publicapi.documents.sequence.SequenceAnnotationQualifier;
 import com.biomatters.geneious.publicapi.documents.sequence.SequenceDocument;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultAminoAcidSequence;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultNucleotideSequence;
@@ -27,18 +28,24 @@ public class SequenceDocumentGeneratorTest {
     /**
      * Run the DefaultSequenceDocument getDefaultSequenceDocument(Map<String,
      * String>, String, DocType) method test for DefaultNucleotideSequence
-     * document.
+     * document and their annotation qualifier.
      *
      * @throws Exception
      */
     @Test
     public void testGetDefaultSequenceDocumentNucleotide() throws Exception {
         SequenceDocument.Alphabet alphabet = SequenceDocument.Alphabet.NUCLEOTIDE;
+        String url = "http://amoebadb.org/amoeba/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
+        String expectedUrl = url + getRecord().getId() + "&project_id=AmoebaDB";
 
-        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(getRecord(), "", alphabet,"");
+        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(getRecord(), url, alphabet,"AmoebaDB", null);
         Assert.assertNotNull("getDefaultSequenceDocument method returned null. Expected is an instance of DefaultNucleotideSequence", document);
         Assert.assertTrue("An instance of DefaultNucleotideSequence should have been generated. Generated is an instance of " + document.getClass() + ".", document instanceof DefaultNucleotideSequence);
         Assert.assertEquals(NUCLEOTIDE_SEQUENCE, document.getSequenceString());
+
+        SequenceAnnotationQualifier sequenceAnnotationQualifier = document.getSequenceAnnotations().get(0).getQualifiers().get(0);
+        Assert.assertEquals("URL", sequenceAnnotationQualifier.getName());
+        Assert.assertEquals(expectedUrl, sequenceAnnotationQualifier.getValue());
     }
 
     /**
@@ -52,7 +59,7 @@ public class SequenceDocumentGeneratorTest {
     public void testGetDefaultSequenceDocumentAminoAcid() throws Exception {
         SequenceDocument.Alphabet alphabet = SequenceDocument.Alphabet.PROTEIN;
 
-        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(getRecord(), "", alphabet,"");
+        DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(getRecord(), "", alphabet,"", null);
         Assert.assertNotNull("getDefaultSequenceDocument method returned null. Expected is an instance of DefaultAminoAcidSequence", document);
         Assert.assertTrue("An instance of DefaultAminoAcidSequence should have been generated. Generated is an instance of " + document.getClass() + ".", document instanceof DefaultAminoAcidSequence);
         Assert.assertEquals(PROTEIN_SEQUENCE, document.getSequenceString());
@@ -69,6 +76,6 @@ public class SequenceDocumentGeneratorTest {
         fields.add(new Field("product", "apical membrane antigen 1 AMA1"));
         fields.add(new Field("cds", NUCLEOTIDE_SEQUENCE));
         fields.add(new Field("sequence", PROTEIN_SEQUENCE));
-        return new Record("",fields);
+        return new Record("PF3D7_1133400",fields);
     }
 }
