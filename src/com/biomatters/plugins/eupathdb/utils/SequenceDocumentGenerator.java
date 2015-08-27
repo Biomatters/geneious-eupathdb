@@ -90,21 +90,22 @@ public class SequenceDocumentGenerator {
                 doc.getSequenceLength());
         SequenceAnnotation annotation = new SequenceAnnotation(geneId,
                 SequenceAnnotation.TYPE_GENE, interval);
-        String url = dbUrl + record.getId();
+        StringBuilder url = new StringBuilder();
+        url.append(dbUrl).append(record.getId());
         if (EUPATH_DATABASE.equals(database)) {
-            String EupathDbUrl = "";
-            if(!"".equals(speciesId)) {
+            StringBuilder eupathDbUrl = new StringBuilder();
+            if (!speciesId.isEmpty()) {
                 String projectId = getDatabaseNameByOrganism(speciesId, childServiceList);
-                if(!"".equals(projectId)) {
-                    EupathDbUrl = url + PROJECT_ID_PARAMETER_URL + projectId;
+                if (!projectId.isEmpty()) {
+                    eupathDbUrl.append(url).append(PROJECT_ID_PARAMETER_URL).append(projectId);
                 }
             }
-            url = EupathDbUrl;
-        }else if(!ORTHOMCL_DATABASE.equals(database)) {
-             url = url + PROJECT_ID_PARAMETER_URL + database;
+            url = eupathDbUrl;
+        } else if (!ORTHOMCL_DATABASE.equals(database)) {
+            url.append(PROJECT_ID_PARAMETER_URL).append(database);
         }
-        if(!"".equals(url)) {
-            annotation.addQualifier(new SequenceAnnotationQualifier(URL, url));
+        if (!url.toString().isEmpty()) {
+            annotation.addQualifier(new SequenceAnnotationQualifier(URL, url.toString()));
         }
         doc.setAnnotations(Arrays.asList(annotation));
         doc.addDisplayableField(DocumentField.ORGANISM_FIELD);
@@ -123,13 +124,7 @@ public class SequenceDocumentGenerator {
      */
     private static String getDatabaseNameByOrganism(String organism, List<GeneiousService> childServiceList) {
         String databaseName = "";
-        String organisms[] = organism.split("\\s");
-        organism = "";
-        if (organisms.length > 1) {
-            for (int i = 1; i < organisms.length; i++) {
-                organism = organism + " " + organisms[i];
-            }
-        }
+        organism = organism.substring(organism.indexOf(" ") + 1, organism.length());
         for (GeneiousService geneiousService : childServiceList) {
             EuPathDatabaseService euPathDatabaseService = (EuPathDatabaseService) geneiousService;
             String allOrganism = euPathDatabaseService.getEukaryoticDatabase().getWebServiceTextSearchOrganismParamValue();
