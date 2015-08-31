@@ -124,15 +124,34 @@ public class SequenceDocumentGenerator {
      */
     private static String getDatabaseNameByOrganism(String organism, List<GeneiousService> childServiceList) {
         String databaseName = "";
-        organism = organism.substring(organism.indexOf(" ") + 1, organism.length());
         for (GeneiousService geneiousService : childServiceList) {
             EuPathDatabaseService euPathDatabaseService = (EuPathDatabaseService) geneiousService;
             String allOrganism = euPathDatabaseService.getEukaryoticDatabase().getWebServiceTextSearchOrganismParamValue();
-            if (allOrganism != null && allOrganism.contains(organism)) {
+            if (matches(organism, allOrganism)) {
                 databaseName = euPathDatabaseService.getName();
                 break;
             }
         }
         return databaseName;
+    }
+
+    private static boolean matches(String organism, String allOrganism) {
+        if(allOrganism == null) {
+            return false;
+        }
+        for (String candidate : allOrganism.split(",")) {
+            if(organism.equals(candidate) || organism.equals(abbreviateSpeciesName(candidate))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String abbreviateSpeciesName(String candidate) {
+        int firstSpace = candidate.indexOf(" ");
+        if(firstSpace > 0 && firstSpace < candidate.length()-1) {
+            return candidate.substring(0,1) + ". " + candidate.substring(firstSpace+1);
+        }
+        return null;
     }
 }
