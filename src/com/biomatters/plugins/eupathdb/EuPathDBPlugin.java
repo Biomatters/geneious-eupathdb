@@ -15,10 +15,10 @@ import com.biomatters.plugins.eupathdb.services.EuPathDB;
 public class EuPathDBPlugin extends GeneiousPlugin {
     /* Plugin specific constants */
     private static final String PLUGIN_NAME = "EuPathDB Plugin";
-    private static final String PLUGIN_VERSION = "0.1";
+    private static final String PLUGIN_VERSION = "1.0";
     private static final String PLUGIN_DESCRIPTION = "Provides services to search for genes in various EuPathDB databases";
     private static final String PLUGIN_AUTHORS = "Biomatters Ltd, Charles Ma and Svenja Gunther";
-    private static final String PLUGIN_MIN_API_VERSION = "4.715";
+    private static final String PLUGIN_MIN_API_VERSION = "4.900";
     private static final int PLUGIN_MAX_API_VERSION = 4;
 
     /**
@@ -92,9 +92,8 @@ public class EuPathDBPlugin extends GeneiousPlugin {
     }
 
     /**
-     * Gets the version.
-     *
-     * @return the version
+     *  1.0 - released 2015-09-01
+     *      - first release
      */
     @Override
     public String getVersion() {
