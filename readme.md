@@ -1,6 +1,6 @@
 ## Authors
-Biomatters Ltd
-Original plugins by Charles Ma - <charles_ma@email.com>
+* Biomatters Ltd
+* Original plugins by Charles Ma - <charles_ma@email.com>
 
 ## Summary
 Adds services to Geneious for searching all of the EuPathDB pathogen databases.
@@ -9,5 +9,5 @@ Adds services to Geneious for searching all of the EuPathDB pathogen databases.
 Download and install from the plugin manager in Geneious, under Tools - Plugins.
 
 ## More Information
-[Plugin Page](http://www.geneious.com/plugins/eupathdb)
-[EuPathDB Website](http://eupathdb.org)
+* [Plugin Page](http://www.geneious.com/plugins/eupathdb)
+* [EuPathDB Website](http://eupathdb.org)
