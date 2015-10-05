@@ -1,15 +1,13 @@
 ## Authors
-Charles Ma - <charles_ma@email.com>
+Biomatters Ltd
+Original plugins by Charles Ma - <charles_ma@email.com>
 
 ## Summary
-Two Geneious plugins that allow you to directly search and download annotated eukaryotic pathogen sequences from the PlasmoDB and PiroplasmaDB databases.
+Adds services to Geneious for searching all of the EuPathDB pathogen databases.
 
 ## Installation
-Download the gplugin file from the [downloads section](https://bitbucket.org/biomatters/geneious-plasmodb-and-piroplasmadb/downloads) and drag in to Geneious.
+Download and install from the plugin manager in Geneious, under Tools - Plugins.
 
 ## More Information
-[Abstract](https://bitbucket.org/biomatters/geneious-plasmodb-and-piroplasmadb/downloads/Geneious%20Abstract.doc)  
+[Plugin Page](http://www.geneious.com/plugins/eupathdb)
 [EuPathDB Website](http://eupathdb.org)
-
-## Citation
-Ma C, Gunther S, Cooke B, Coppel RL.Parasitol Int. Geneious plugins for the access of PlasmoDB and PiroplasmaDB databases.2013 Apr;62(2):134-6.
