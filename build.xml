@@ -32,7 +32,7 @@
     </path>
 
     <!-- hook to enable the geneious build to build this plugin -->
-    <target name="geneious-build">
+    <target name="geneious-build" depends="retrieve-build-dependencies">
         <!-- The "target-to-run" property should be set in the subant call to this target. -->
         <ant antfile="../../build-opensource-plugins.xml" target="${target-to-run}">
             <reference refid="geneious.classpath.test"/>
