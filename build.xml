@@ -23,7 +23,7 @@
     <property name="src" location="src"/>
     <property name="test.src" location="test"/>
     <property name="test.classes" location="testclasses"/>
-    <property name="test.data" location="testdata"/>
+    <property name="test-data" location="testdata"/>
     <property name="report" location="report"/>
     <property name="GeneiousFiles" location="GeneiousFiles"/>
 
@@ -128,7 +128,7 @@
                 <pathelement location="${classes}"/>
                 <pathelement location="${resources}"/>
                 <pathelement location="${test.classes}"/>
-                <pathelement location="${test.data}"/>
+                <pathelement location="${test-data}"/>
                 <pathelement location="${GeneiousFiles}/resources"/>
                 <!--<pathelement location="${GeneiousFiles}/bundledPlugins"/>-->
                 <fileset dir="${GeneiousFiles}/bundledPlugins">
