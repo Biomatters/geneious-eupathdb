@@ -10,6 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 /**
  * The class <code>TestUtilities</code> contains utility methods for test cases.
@@ -30,7 +31,9 @@ public class TestUtilities {
         FileReader reader;
         String fileData;
 
-        reader = new FileReader(TestUtilities.class.getResource(filename).getPath());
+        URL resource = TestUtilities.class.getResource(filename);
+        String path = resource.getPath();
+        reader = new FileReader(path);
         fileData = StringUtilities.getTextFromReader(reader, true);
 
         return fileData;

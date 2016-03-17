@@ -5,10 +5,13 @@ import com.biomatters.geneious.publicapi.documents.sequence.SequenceDocument;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultAminoAcidSequence;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultNucleotideSequence;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultSequenceDocument;
+import com.biomatters.geneious.publicapi.plugin.DocumentImportException;
 import com.biomatters.plugins.eupathdb.webservices.models.Field;
 import com.biomatters.plugins.eupathdb.webservices.models.Record;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
 import java.util.List;
