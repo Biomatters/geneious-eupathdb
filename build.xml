@@ -22,17 +22,21 @@
     <property name="resources" location="resources"/>
     <property name="src" location="src"/>
     <property name="test.src" location="test"/>
-    <property name="test.classes" location="testclasses"/>
-    <property name="test-data" location="testdata"/>
+    <property name="integration.src" location="test-integration"/>
+    <property name="testdata.src" location="testdata"/>
+    <property name="build.test" location="${build}/test${short-plugin-name}"/>
+    <property name="test.classes" location="${build.test}/test"/>
+    <property name="test.integration" location="${build.test}/testIntegration"/>
+    <property name="test.data" location="${build.test}/testdata"/>
     <property name="report" location="report"/>
     <property name="GeneiousFiles" location="GeneiousFiles"/>
 
-    <path id="geneious.classpath">
+    <path id="classpath">
         <fileset dir="${lib}"/>
     </path>
 
-    <path id="geneious.classpath.test">
-        <path refid="geneious.classpath"/>
+    <path id="classpath.test">
+        <path refid="classpath"/>
         <pathelement location="${classes}"/>
     </path>
 
@@ -48,7 +52,8 @@
     <target name="create-plugin" depends="build-plugin">
         <zip zipfile="${build}/${short-plugin-name}.gplugin">
             <fileset dir="${build}">
-                <include name="${plugin-name}/**/*"/>
+               <include name="${plugin-name}/**/*"/>
+                <exclude name="test*/**/*" /> <!-- exlude all test classes and data -->
             </fileset>
         </zip>
     </target>
@@ -61,6 +66,7 @@
         <copy todir="${build}/${plugin-name}">
             <fileset dir="${build}">
                 <include name="${plugin-name}.jar"/>
+                <exclude name="test*/**/*"/>
             </fileset>
             <fileset dir="lib">
                 <include name="*.jar"/>
@@ -81,17 +87,46 @@
     </target>
 
     <target name="compile-plugin" depends="prepare,retrieve-build-dependencies">
+        <echo message="Compiling ${plugin-name}"/>
+
         <javac target="1.6" source="1.6" destdir="${classes}" debug="true">
-            <classpath refid="geneious.classpath"/>
+            <classpath refid="classpath"/>
             <src path="${src}"/>
+        </javac>
+
+        <available file="${test.src}" type="dir" property="tests.exist"/>
+        <ant target="compile-tests"/>
+
+        <available file="${integration.src}" type="dir" property="integration.tests.exist"/>
+        <ant target="compile-integration-tests"/>
+
+        <copy todir="${test.data}" failonerror="false">
+        <fileset dir="${testdata.src}"/>
+        </copy>
+    </target>
+
+    <target name="compile-tests" if="tests.exist">
+        <javac target="1.6" source="1.6" destdir="${test.classes}" debug="true">
+            <classpath refid="classpath.test"/>
+            <src path="${test.src}"/>
+        </javac>
+    </target>
+
+    <target name="compile-integration-tests" if="integration.tests.exist">
+        <javac target="1.6" source="1.6" destdir="${test.integration}" debug="true">
+            <classpath refid="classpath.test"/>
+            <src path="${integration.src}"/>
         </javac>
     </target>
 
     <target name="prepare">
         <mkdir dir="${lib}"/>
         <mkdir dir="${build}"/>
+        <mkdir dir="${build.test}"/>
         <mkdir dir="${classes}"/>
         <mkdir dir="${test.classes}"/>
+        <mkdir dir="${test.integration}"/>
+        <mkdir dir="${test.data}"/>
         <mkdir dir="${report}"/>
     </target>
 
@@ -99,41 +134,31 @@
         <delete dir="${lib}"/>
         <delete dir="${build}"/>
         <delete dir="${classes}"/>
-        <delete dir="${test.classes}"/>
         <delete dir="${report}"/>
         <delete dir="${GeneiousFiles}"/>
         <delete file="GeneiousFiles.zip"/>
     </target>
 
-    <target name="compile-tests" depends="compile-plugin">
-        <javac target="1.6" source="1.6" destdir="${test.classes}" debug="true">
-            <classpath>
-                <path refid="geneious.classpath.test" />
-            </classpath>
-            <src path="${test.src}"/>
-        </javac>
-    </target>
-
-    <target name="test" depends="compile-tests, retrieve-test-runtime-dependencies">
+    <target name="test" depends="compile-plugin, retrieve-test-runtime-dependencies">
         <junit dir="GeneiousFiles" fork="true" maxmemory="1024M" printsummary="on" timeout="180000">
             <batchtest todir="${report}">
-                <fileset dir="${test.classes}">
-                    <include name="**/*Test.class"/>
-                </fileset>
+            <fileset dir="${test.classes}">
+               <include name="**/*Test.class"/>
+            </fileset>
             </batchtest>
             <classpath>
-                <path refid="geneious.classpath"/>
                 <file file="${GeneiousFiles}/iSeek.jar"/>
                 <fileset dir="${GeneiousFiles}/lib"/>
                 <pathelement location="${classes}"/>
                 <pathelement location="${resources}"/>
                 <pathelement location="${test.classes}"/>
-                <pathelement location="${test-data}"/>
+                <pathelement location="${testdata.src}"/>
                 <pathelement location="${GeneiousFiles}/resources"/>
                 <!--<pathelement location="${GeneiousFiles}/bundledPlugins"/>-->
                 <fileset dir="${GeneiousFiles}/bundledPlugins">
                     <include name="**/*.jar"/>
                 </fileset>
+                <path refid="classpath"/>
             </classpath>
             <env key="DISPLAY" value=":0.0"/>
             <env key="DYLD_LIBRARY_PATH" value="/Library/Application Support/Geneious/Frameworks"/>
