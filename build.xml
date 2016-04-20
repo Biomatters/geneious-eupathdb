@@ -185,8 +185,7 @@
         <ivy:retrieve conf="build" settingsref="eupathdb.ivy.config" pattern="lib/[artifact]-[type]-[revision].[ext]"/>
     </target>
 
-    <target name="retrieve-test-runtime-dependencies" description="Retrieve the Geneious runtime for running the tests"
-            unless="GeneiousFiles.exists" if="tests.exists">
+    <target name="retrieve-test-runtime-dependencies" description="Retrieve the Geneious runtime for running the tests" unless="GeneiousFiles.exists">
         <ivy:retrieve conf="test" type="resource" settingsref="eupathdb.ivy.config"
                       pattern="${basedir}/[artifact].[ext]"/>
         <unzip src="GeneiousFiles.zip" dest="."/>
