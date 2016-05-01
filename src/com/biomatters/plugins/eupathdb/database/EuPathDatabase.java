@@ -9,7 +9,6 @@ import java.util.Map;
  * provides web services to search for genes in EuPathDB.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class EuPathDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in EuPathDB. EuPathDB (formerly ApiDB) is an integrated database covering the eukaryotic pathogens in the genera Acanthamoeba, Annacaliia, Babesia, Crithidia, Cryptosporidium, Edhazardia, Eimeria, Encephalitozoon, Endotrypanum, Entamoeba, Enterocytozoon, Giardia, Gregarina, Hamiltosporidium, Leishmania, Nematocida, Neospora, Nosema, EuPathdium, Theileria, Toxoplasma, Trichomonas, Trypanosoma and Vavraia, Vittaforma.";

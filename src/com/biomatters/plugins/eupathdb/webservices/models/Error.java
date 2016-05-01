@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * The class <code>Error</code> is a POJO to map error string from webservice response.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 @XmlRootElement
 public class Error {

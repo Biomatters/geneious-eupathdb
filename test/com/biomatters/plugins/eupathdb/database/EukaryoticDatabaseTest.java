@@ -35,7 +35,6 @@ import java.util.Map;
  * <code>{@link EukaryoticDatabaseTest}</code>.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({EuPathDBWebService.class, EukaryoticDatabase.class})

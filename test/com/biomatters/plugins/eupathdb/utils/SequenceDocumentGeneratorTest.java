@@ -21,7 +21,6 @@ import java.util.List;
  * <code>{@link SequenceDocumentGenerator}</code>.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class SequenceDocumentGeneratorTest {
 

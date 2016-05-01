@@ -10,7 +10,6 @@ import com.biomatters.plugins.eupathdb.database.EukaryoticDatabase;
  * query executed on the genome database services.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class EuPathDatabaseService extends DatabaseService {
     private EukaryoticDatabase eukaryoticDatabase;

@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlValue;
  * The class <code>Field</code> is a POJO to map fields from webservice response.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 @XmlRootElement
 public class Field {

@@ -24,7 +24,6 @@ import java.util.List;
  * obtained from EuPathDB family of databases.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class SequenceDocumentGenerator {
 

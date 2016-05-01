@@ -12,7 +12,6 @@ import java.util.Map;
  * provides web services to search for sequences in OrthoMCL.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class OrthoMCLDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for sequences in OrthoMCL. OrthoMCL belongs to the EuPathDB family of databases.";
