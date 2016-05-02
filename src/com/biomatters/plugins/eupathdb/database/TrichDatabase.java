@@ -8,7 +8,6 @@ import java.util.List;
  * provides web services to search for genes in TrichDB.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class TrichDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in TrichDB. The Trichomonas vaginalis genome project was undertaken at The Institute for Genomic Research (TIGR) directed by Jane Carlton in collaboration with Patricia Johnson and the Trichomonas research community.";

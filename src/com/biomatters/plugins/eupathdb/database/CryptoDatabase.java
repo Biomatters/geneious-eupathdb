@@ -8,7 +8,6 @@ import java.util.List;
  * provides web services to search for genes in CryptoDB.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class CryptoDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in CryptoDB. CryptoDB is an integrated genomic and functional genomic database for the parasite Cryptosporidium.";

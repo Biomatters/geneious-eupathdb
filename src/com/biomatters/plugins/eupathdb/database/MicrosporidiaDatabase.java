@@ -8,7 +8,6 @@ import java.util.List;
  * provides web services to search for genes in MicrosporidiaDB.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class MicrosporidiaDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in MicrosporidiaDB. MicrosporidiaDB belongs to the EuPathDB family of databases and is an integrated genomic and functional genomic database for the phylum Microsporidia.";

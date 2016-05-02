@@ -25,7 +25,6 @@ import java.util.Map;
  * <code>{@link com.biomatters.plugins.eupathdb.webservices.EuPathDBWebService}</code>.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({EuPathDBWebService.class, JerseyInvocation.Builder.class})

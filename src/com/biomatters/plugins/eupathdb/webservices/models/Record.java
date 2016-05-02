@@ -11,7 +11,6 @@ import java.util.List;
  * The class <code>Record</code> is a POJO to map records from webservice response.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 @XmlRootElement
 public class Record {

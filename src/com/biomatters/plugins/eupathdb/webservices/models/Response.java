@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * The class <code>Response</code> is a POJO to map response from webservice response.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 @XmlRootElement
 public class Response {

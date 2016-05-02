@@ -10,7 +10,6 @@ import com.biomatters.plugins.eupathdb.services.EuPathDB;
  * Geneious.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class EuPathDBPlugin extends GeneiousPlugin {
     /* Plugin specific constants */

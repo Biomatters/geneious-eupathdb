@@ -8,7 +8,6 @@ import java.util.List;
  * provides web services to search for genes in AmoebaDB.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class AmoebaDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in AmoebaDB. AmoebaDB belongs to the EuPathDB family of databases and is an integrated genomic and functional genomic database for Entamoeba and Acanthamoeba parasites.";

@@ -35,7 +35,6 @@ import java.util.Map;
  * <code>{@link EukaryoticDatabaseTest}</code>.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"javax.management.*", "javax.swing.*", "javax.security.*", "org.freehep.graphicsio.raw.*",

@@ -16,7 +16,6 @@ import java.net.URL;
  * The class <code>TestUtilities</code> contains utility methods for test cases.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class TestUtilities {
 

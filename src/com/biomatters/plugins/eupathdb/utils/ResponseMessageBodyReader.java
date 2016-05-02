@@ -18,7 +18,6 @@ import java.lang.reflect.Type;
  * The Class <code>ResponseMessageBodyReader</code> unmarshals response.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class ResponseMessageBodyReader implements
         MessageBodyReader<Response> {

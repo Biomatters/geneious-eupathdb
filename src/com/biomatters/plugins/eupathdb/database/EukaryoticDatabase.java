@@ -32,7 +32,6 @@ import java.util.Map;
  * provides web services to search for genes.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public abstract class EukaryoticDatabase {
 

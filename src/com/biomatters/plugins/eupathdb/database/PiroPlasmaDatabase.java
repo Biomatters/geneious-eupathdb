@@ -8,7 +8,6 @@ import java.util.List;
  * provides web services to search for genes in PiroPlasmaDB.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class PiroPlasmaDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in PiroPlasmaDB. PiroplasmaDB is a genome database for the genus Piroplasma";

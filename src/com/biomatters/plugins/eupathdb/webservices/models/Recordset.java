@@ -11,7 +11,6 @@ import java.util.List;
  * The class <code>Recordset</code> is a POJO to map recordset from webservice response.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 @XmlRootElement
 public class Recordset {

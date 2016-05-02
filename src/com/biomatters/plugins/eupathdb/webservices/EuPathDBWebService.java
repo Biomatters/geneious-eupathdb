@@ -27,7 +27,6 @@ import java.util.logging.Logger;
  * map, and MessageBodyReader.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class EuPathDBWebService {
 

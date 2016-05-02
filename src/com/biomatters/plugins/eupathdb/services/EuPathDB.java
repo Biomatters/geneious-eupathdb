@@ -12,7 +12,6 @@ import com.biomatters.plugins.eupathdb.database.*;
  * query executed on the genome database EuPathDB.
  *
  * @author cybage
- * @version $Revision: 1.0 $
  */
 public class EuPathDB extends DatabaseService {
 
