@@ -38,6 +38,10 @@ import java.util.Map;
  * @version $Revision: 1.0 $
  */
 @RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"javax.management.*", "javax.swing.*", "javax.security.*", "org.freehep.graphicsio.raw.*",
+        "org.freehep.graphicsio.gif.*", "org.freehep.graphicsio.ppm.*", "apple.laf.*", "com.apple.*",
+        "javax.imageio.*", "javax.net.*", "com.sun.*", "javax.xml.parsers.*", "org.xml.*", "javax.crypto.*"})
+@SuppressStaticInitializationFor("com.biomatters.geneious.publicapi.plugin.Icons$PointlessJPanelHolder")
 @PrepareForTest({EuPathDBWebService.class, EukaryoticDatabase.class})
 public class EukaryoticDatabaseTest {
 
