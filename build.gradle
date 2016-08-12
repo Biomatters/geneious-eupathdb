@@ -1,0 +1,6 @@
+ext {
+    shortName = "EuPathDBPlugin"
+    pluginName = "com.biomatters.plugins.eupathdb." + shortName;
+}
+
+apply from: 'geneiousplugin.gradle'

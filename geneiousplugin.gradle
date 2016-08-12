@@ -1,0 +1,131 @@
+defaultTasks 'createPlugin';
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "2.2"
+}
+
+apply plugin: "java"
+
+repositories {
+    ivy {
+        url "http://assets.geneious.com/developer/geneious/ivy"
+        layout "pattern", {
+            ivy "[organisation]/[module]/ivys/ivy-[revision].xml"
+            artifact "[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"
+        }
+    }
+    mavenCentral()
+}
+
+dependencies {
+    compile group: "com.biomatters", name: "geneious.publicapi", version: "7.1.5", configuration: "api"
+    compile group: "com.google.code.gson", name: "gson", version: "2.3.1"
+    compile group: "org.glassfish.jersey.core", name: "jersey-client", version: "2.16"
+
+    testCompile "junit:junit:4.+"
+    testCompile group: "org.powermock", name: "powermock-api-mockito", version: "1.6.2"
+    testCompile group: "org.powermock", name: "powermock-module-junit4", version: "1.6.2"
+    testRuntime group: "com.biomatters", name: "geneious.publicapi", version: "7.1.5", configuration: "runtime"
+}
+
+def geneiousFilesName="GeneiousFiles";  // Name of the directory containing the Geneious distirbution files.
+task extractGeneiousRuntimeFiles(type: Copy) {
+
+    File zipFile = file(configurations.testRuntime.find {
+        it.getName().startsWith(geneiousFilesName) && it.getName().endsWith(".zip")
+    })
+
+    from zipTree(zipFile)
+    into dependencyCacheDir
+}
+
+// Running the test task will depend on making the Geneious Runtime available
+tasks.test.dependsOn(extractGeneiousRuntimeFiles)
+
+tasks.test {
+    workingDir file("$dependencyCacheDir/$geneiousFilesName")
+    minHeapSize '256M'
+    maxHeapSize '1024M'
+    jvmArgs '-ea', '-XX:MaxNewSize=40M', '-XX:MaxPermSize=256M', '-XX:ReservedCodeCacheSize=128m', '-Xss512K'
+    environment "DISPLAY", ":0.0"
+    environment "DYLD_LIBRARY_PATH", "/Library/Application Support/Geneious/Frameworks"
+}
+
+jar {
+    include "**/*.class"
+    includeEmptyDirs false
+}
+
+compileJava {
+    sourceCompatibility "1.6"
+    targetCompatibility "1.6"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'resources'
+        }
+        File geneiousFiles = file("$dependencyCacheDir/$geneiousFilesName")
+        runtimeClasspath += files("$geneiousFiles/resources")
+        runtimeClasspath += files("$geneiousFiles/iSeek.jar")
+        runtimeClasspath += files("$geneiousFiles/lib/*")
+    }
+
+    test {
+        java {
+            srcDir 'test'
+        }
+        resources {
+            srcDir 'testdata'
+        }
+        File geneiousFiles = file("$dependencyCacheDir/$geneiousFilesName")
+        runtimeClasspath += files("$geneiousFiles/resources")
+        runtimeClasspath += files("$geneiousFiles/iSeek.jar")
+        runtimeClasspath += files("$geneiousFiles/lib/*")
+    }
+}
+
+
+
+task createPlugin(dependsOn: build, type: Zip) {
+    description "Creates the gplugin to install into Geneious"
+
+    from (file("resources"))
+    into (file("$pluginName"))
+
+    archiveName "$shortName" + getPluginVersion() + ".gplugin"
+}
+
+jar {
+    archiveName pluginName + ".jar"
+}
+
+String getPluginVersion() {
+    def p = ~/.*\s+PLUGIN_VERSION\s+=\s+"(\d+(\.\d+)*)".*/
+    def versionString;
+    def pluginSourceFile = file("$projectDir/src/" + pluginName.replace(".", "/") + ".java")
+    pluginSourceFile.eachLine { line ->
+        def m = p.matcher(line)
+        if (m.find()) {
+            versionString = "_" + m[0][1].replaceAll("\\.", "_")
+        }
+    }
+
+    versionString
+}
+
+task runGeneious(dependsOn: [extractGeneiousRuntimeFiles,build], type: JavaExec) {
+    main 'com.biomatters.iseek.application.ISeekMain'
+    classpath sourceSets.main.runtimeClasspath
+    args 'extraPlugins=' + pluginName
+    workingDir file("$dependencyCacheDir/$geneiousFilesName")
+    minHeapSize '256M'
+    maxHeapSize '1024M'
+    jvmArgs '-XX:+UseCompressedOops', '-XX:+UseConcMarkSweepGC', '-ea', '-Xss512K', '-XX:MaxPermSize=256M','-Djava.util.logging.config.file=no_logging.properties'
+    environment "DISPLAY", ":0.0"
+    environment "DYLD_LIBRARY_PATH", "/Library/Application Support/Geneious/Frameworks"
+}
