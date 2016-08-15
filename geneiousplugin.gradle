@@ -95,7 +95,9 @@ task createPlugin(dependsOn: build, type: Zip) {
     description "Creates the gplugin to install into Geneious"
 
     from {
-        configurations.compile
+        configurations.compile.filter {
+            !it.getName().startsWith("GeneiousPublicAPI-") && !it.getName().startsWith("jdom-") && !it.getName().startsWith("jebl-")
+        }
     }
     from(libsDir)
     from(sourceSets.main.resources)
