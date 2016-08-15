@@ -94,8 +94,12 @@ sourceSets {
 task createPlugin(dependsOn: build, type: Zip) {
     description "Creates the gplugin to install into Geneious"
 
-    from (file("resources"))
-    into (file("$pluginName"))
+    from {
+        configurations.compile
+    }
+    from(libsDir)
+    from(sourceSets.main.resources)
+    into "$pluginName"
 
     archiveName "$shortName" + getPluginVersion() + ".gplugin"
 }
