@@ -72,7 +72,7 @@ sourceSets {
         File geneiousFiles = file("$dependencyCacheDir/$geneiousFilesName")
         runtimeClasspath += files("$geneiousFiles/resources")
         runtimeClasspath += files("$geneiousFiles/iSeek.jar")
-        runtimeClasspath += files(file("$geneiousFiles/lib").listFiles())
+        runtimeClasspath += fileTree("$geneiousFiles/lib")
     }
 
     test {
@@ -85,7 +85,7 @@ sourceSets {
         File geneiousFiles = file("$dependencyCacheDir/$geneiousFilesName")
         runtimeClasspath += files("$geneiousFiles/resources")
         runtimeClasspath += files("$geneiousFiles/iSeek.jar")
-        runtimeClasspath += files(file("$geneiousFiles/lib").listFiles())
+        runtimeClasspath += fileTree("$geneiousFiles/lib")
     }
 }
 
