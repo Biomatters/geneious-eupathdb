@@ -133,6 +133,6 @@ task runGeneious(dependsOn: [extractGeneiousRuntimeFiles,build], type: JavaExec)
     maxHeapSize '1024M'
     jvmArgs '-XX:+UseCompressedOops', '-XX:+UseConcMarkSweepGC', '-ea', '-Xss512K', '-XX:MaxPermSize=256M','-Djava.util.logging.config.file=no_logging.properties'
     environment "DISPLAY", ":0.0"
-    enviroment "LD_LIBRARY_PATH", "./activation/linux64:./native_libs/linux64"
+    environment "LD_LIBRARY_PATH", "./activation/linux64:./native_libs/linux64"
     environment "DYLD_LIBRARY_PATH", "./activation/macos:./native_libs/macos"
 }
