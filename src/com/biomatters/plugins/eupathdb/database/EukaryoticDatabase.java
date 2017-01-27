@@ -36,13 +36,13 @@ import java.util.Map;
 public abstract class EukaryoticDatabase {
 
     /* Web service parameters */
-    private static final String WEB_SERVICE_O_FIELDS_PARAM = "o-fields";
+    protected static final String WEB_SERVICE_O_FIELDS_PARAM = "o-fields";
     private static final String WEB_SERVICE_MAX_P_VALUE_PARAM = "max_pvalue";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM = "text_fields";
-    private static final String WEB_SERVICE_DS_GENE_IDS_PARAM = "ds_gene_ids_data";
+    protected static final String WEB_SERVICE_DS_GENE_IDS_PARAM = "ds_gene_ids_data";
     private static final String WEB_SERVICE_TEXT_EXPRESSION_PARAM = "text_expression";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM = "text_search_organism";
-    private static final String WEB_SERVICE_O_FIELDS_PARAM_VALUE = "primary_key,organism,product,cds";
+    private static final String WEB_SERVICE_O_FIELDS_PARAM_VALUE = "primary_key,organism,cds";
     private static final String WEB_SERVICE_O_FIELDS_PARAM_VALUE_FOR_ID = "primary_key";
     private static final String WEB_SERVICE_MAX_P_VALUE_PARAM_VALUE = "-30";
 
