@@ -31,7 +31,7 @@ public class SequenceDocumentGenerator {
     private static final String SEQUENCE = "sequence";
     private static final String ORGANISM = "organism";
     private static final String CDS = "cds";
-    private static final String PRODUCT = "product";
+    private static final String PRODUCT = "gene_product";
     private static final String PRIMARY_KEY = "primary_key";
     private static final String URN_NAMESPACE = "sequence" ;
     private static final String URN_ASSIGNER = "eupathdb" ;

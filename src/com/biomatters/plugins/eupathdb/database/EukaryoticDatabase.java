@@ -42,7 +42,7 @@ public abstract class EukaryoticDatabase {
     protected static final String WEB_SERVICE_DS_GENE_IDS_PARAM = "ds_gene_ids_data";
     private static final String WEB_SERVICE_TEXT_EXPRESSION_PARAM = "text_expression";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM = "text_search_organism";
-    private static final String WEB_SERVICE_O_FIELDS_PARAM_VALUE = "primary_key,organism,cds";
+    private static final String WEB_SERVICE_O_FIELDS_PARAM_VALUE = "primary_key,organism,gene_product,cds";
     private static final String WEB_SERVICE_O_FIELDS_PARAM_VALUE_FOR_ID = "primary_key";
     private static final String WEB_SERVICE_MAX_P_VALUE_PARAM_VALUE = "-30";
 

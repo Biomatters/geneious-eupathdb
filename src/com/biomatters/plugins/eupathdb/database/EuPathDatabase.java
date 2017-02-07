@@ -22,7 +22,7 @@ public class EuPathDatabase extends EukaryoticDatabase {
     private static final String WEB_SERVICE_DS_GENE_IDS_PARSER_PARAM_VALUE = "list";
     private static final String WEB_SERVICE_WDK_USER_SIGNATURE_PARAM = "wdk_user_signature";
     private static final String WEB_SERVICE_WDK_USER_SIGNATURE_PARAM_VALUE = "none";
-    public static final String EUPATH_WEB_SERVICE_O_FIELDS_PARAM_VALUE = "primary_key,organism";
+    public static final String EUPATH_WEB_SERVICE_O_FIELDS_PARAM_VALUE = "primary_key,organism,gene_product";
     private static final String WEB_SERVICE_URI = "http://eupathdb.org/eupathdb/webservices/GeneQuestions";
     private static final String[] TAGS = {"PF", "MAL", "PV", "PY",
             "PB", "PC", "PK", "EDI", "EIN", "EHI", "cgd", "GL", "ECU", "Eint",
