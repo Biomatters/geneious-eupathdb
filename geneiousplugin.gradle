@@ -6,6 +6,14 @@ task wrapper(type: Wrapper) {
 
 apply plugin: "java"
 
+// IntelliJ IDEA specific configuration required to workaround a bug. See https://intellij-support.jetbrains.com/hc/en-us/community/posts/206842955-builrd-resources-broken-for-gradle-projects-
+apply plugin: "idea"
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
+
 repositories {
     ivy {
         url "http://assets.geneious.com/developer/geneious/ivy"
