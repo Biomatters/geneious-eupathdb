@@ -90,10 +90,6 @@ public class EuPathDBPlugin extends GeneiousPlugin {
         return PLUGIN_MIN_API_VERSION;
     }
 
-    /**
-     *  1.0 - released 2015-09-01
-     *      - first release
-     */
     @Override
     public String getVersion() {
         return PLUGIN_VERSION;
