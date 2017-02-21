@@ -3,5 +3,7 @@ First release of new EuPathDB plugin based on original PiroplasmoDB and Piroplas
 
 Adds to [Geneious](http://geneious.com) the ability to submit searches to all of the EuPathDB pathogen databases.
 
-# v1.0.1 (Date TBD)
+# v1.0.1 (21st February 2017)
 - GEN-28102 Fixed search failures by updating to be compatible with EuPathDB server changes
+
+# v1.0.2 (TBD)
