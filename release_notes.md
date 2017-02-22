@@ -7,3 +7,4 @@ Adds to [Geneious](http://geneious.com) the ability to submit searches to all of
 - GEN-28102 Fixed search failures by updating to be compatible with EuPathDB server changes
 
 # v1.0.2 (TBD)
+- GEN-28419 Restored plugin's R9 compatibility
