@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    compile group: "com.biomatters", name: "geneious.publicapi", version: "10.0.5", configuration: "api"
+    compile group: "com.biomatters", name: "geneious.publicapi", version: "7.1.5", configuration: "api"
     compile group: "com.google.code.gson", name: "gson", version: "2.3.1"
     compile group: "org.glassfish.jersey.core", name: "jersey-client", version: "2.22.2"
 

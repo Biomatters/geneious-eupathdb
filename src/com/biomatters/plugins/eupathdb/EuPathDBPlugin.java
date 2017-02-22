@@ -17,7 +17,7 @@ public class EuPathDBPlugin extends GeneiousPlugin {
     private static final String PLUGIN_VERSION = "1.0.2";
     private static final String PLUGIN_DESCRIPTION = "Provides services to search for genes in various EuPathDB databases";
     private static final String PLUGIN_AUTHORS = "Biomatters Ltd, Charles Ma and Svenja Gunther";
-    private static final String PLUGIN_MIN_API_VERSION = "4.1000";
+    private static final String PLUGIN_MIN_API_VERSION = "4.900";
     private static final int PLUGIN_MAX_API_VERSION = 4;
 
     /**
