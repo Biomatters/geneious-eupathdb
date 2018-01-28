@@ -8,3 +8,6 @@ Adds to [Geneious](http://geneious.com) the ability to submit searches to all of
 
 # v1.0.2 (23rd Februray 2017)
 - GEN-28419 Restored plugin's R9 compatibility
+
+# v1.0.3 (** TO BE RELEASED **)
+- GEN-30327 Update to be compatible with changes in format of EuPathDB server response
