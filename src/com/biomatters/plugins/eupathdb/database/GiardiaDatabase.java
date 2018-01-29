@@ -1,7 +1,10 @@
 package com.biomatters.plugins.eupathdb.database;
 
+import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The Class <code>GiardiaDatabase</code> represents GiardiaDB service {http://giardiadb.org/} which
@@ -17,9 +20,9 @@ public class GiardiaDatabase extends EukaryoticDatabase {
     private static final String PLUGIN_ICON = "giardiadb16.png";
     private static final String WEB_SERVICE_URI = "http://giardiadb.org/webservices/GeneQuestions";
     private static final String DB_URL = "http://giardiadb.org/giardiadb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
-    private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Giardia, Giardia Assemblage A, Giardia Assemblage A isolate WB, Giardia Assemblage A2 isolate DH, Giardia Assemblage B, Giardia Assemblage E, Spironucleus, Spironucleus salmonicida ATCC50377";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias, Cellular localization, EC descriptions, Gene ID, Gene notes, Gene product, GO terms and definitions, Protein domain names and descriptions, PubMed, Similar proteins (BLAST hits v. NRDB/PDB), User comments";
     private static final String[] TAGS = {"GL"};
+    private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<String>(null);
 
     /**
      * Gets the unique id.
@@ -101,8 +104,8 @@ public class GiardiaDatabase extends EukaryoticDatabase {
      * @return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE the String
      */
     @Override
-    public String getWebServiceTextSearchOrganismParamValue() {
-        return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE;
+    public String getWebServiceTextSearchOrganismParamValue() throws DatabaseServiceException {
+        return getWebServiceTextSearchOrganismParamValue(WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE);
     }
 
     /**

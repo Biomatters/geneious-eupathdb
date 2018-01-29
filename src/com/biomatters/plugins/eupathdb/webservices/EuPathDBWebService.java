@@ -11,6 +11,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -48,6 +49,34 @@ public class EuPathDBWebService {
     }
 
     /**
+     * Builds URI from given uri as well as registers given
+     * MessageBodyReader instance with client, makes web service get call.
+     *
+     * @param uri      the URI
+     * @param reader   the MessageBodyReader
+     * @return Response
+     */
+    public Response get(URI uri, MessageBodyReader<?> reader) throws DatabaseServiceException {
+        Client client = createClient().register(reader);
+        UriBuilder uriBuilder = UriBuilder.fromUri(uri);
+        URI paramURI = uriBuilder.build();
+        Response response;
+        try {
+            WebTarget target = client.target(paramURI);
+            response = target.request(MediaType.APPLICATION_XML).get();
+            if (response.getStatus() >= HTTP_ERROR_CODE) {
+                WebApplicationException we = new WebApplicationException(response);
+                throw new DatabaseServiceException(we, we.getMessage(), true);
+            }
+        } catch (WebApplicationException e) {
+            throw new DatabaseServiceException(e, e.getMessage(), true);
+        } catch (ProcessingException e) {
+            throw new DatabaseServiceException(e, e.getMessage(), true);
+        }
+        return response;
+    }
+
+    /**
      * Builds URI from given uri and parameter map and makes web service post call using given client.
      *
      * @param client   the Client
@@ -56,15 +85,14 @@ public class EuPathDBWebService {
      * @return Response
      */
     private Response post(Client client, URI uri, Map<String, String> paramMap) throws DatabaseServiceException {
-        UriBuilder uriBuilder = UriBuilder.fromUri(uri);
+        Form form = new Form();
         for (Entry<String, String> entry : paramMap.entrySet()) {
-            uriBuilder.queryParam(entry.getKey(), entry.getValue());
+            form.param(entry.getKey(), entry.getValue());
         }
-        URI paramURI = uriBuilder.build();
         Response response;
         try {
-            WebTarget target = client.target(paramURI);
-            response = target.request(MediaType.APPLICATION_XML).post(Entity.text(""));
+            WebTarget target = client.target(uri);
+            response = target.request(MediaType.APPLICATION_XML).post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE) /*text("")*/);
             if (response.getStatus() >= HTTP_ERROR_CODE) {
                 WebApplicationException we = new WebApplicationException(response);
                 throw new DatabaseServiceException(we, we.getMessage(), true);

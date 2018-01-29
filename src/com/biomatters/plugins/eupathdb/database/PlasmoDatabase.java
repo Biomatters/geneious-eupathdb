@@ -1,7 +1,10 @@
 package com.biomatters.plugins.eupathdb.database;
 
+import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The Class <code>PlasmoDatabase</code> represents PlasmoDB service {http://plasmodb.org/} which
@@ -17,10 +20,10 @@ public class PlasmoDatabase extends EukaryoticDatabase {
     private static final String PLUGIN_ICON = "plasmodb16.png";
     private static final String WEB_SERVICE_URI = "http://plasmodb.org/webservices/GeneQuestions";
     private static final String DB_URL = "http://plasmodb.org/plasmo/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
-    private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Plasmodium berghei ANKA,Plasmodium chabaudi chabaudi,Plasmodium cynomolgi strain B,Plasmodium falciparum 3D7,Plasmodium falciparum IT,Plasmodium gallinaceum 8A,Plasmodium knowlesi strain H,Plasmodium reichenowi CDC,Plasmodium vivax Sal-1,Plasmodium yoelii yoelii 17X,Plasmodium yoelii yoelii 17XNL,Plasmodium yoelii yoelii YM";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Metabolic pathway names and descriptions,Protein domain names and descriptions,Rodent Malaria Phenotype,User comments";
     private static final String[] TAGS = {"PF", "MAL", "PV", "PY",
             "PB", "PC", "PK"};
+    private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<String>(null);
 
     /**
      * Gets the unique id.
@@ -102,8 +105,8 @@ public class PlasmoDatabase extends EukaryoticDatabase {
      * @return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE the String
      */
     @Override
-    public String getWebServiceTextSearchOrganismParamValue() {
-        return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE;
+    public String getWebServiceTextSearchOrganismParamValue() throws DatabaseServiceException {
+        return getWebServiceTextSearchOrganismParamValue(WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE);
     }
 
     /**

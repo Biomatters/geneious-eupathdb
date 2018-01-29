@@ -12,11 +12,14 @@ import com.biomatters.geneious.publicapi.plugin.GeneiousService;
 import com.biomatters.geneious.publicapi.plugin.Icons;
 import com.biomatters.geneious.publicapi.utilities.IconUtilities;
 import com.biomatters.plugins.eupathdb.EuPathDBPlugin;
+import com.biomatters.plugins.eupathdb.utils.ApplicationMessageBodyReader;
 import com.biomatters.plugins.eupathdb.utils.ResponseMessageBodyReader;
 import com.biomatters.plugins.eupathdb.utils.SequenceDocumentGenerator;
 import com.biomatters.plugins.eupathdb.webservices.EuPathDBWebService;
 import com.biomatters.plugins.eupathdb.webservices.models.Record;
 import com.biomatters.plugins.eupathdb.webservices.models.Response;
+import com.biomatters.plugins.eupathdb.webservices.models.wadl.Application;
+import com.biomatters.plugins.eupathdb.webservices.models.wadl.Param;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.UriBuilder;
@@ -26,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The Class <code>EukaryoticDatabase</code> is an abstract class represents EuPathDB databases which
@@ -36,10 +40,10 @@ import java.util.Map;
 public abstract class EukaryoticDatabase {
 
     /* Web service parameters */
-    protected static final String WEB_SERVICE_O_FIELDS_PARAM = "o-fields";
+    private static final String WEB_SERVICE_O_FIELDS_PARAM = "o-fields";
     private static final String WEB_SERVICE_MAX_P_VALUE_PARAM = "max_pvalue";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM = "text_fields";
-    protected static final String WEB_SERVICE_DS_GENE_IDS_PARAM = "ds_gene_ids_data";
+    private static final String WEB_SERVICE_DS_GENE_IDS_PARAM = "ds_gene_ids_data";
     private static final String WEB_SERVICE_TEXT_EXPRESSION_PARAM = "text_expression";
     private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM = "text_search_organism";
     private static final String WEB_SERVICE_O_FIELDS_PARAM_VALUE = "primary_key,organism,gene_product,cds";
@@ -48,6 +52,7 @@ public abstract class EukaryoticDatabase {
 
     private static final String PATH_XML_GENE_BY_LOCUS_TAG = "GeneByLocusTag.xml";
     private static final String PATH_XML_GENES_BY_TEXT_SEARCH = "GenesByTextSearch.xml";
+    private static final String PATH_WADL_GENES_BY_TEXT_SEARCH = "GenesByTextSearch.wadl";
     private static final String PATH_XML_GENES_BY_TAXON = "GenesByTaxon.xml";
     private static final String PATH_XML_GENES_WITH_USER_COMMENTS = "GenesWithUserComments.xml";
     private static final String PATH_XML_GENES_WITH_UPDATED_ANNOTATIONS = "GenesWithUpdatedAnnotation.xml";
@@ -131,7 +136,19 @@ public abstract class EukaryoticDatabase {
      *
      * @return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE the String
      */
-    public abstract String getWebServiceTextSearchOrganismParamValue();
+    public abstract String getWebServiceTextSearchOrganismParamValue() throws DatabaseServiceException;
+
+    /**
+     * define DB specific value for text_search_organism parameter.
+     *
+     * @return the String list of all organism names for text search on the database
+     */
+    protected String getWebServiceTextSearchOrganismParamValue(AtomicReference<String> organismDefaults) throws DatabaseServiceException {
+        if (organismDefaults.get() == null) { // this would not be needed if we could use Java 8 lambdas in the next part
+            organismDefaults.compareAndSet(null, getOrganismDefaultsFromWadl());
+        }
+        return organismDefaults.get();
+    }
 
     /**
      * Abstract method to define DB specific value for text_fields parameter.
@@ -158,13 +175,23 @@ public abstract class EukaryoticDatabase {
         return UriBuilder.fromUri(getEndPointURI()).path(PATH_XML_GENES_BY_TEXT_SEARCH).build();
     }
 
-    // all unused buildURI* methods are tend to be used with advanced query implementation.
+    /**
+     * Builds the text search uri.
+     *
+     * @return uri the URI
+     */
+    private URI buildURIForGenesByTextSearchWadl() {
+        return UriBuilder.fromUri(getEndPointURI()).path(PATH_WADL_GENES_BY_TEXT_SEARCH).build();
+    }
+
+    // all unused buildURI* methods are intended to be used with a future advanced query implementation.
 
     /**
      * Builds the text search uri.
      *
      * @return uri the URI
      */
+    @SuppressWarnings("unused")
     URI buildURIForGenesByTaxon() {
         return UriBuilder.fromUri(getEndPointURI()).path(PATH_XML_GENES_BY_TAXON).build();
     }
@@ -174,6 +201,7 @@ public abstract class EukaryoticDatabase {
      *
      * @return uri the URI
      */
+    @SuppressWarnings("unused")
     URI buildURIForGenesWithUserComments() {
         return UriBuilder.fromUri(getEndPointURI()).path(PATH_XML_GENES_WITH_USER_COMMENTS).build();
     }
@@ -183,6 +211,7 @@ public abstract class EukaryoticDatabase {
      *
      * @return uri the URI
      */
+    @SuppressWarnings("unused")
     URI buildURIForGenesWithUpdatedAnnotation() {
         return UriBuilder.fromUri(getEndPointURI()).path(PATH_XML_GENES_WITH_UPDATED_ANNOTATIONS).build();
     }
@@ -192,6 +221,7 @@ public abstract class EukaryoticDatabase {
      *
      * @return uri the URI
      */
+    @SuppressWarnings("unused")
     URI buildURIForGenesByMr4Reagents() {
         return UriBuilder.fromUri(getEndPointURI()).path(PATH_XML_GENES_BY_MR4_REAGENTS).build();
     }
@@ -328,7 +358,7 @@ public abstract class EukaryoticDatabase {
      * @param childServiceList - child Services
      * @return - Missing Records which is expected to be retrieved from response but didn't retrieved.
      */
-    private List<Record> reportSearchResult(List<Record> recordInBatch, RetrieveCallback callback, Response response, int documentCount, int totalDocuments, List<GeneiousService> childServiceList) {
+    private List<Record> reportSearchResult(List<Record> recordInBatch, RetrieveCallback callback, Response response, int documentCount, int totalDocuments, List<GeneiousService> childServiceList) throws DatabaseServiceException {
         List<Record> missingRecords = new ArrayList<Record>();
         if (!(response == null || response.getRecordset() == null || response
                 .getRecordset().getRecord() == null)) {
@@ -365,6 +395,30 @@ public abstract class EukaryoticDatabase {
             }
         }
         return missingRecords;
+    }
+
+    private String getOrganismDefaultsFromWadl() throws DatabaseServiceException {
+        URI uri = buildURIForGenesByTextSearchWadl();
+        EuPathDBWebService service = new EuPathDBWebService();
+        Application application = getApplicationFromWadl(uri, service);
+
+        List<Param> params = application.getResources().getResource().get(0).getMethod().get(0).getRequest().getParam();
+        for (Param p:params) {
+            if (p.getName().equals("text_search_organism")) {
+                return p.getDefault();
+            }
+        }
+        throw new DatabaseServiceException("Could not retrieve organism list from webservice", false);
+    }
+
+    private Application getApplicationFromWadl(URI wadlUri, EuPathDBWebService service) throws DatabaseServiceException {
+        Application application;
+        try {
+            application =  service.get(wadlUri, new ApplicationMessageBodyReader()).readEntity(Application.class);
+        } catch (ProcessingException e) {
+            throw new DatabaseServiceException(e, e.getMessage(), false);
+        }
+        return application;
     }
 
     /**
@@ -434,7 +488,7 @@ public abstract class EukaryoticDatabase {
      * @param queryText the query text
      * @return true, if query text starts with tag
      */
-    boolean isQueryTextStartsWithTag(String queryText) {
+    private boolean isQueryTextStartsWithTag(String queryText) {
         for (String tag : getTags()) {
             if (queryText.startsWith(tag)) {
                 return true;
@@ -449,7 +503,7 @@ public abstract class EukaryoticDatabase {
      * @param queryText the queryText
      * @return uri the URI
      */
-    URI buildURI(String queryText) {
+    private URI buildURI(String queryText) {
         return isQueryTextStartsWithTag(queryText) ? buildURIForGenesByLocusTag()
                 : buildURIForGenesByTextSearch();
     }
@@ -474,7 +528,7 @@ public abstract class EukaryoticDatabase {
      * @param queryText the query text
      * @return paramMap the Map
      */
-    Map<String, String> getParametersMapForSearchByText(String queryText) {
+    Map<String, String> getParametersMapForSearchByText(String queryText) throws DatabaseServiceException {
         Map<String, String> paramMap = new HashMap<String, String>(5);
         paramMap.put(WEB_SERVICE_O_FIELDS_PARAM,
                 WEB_SERVICE_O_FIELDS_PARAM_VALUE);

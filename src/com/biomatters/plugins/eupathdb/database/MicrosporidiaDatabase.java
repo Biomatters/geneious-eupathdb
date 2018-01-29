@@ -1,7 +1,10 @@
 package com.biomatters.plugins.eupathdb.database;
 
+import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The Class <code>MicrosporidiaDatabase</code> represents MicrosporidiaDB service {http://microsporidiadb.org/} which
@@ -17,9 +20,9 @@ public class MicrosporidiaDatabase extends EukaryoticDatabase {
     private static final String PLUGIN_ICON = "microsporidiadb16.png";
     private static final String WEB_SERVICE_URI = "http://microsporidiadb.org/webservices/GeneQuestions";
     private static final String DB_URL = "http://microsporidiadb.org/micro/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
-    private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Anncaliia, Anncaliia algerae PRA109, Anncaliia algerae PRA339, Edhazardia, Edhazardia aedis USNM 41457, Encephalitozoon, Encephalitozoon cuniculi, Encephalitozoon cuniculi EC1, Encephalitozoon cuniculi EC2, Encephalitozoon cuniculi EC3, Encephalitozoon cuniculi GB-M1, Encephalitozoon hellem, Encephalitozoon hellem ATCC 50504, Encephalitozoon hellem Swiss, Encephalitozoon intestinalis, Encephalitozoon intestinalis ATCC 50506, Encephalitozoon romaleae, Encephalitozoon romaleae SJ-2008, Enterocytozoon, Enterocytozoon bieneusi H348, Mitosporidium, Mitosporidium daphniae UGP3, Nematocida, Nematocida sp 1, Nematocida ausubeli ERTm2, Nematocida ausubeli ERTm6, Nematocida parisii, Nematocida parisii ERTm1, Nematocida parisii ERTm3, Nosema, Nosema bombycis, Nosema bombycis CQ1, Nosema ceranae, Nosema ceranae BRL01, Ordospora, Ordospora colligata OC4, Spraguea, Spraguea lophii 42_110, Trachipleistophora, Trachipleistophora hominis Unknown strain, Vavraia, Vavraia culicis subsp. floridensis, Vittaforma, Vittaforma corneae ATCC 50505";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias, EC descriptions, Gene ID, Gene notes, Gene product, GO terms and definitions, Metabolic pathway names and descriptions, Protein domain names and descriptions, PubMed, Similar proteins (BLAST hits v. NRDB/PDB), User comments";
     private static final String[] TAGS = {"ECU", "Eint", "EBI"};
+    private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<String>(null);
 
     /**
      * Gets the unique id.
@@ -101,8 +104,8 @@ public class MicrosporidiaDatabase extends EukaryoticDatabase {
      * @return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE the String
      */
     @Override
-    public String getWebServiceTextSearchOrganismParamValue() {
-        return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE;
+    public String getWebServiceTextSearchOrganismParamValue() throws DatabaseServiceException {
+        return getWebServiceTextSearchOrganismParamValue(WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE);
     }
 
     /**

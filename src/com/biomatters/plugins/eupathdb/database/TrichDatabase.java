@@ -1,7 +1,10 @@
 package com.biomatters.plugins.eupathdb.database;
 
+import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The Class <code>TrichDatabase</code> represents TrichDB service {http://trichdb.org/} which
@@ -17,9 +20,9 @@ public class TrichDatabase extends EukaryoticDatabase {
     private static final String PLUGIN_ICON = "trichdb16.png";
     private static final String WEB_SERVICE_URI = "http://trichdb.org/webservices/GeneQuestions";
     private static final String DB_URL = "http://trichdb.org/trichdb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
-    private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Trichomonas vaginalis G3";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Protein domain names and descriptions,User comments";
     private static final String[] TAGS = {"TVAG"};
+    private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<String>(null);
 
     /**
      * Gets the unique id.
@@ -101,8 +104,8 @@ public class TrichDatabase extends EukaryoticDatabase {
      * @return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE the String
      */
     @Override
-    public String getWebServiceTextSearchOrganismParamValue() {
-        return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE;
+    public String getWebServiceTextSearchOrganismParamValue() throws DatabaseServiceException {
+        return getWebServiceTextSearchOrganismParamValue(WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE);
     }
 
     /**

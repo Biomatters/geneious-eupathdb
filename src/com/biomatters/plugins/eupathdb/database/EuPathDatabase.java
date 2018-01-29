@@ -1,8 +1,11 @@
 package com.biomatters.plugins.eupathdb.database;
 
+import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The Class <code>EuPathDatabase</code> represents EuPathDB service {http://eupathdb.org/} which
@@ -15,7 +18,6 @@ public class EuPathDatabase extends EukaryoticDatabase {
     private static final String DESCRIPTION = "Provides services to search for genes in EuPathDB";
     private static final String NAME = "EuPathDB";
     private static final String DB_URL = "http://eupathdb.org/eupathdb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
-    private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Amoebozoa, Acanthamoeba, Acanthamoeba castellanii str. Neff, Entamoeba, Entamoeba dispar, Entamoeba dispar SAW760, Entamoeba histolytica, Entamoeba histolytica HM-1:IMSS, Entamoeba histolytica HM-1:IMSS-A, Entamoeba histolytica HM-1:IMSS-B, Entamoeba histolytica HM-3:IMSS, Entamoeba histolytica KU27, Entamoeba invadens, Entamoeba invadens IP1, Entamoeba moshkovskii, Entamoeba moshkovskii Laredo, Entamoeba nuttalli, Entamoeba nuttalli P19, Naegleria, Naegleria fowleri ATCC 30863, Apicomplexa, Babesia, Babesia bigemina, Babesia bigemina strain BOND, Babesia bovis, Babesia bovis T2Bo, Babesia microti, Babesia microti strain RI, Cryptosporidium, Cryptosporidium hominis, Cryptosporidium hominis TU502, Cryptosporidium muris, Cryptosporidium muris RN66, Cryptosporidium parvum, Cryptosporidium parvum Iowa II, Cytauxzoon, Cytauxzoon felis strain Winnie, Eimeria, Eimeria acervulina, Eimeria acervulina Houghton, Eimeria brunetti, Eimeria brunetti Houghton, Eimeria falciformis, Eimeria falciformis Bayer Haberkorn 1970, Eimeria maxima, Eimeria maxima Weybridge, Eimeria mitis, Eimeria mitis Houghton, Eimeria necatrix, Eimeria necatrix Houghton, Eimeria praecox, Eimeria praecox Houghton, Eimeria tenella, Eimeria tenella strain Houghton, Gregarina, Gregarina niphandrodes Unknown strain, Hammondia, Hammondia hammondi strain H.H.34, Neospora, Neospora caninum Liverpool, Plasmodium, Plasmodium berghei";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias, EC descriptions, Gene ID, Gene notes, Gene product, GO terms and definitions, Metabolic pathway names and descriptions, Phenotype, Protein domain names and descriptions, PubMed, Rodent Malaria Phenotype, Similar proteins (BLAST hits v. NRDB/PDB), User comments";
     private static final String WEB_SERVICE_DS_GENE_IDS_PARSER_PARAM = "ds_gene_ids_parser";
     private static final String WEB_SERVICE_DS_GENE_IDS_PARSER_PARAM_VALUE = "list";
@@ -25,6 +27,7 @@ public class EuPathDatabase extends EukaryoticDatabase {
     private static final String[] TAGS = {"PF", "MAL", "PV", "PY",
             "PB", "PC", "PK", "EDI", "EIN", "EHI", "cgd", "GL", "ECU", "Eint",
             "EBI", "BB", "TA", "TP", "TGME", "NCLIV", "TVAG", "Tb"};
+    private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<String>(null);
 
     /**
      * Gets the unique id.
@@ -106,8 +109,8 @@ public class EuPathDatabase extends EukaryoticDatabase {
      * @return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE the String
      */
     @Override
-    public String getWebServiceTextSearchOrganismParamValue() {
-        return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE;
+    public String getWebServiceTextSearchOrganismParamValue() throws DatabaseServiceException {
+        return getWebServiceTextSearchOrganismParamValue(WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE);
     }
 
     /**

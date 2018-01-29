@@ -1,5 +1,6 @@
 package com.biomatters.plugins.eupathdb.utils;
 
+import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
 import com.biomatters.geneious.publicapi.documents.DocumentField;
 import com.biomatters.geneious.publicapi.documents.URN;
 import com.biomatters.geneious.publicapi.documents.sequence.SequenceAnnotation;
@@ -14,7 +15,7 @@ import com.biomatters.plugins.eupathdb.services.EuPathDatabaseService;
 import com.biomatters.plugins.eupathdb.webservices.models.Field;
 import com.biomatters.plugins.eupathdb.webservices.models.Record;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class SequenceDocumentGenerator {
      * @return Sequence Document
      */
     public static DefaultSequenceDocument getDefaultSequenceDocument(
-            Record record, String dbUrl, SequenceDocument.Alphabet alphabet, String database, List<GeneiousService> childServiceList) {
+            Record record, String dbUrl, SequenceDocument.Alphabet alphabet, String database, List<GeneiousService> childServiceList) throws DatabaseServiceException {
 
         String geneId = "";
         String product = "";
@@ -106,7 +107,7 @@ public class SequenceDocumentGenerator {
         if (!url.toString().isEmpty()) {
             annotation.addQualifier(new SequenceAnnotationQualifier(URL, url.toString()));
         }
-        doc.setAnnotations(Arrays.asList(annotation));
+        doc.setAnnotations(Collections.singletonList(annotation));
         doc.addDisplayableField(DocumentField.ORGANISM_FIELD);
         doc.setFieldValue(DocumentField.ORGANISM_FIELD.getCode(), speciesId);
 
@@ -121,7 +122,7 @@ public class SequenceDocumentGenerator {
      * @param childServiceList - child -service
      * @return - database name
      */
-    private static String getDatabaseNameByOrganism(String organism, List<GeneiousService> childServiceList) {
+    private static String getDatabaseNameByOrganism(String organism, List<GeneiousService> childServiceList) throws DatabaseServiceException {
         String databaseName = "";
         for (GeneiousService geneiousService : childServiceList) {
             EuPathDatabaseService euPathDatabaseService = (EuPathDatabaseService) geneiousService;

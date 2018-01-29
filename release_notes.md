@@ -11,3 +11,4 @@ Adds to [Geneious](http://geneious.com) the ability to submit searches to all of
 
 # v1.0.3 (** TO BE RELEASED **)
 - GEN-30327 Update to be compatible with changes in format of EuPathDB server response
+- GEN-30525 Lists of organisms for text searches were incomplete. Now download them dynamically from server

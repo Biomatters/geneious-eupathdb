@@ -1,7 +1,10 @@
 package com.biomatters.plugins.eupathdb.database;
 
+import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The Class <code>ToxoDatabase</code> represents ToxoDB service {http://toxodb.org/} which
@@ -17,9 +20,9 @@ public class ToxoDatabase extends EukaryoticDatabase {
     private static final String PLUGIN_ICON = "toxodb16.png";
     private static final String WEB_SERVICE_URI = "http://toxodb.org/webservices/GeneQuestions";
     private static final String DB_URL = "http://toxodb.org/toxo/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
-    private static final String WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = "Eimeria, Eimeria acervulina, Eimeria acervulina Houghton, Eimeria brunetti, Eimeria brunetti Houghton, Eimeria falciformis, Eimeria falciformis Bayer Haberkorn 1970, Eimeria maxima, Eimeria maxima Weybridge, Eimeria mitis, Eimeria mitis Houghton, Eimeria necatrix, Eimeria necatrix Houghton, Eimeria praecox, Eimeria praecox Houghton, Eimeria tenella, Eimeria tenella strain Houghton, Hammondia, Hammondia hammondi strain H.H.34, Neospora, Neospora caninum Liverpool, Sarcocystis, Sarcocystis neurona SN3, Sarcocystis neurona SO SN1, Toxoplasma, Toxoplasma gondii GT1, Toxoplasma gondii ME49, Toxoplasma gondii RH, Toxoplasma gondii VEG";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias, EC descriptions, Gene ID, Gene notes, Gene product, GO terms and definitions, Metabolic pathway names and descriptions, Protein domain names and descriptions, PubMed, Similar proteins (BLAST hits v. NRDB/PDB), User comments";
     private static final String[] TAGS = {"TGME", "NCLIV"};
+    private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<String>(null);
 
     /**
      * Gets the unique id.
@@ -101,8 +104,8 @@ public class ToxoDatabase extends EukaryoticDatabase {
      * @return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE the String
      */
     @Override
-    public String getWebServiceTextSearchOrganismParamValue() {
-        return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE;
+    public String getWebServiceTextSearchOrganismParamValue() throws DatabaseServiceException {
+        return getWebServiceTextSearchOrganismParamValue(WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE);
     }
 
     /**
