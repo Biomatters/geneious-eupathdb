@@ -8,6 +8,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
@@ -54,9 +55,16 @@ public class ResponseMessageBodyReader implements
                              Annotation[] annotations, MediaType mediaType,
                              MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
             throws IOException {
+        // work around a bug on the EuPathDB server which inserts a space character before the error response XML
+        BufferedInputStream stream = new BufferedInputStream(entityStream);
+        do {
+            stream.mark(1);
+        } while (stream.read() == ' ');
+        stream.reset();
+        // the preceding can be removed once the EuPathDB web site is fixed, but causes no harm to leave in
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(Response.class);
-            return (Response) jaxbContext.createUnmarshaller().unmarshal(entityStream);
+            return (Response) jaxbContext.createUnmarshaller().unmarshal(stream);
         } catch (JAXBException jaxbException) {
             String msg = "Failed to download results from server";
             if(jaxbException.getMessage() != null){

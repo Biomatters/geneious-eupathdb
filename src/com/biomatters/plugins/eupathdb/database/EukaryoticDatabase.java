@@ -19,6 +19,7 @@ import com.biomatters.plugins.eupathdb.webservices.EuPathDBWebService;
 import com.biomatters.plugins.eupathdb.webservices.models.Record;
 import com.biomatters.plugins.eupathdb.webservices.models.Response;
 import com.biomatters.plugins.eupathdb.webservices.models.wadl.Application;
+import com.biomatters.plugins.eupathdb.webservices.models.wadl.Method;
 import com.biomatters.plugins.eupathdb.webservices.models.wadl.Param;
 
 import javax.ws.rs.ProcessingException;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 /**
  * The Class <code>EukaryoticDatabase</code> is an abstract class represents EuPathDB databases which
@@ -62,6 +64,8 @@ public abstract class EukaryoticDatabase {
     private static final String FINAL_MESSAGE = "\"No results found. Consider using * to search for partial words. For example CO*I matches COI and COXI\"";
     private static final String INFO_MESSAGE = "EuPathDB does not support searching for a single wildcard '*'. Please use a more specific search term.";
     private static final String MISSING_RESULT_MESSAGE = "Failed to download all matching sequences. The following sequences are missing from the search results:";
+    // gene id format: begins with two letters, followed by string of alphanumeric or '_'
+    private static final Pattern GENE_ID_PATTERN = Pattern.compile("\\s*(?:(?:[a-zA-Z]{1,8}[|])?[a-zA-Z]{2}\\w+\\s*[,; ]\\s*)*(?:[a-zA-Z]{1,8}[|])?[a-zA-Z]{2}\\w+\\s*");
 
     /**
      * Gets the unique id.
@@ -118,13 +122,6 @@ public abstract class EukaryoticDatabase {
     protected abstract String getEndPointURI();
 
     /**
-     * Abstract method to define DB specific tags used to identify if search text contains gene ID.
-     *
-     * @return TAGS the List<String>
-     */
-    protected abstract List<String> getTags();
-
-    /**
      * Abstract method to define DB URL.
      *
      * @return DBURL the String
@@ -137,6 +134,13 @@ public abstract class EukaryoticDatabase {
      * @return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE the String
      */
     public abstract String getWebServiceTextSearchOrganismParamValue() throws DatabaseServiceException;
+
+    /**
+     * This should only be used by unit tests - exposes the raw reference normally only used internally
+     *
+     * @return the actual reference used to store organism psrsm values downloaded from the web
+     */
+    protected abstract AtomicReference<String> getWebServiceTextSearchOrganismParamReference();
 
     /**
      * define DB specific value for text_search_organism parameter.
@@ -238,7 +242,7 @@ public abstract class EukaryoticDatabase {
      */
     public void search(Query paramQuery, RetrieveCallback paramRetrieveCallback, URN[] paramArrayOfURN, List<GeneiousService> childServiceList) throws DatabaseServiceException {
         String queryText = ((BasicSearchQuery) paramQuery).getSearchText();
-        List<Record> allMissingRecordIDs = new ArrayList<Record>();
+        List<Record> allMissingRecordIDs = new ArrayList<>();
         if (!(queryText == null || (queryText = queryText.trim()).isEmpty())) {
             if(queryText.equals("*")) {
                 Dialogs.showMessageDialog(INFO_MESSAGE, "EuPath Database Info", null, Dialogs.DialogIcon.INFORMATION);
@@ -246,13 +250,13 @@ public abstract class EukaryoticDatabase {
                 return;
             }
             //get URN element from paramArrayOfURN which is used when Agent is re-run.
-            List<String> urnElementList = new ArrayList<String>();
+            List<String> urnElementList = new ArrayList<>();
             if (paramArrayOfURN.length > 0) {
                 for (URN urn : paramArrayOfURN) {
                     urnElementList.add(urn.element);
                 }
             }
-            Map<String, String> paramMap = isQueryTextStartsWithTag(queryText)
+            Map<String, String> paramMap = isQueryForLocusTagSearch(queryText)
                     ? getParametersMapForSearchByTag(queryText)
                     : getParametersMapForSearchByText(queryText);
 
@@ -304,7 +308,7 @@ public abstract class EukaryoticDatabase {
      * @throws DatabaseServiceException
      */
     private List<Record> executeInBatch(List<Record> records, int documentCount, int uptoCount, int totalCount, RetrieveCallback paramRetrieveCallback, EuPathDBWebService service, List<String> urnElementList, List<GeneiousService> childServiceList) throws DatabaseServiceException {
-        List<Record> misMatchRecord = new ArrayList<Record>();
+        List<Record> misMatchRecord = new ArrayList<>();
         List<Record> recordInBatch = records.subList(documentCount, uptoCount);
         String recordIds = retrieveIDsInCSVString(recordInBatch, urnElementList);
         if (!recordIds.isEmpty()) {
@@ -359,7 +363,7 @@ public abstract class EukaryoticDatabase {
      * @return - Missing Records which is expected to be retrieved from response but didn't retrieved.
      */
     private List<Record> reportSearchResult(List<Record> recordInBatch, RetrieveCallback callback, Response response, int documentCount, int totalDocuments, List<GeneiousService> childServiceList) throws DatabaseServiceException {
-        List<Record> missingRecords = new ArrayList<Record>();
+        List<Record> missingRecords = new ArrayList<>();
         if (!(response == null || response.getRecordset() == null || response
                 .getRecordset().getRecord() == null)) {
             DefaultSequenceDocument document;
@@ -388,7 +392,7 @@ public abstract class EukaryoticDatabase {
                                     getDBUrl(), alphabet, getName(), childServiceList);
                     if (document != null) {
                         callback.add(document,
-                                Collections.<String, Object>emptyMap());
+                                Collections.emptyMap());
 
                     }
                 }
@@ -402,12 +406,16 @@ public abstract class EukaryoticDatabase {
         EuPathDBWebService service = new EuPathDBWebService();
         Application application = getApplicationFromWadl(uri, service);
 
-        List<Param> params = application.getResources().getResource().get(0).getMethod().get(0).getRequest().getParam();
-        for (Param p:params) {
-            if (p.getName().equals("text_search_organism")) {
-                return p.getDefault();
+        List<Object> methodOrResource = application.getResources().get(0).getResource().get(0).getMethodOrResource();
+        for (Object mOrR:methodOrResource) {
+            if (mOrR instanceof Method) {
+                for (Param p:((Method)mOrR).getRequest().getParam()) {
+                    if (p.getName().equals("text_search_organism")) {
+                        return p.getDefault();
+                    }
+                }
             }
-        }
+         }
         throw new DatabaseServiceException("Could not retrieve organism list from webservice", false);
     }
 
@@ -483,18 +491,14 @@ public abstract class EukaryoticDatabase {
     }
 
     /**
-     * Checks if the query text starts with the tag.
+     * Checks if the query text is proper format for locus tag search.
+     * Search contains one or more exact gene IDs (locus tags) separated by comma, semicolon, or whitespace
      *
      * @param queryText the query text
-     * @return true, if query text starts with tag
+     * @return true, if query text is in correct format for a locus tag search
      */
-    private boolean isQueryTextStartsWithTag(String queryText) {
-        for (String tag : getTags()) {
-            if (queryText.startsWith(tag)) {
-                return true;
-            }
-        }
-        return false;
+    private boolean isQueryForLocusTagSearch(String queryText) {
+        return GENE_ID_PATTERN.matcher(queryText).matches();
     }
 
     /**
@@ -504,7 +508,7 @@ public abstract class EukaryoticDatabase {
      * @return uri the URI
      */
     private URI buildURI(String queryText) {
-        return isQueryTextStartsWithTag(queryText) ? buildURIForGenesByLocusTag()
+        return isQueryForLocusTagSearch(queryText) ? buildURIForGenesByLocusTag()
                 : buildURIForGenesByTextSearch();
     }
 
@@ -515,7 +519,7 @@ public abstract class EukaryoticDatabase {
      * @return paramMap the Map
      */
     Map<String, String> getParametersMapForSearchByTag(String queryText) {
-        Map<String, String> paramMap = new HashMap<String, String>(2);
+        Map<String, String> paramMap = new HashMap<>(2);
         paramMap.put(WEB_SERVICE_O_FIELDS_PARAM,
                 WEB_SERVICE_O_FIELDS_PARAM_VALUE);
         paramMap.put(WEB_SERVICE_DS_GENE_IDS_PARAM, queryText);
@@ -529,7 +533,7 @@ public abstract class EukaryoticDatabase {
      * @return paramMap the Map
      */
     Map<String, String> getParametersMapForSearchByText(String queryText) throws DatabaseServiceException {
-        Map<String, String> paramMap = new HashMap<String, String>(5);
+        Map<String, String> paramMap = new HashMap<>(5);
         paramMap.put(WEB_SERVICE_O_FIELDS_PARAM,
                 WEB_SERVICE_O_FIELDS_PARAM_VALUE);
         paramMap.put(WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM,

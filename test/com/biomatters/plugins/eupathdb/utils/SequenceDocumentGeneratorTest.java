@@ -5,13 +5,10 @@ import com.biomatters.geneious.publicapi.documents.sequence.SequenceDocument;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultAminoAcidSequence;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultNucleotideSequence;
 import com.biomatters.geneious.publicapi.implementations.sequence.DefaultSequenceDocument;
-import com.biomatters.geneious.publicapi.plugin.DocumentImportException;
 import com.biomatters.plugins.eupathdb.webservices.models.Field;
 import com.biomatters.plugins.eupathdb.webservices.models.Record;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +69,7 @@ public class SequenceDocumentGeneratorTest {
      * @return record The Record
      */
     private Record getRecord() {
-        List<Field> fields = new ArrayList<Field>(5);
+        List<Field> fields = new ArrayList<>(5);
         fields.add(new Field("primary_key", "PF3D7_1133400"));
         fields.add(new Field("organism", "P. falciparum 3D7"));
         fields.add(new Field("product", "apical membrane antigen 1 AMA1"));

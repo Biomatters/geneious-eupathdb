@@ -2,10 +2,9 @@ package com.biomatters.plugins.eupathdb.database;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The Class <code>OrthoMCLDatabase</code> represents OrthoMCLDB service {http://orthomcl.org/} which
@@ -41,7 +40,6 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
     private static final String WEB_SERVICE_PROJECT_ID_PARAM_VALUE = "OrthoMCL";
     private static final String WEB_SERVICE_O_FIELDS_PARAM_VALUE = "primary_key,product,sequence";
     private static final String WEB_SERVICE_SOURCE_IDS_PARSER_PARAM_VALUE = "list";
-    private static final String[] TAGS = {"PF", "AAE", "NP", "Afu", "AGA", "XP", "ENS", "EBI", "AAL", "AAR", "ABL", "ACL", "AGO", "AGR", "ATG", "EHI", "EIN", "ENS", "GL5", "GLP"};
 
     /**
      * Gets the unique id.
@@ -99,15 +97,6 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
     }
 
     /**
-     * DB specific tags used to identify if search text contains gene ID.
-     *
-     * @return TAGS the List<String>
-     */
-    protected List<String> getTags() {
-        return Arrays.asList(TAGS);
-    }
-
-    /**
      * Overridden method to define DB URL.
      *
      * @return DB_URL the String
@@ -145,11 +134,20 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
      */
     @Override
     Map<String, String> getParametersMapForSearchByTag(String queryText) {
-        Map<String, String> paramMap = new HashMap<String, String>(3);
+        Map<String, String> paramMap = new HashMap<>(3);
         paramMap.put(WEB_SERVICE_O_FIELDS_PARAM, WEB_SERVICE_O_FIELDS_PARAM_VALUE);
         paramMap.put(WEB_SERVICE_SOURCE_IDS_PARSER_PARAM, WEB_SERVICE_SOURCE_IDS_PARSER_PARAM_VALUE);
         paramMap.put(WEB_SERVICE_SOURCE_IDS_DATA_PARAM, queryText);
         return paramMap;
+    }
+
+    /**
+     * should only be used by unit tests
+     * @return  the raw reference to WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE
+     */
+    @Override
+    protected AtomicReference<String> getWebServiceTextSearchOrganismParamReference() {
+        return null;
     }
 
     /**
@@ -160,7 +158,7 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
      */
     @Override
     Map<String, String> getParametersMapForSearchByText(String queryText) {
-        Map<String, String> paramMap = new HashMap<String, String>(7);
+        Map<String, String> paramMap = new HashMap<>(7);
         paramMap.put(WEB_SERVICE_WDK_RECORD_TYPE_PARAM, WEB_SERVICE_WDK_RECORD_TYPE_PARAM_VALUE);
         paramMap.put(WEB_SERVICE_TEXT_FIELDS_PARAM, WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE);
         paramMap.put(WEB_SERVICE_DETAIL_TABLE_PARAM, WEB_SERVICE_DETAIL_TABLE_PARAM_VALUE);

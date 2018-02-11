@@ -2,8 +2,6 @@ package com.biomatters.plugins.eupathdb.database;
 
 import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -24,10 +22,7 @@ public class EuPathDatabase extends EukaryoticDatabase {
     private static final String WEB_SERVICE_WDK_USER_SIGNATURE_PARAM = "wdk_user_signature";
     private static final String WEB_SERVICE_WDK_USER_SIGNATURE_PARAM_VALUE = "none";
     private static final String WEB_SERVICE_URI = "http://eupathdb.org/eupathdb/webservices/GeneQuestions";
-    private static final String[] TAGS = {"PF", "MAL", "PV", "PY",
-            "PB", "PC", "PK", "EDI", "EIN", "EHI", "cgd", "GL", "ECU", "Eint",
-            "EBI", "BB", "TA", "TP", "TGME", "NCLIV", "TVAG", "Tb"};
-    private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<String>(null);
+    private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<>(null);
 
     /**
      * Gets the unique id.
@@ -85,15 +80,6 @@ public class EuPathDatabase extends EukaryoticDatabase {
     }
 
     /**
-     * DB specific tags used to identify if search text contains gene ID.
-     *
-     * @return TAGS the List<String>
-     */
-    protected List<String> getTags() {
-        return Arrays.asList(TAGS);
-    }
-
-    /**
      * Overridden method to define DB URL.
      *
      * @return DB_URL the String
@@ -111,6 +97,15 @@ public class EuPathDatabase extends EukaryoticDatabase {
     @Override
     public String getWebServiceTextSearchOrganismParamValue() throws DatabaseServiceException {
         return getWebServiceTextSearchOrganismParamValue(WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE);
+    }
+
+    /**
+     * should only be used by unit tests
+     * @return  the raw reference to WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE
+     */
+    @Override
+    protected AtomicReference<String> getWebServiceTextSearchOrganismParamReference() {
+        return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE;
     }
 
     /**

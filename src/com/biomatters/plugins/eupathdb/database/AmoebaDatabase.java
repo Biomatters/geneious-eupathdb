@@ -2,8 +2,6 @@ package com.biomatters.plugins.eupathdb.database;
 
 import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -21,8 +19,7 @@ public class AmoebaDatabase extends EukaryoticDatabase {
     private static final String WEB_SERVICE_URI = "http://amoebadb.org/webservices/GeneQuestions";
     private static final String DB_URL = "http://amoebadb.org/amoeba/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Metabolic pathway names and descriptions,Protein domain names and descriptions,User comments";
-    private static final String[] TAGS = {"EDI", "EIN", "EHI"};
-    private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<String>(null);
+    private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<>(null);
 
     /**
      * Gets the unique id.
@@ -80,15 +77,6 @@ public class AmoebaDatabase extends EukaryoticDatabase {
     }
 
     /**
-     * DB specific tags used to identify if search text contains gene ID.
-     *
-     * @return TAGS the List<String>
-     */
-    protected List<String> getTags() {
-        return Arrays.asList(TAGS);
-    }
-
-    /**
      * Overridden method to define DB URL.
      *
      * @return DB_URL the String
@@ -106,6 +94,15 @@ public class AmoebaDatabase extends EukaryoticDatabase {
     @Override
     public String getWebServiceTextSearchOrganismParamValue() throws DatabaseServiceException {
         return getWebServiceTextSearchOrganismParamValue(WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE);
+    }
+
+    /**
+     * should only be used by unit tests
+     * @return  the raw reference to WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE
+     */
+    @Override
+    protected AtomicReference<String> getWebServiceTextSearchOrganismParamReference() {
+        return WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE;
     }
 
     /**

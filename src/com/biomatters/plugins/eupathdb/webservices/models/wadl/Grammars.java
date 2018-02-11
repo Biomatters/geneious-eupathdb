@@ -13,8 +13,6 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import org.w3c.dom.Element;
@@ -31,14 +29,7 @@ import org.w3c.dom.Element;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{http://wadl.dev.java.net/2009/02}doc" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element ref="{http://wadl.dev.java.net/2009/02}grammars" minOccurs="0"/>
- *         &lt;element ref="{http://wadl.dev.java.net/2009/02}resources" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;choice maxOccurs="unbounded" minOccurs="0">
- *           &lt;element ref="{http://wadl.dev.java.net/2009/02}resource_type"/>
- *           &lt;element ref="{http://wadl.dev.java.net/2009/02}method"/>
- *           &lt;element ref="{http://wadl.dev.java.net/2009/02}representation"/>
- *           &lt;element ref="{http://wadl.dev.java.net/2009/02}param"/>
- *         &lt;/choice>
+ *         &lt;element ref="{http://wadl.dev.java.net/2009/02}include" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;any processContents='lax' namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -51,24 +42,14 @@ import org.w3c.dom.Element;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "doc",
-    "grammars",
-    "resources",
-    "resourceTypeOrMethodOrRepresentation",
+    "include",
     "any"
 })
-@XmlRootElement(name = "application")
-public class Application {
+@XmlRootElement(name = "grammars")
+public class Grammars {
 
     protected List<Doc> doc;
-    protected Grammars grammars;
-    protected List<Resources> resources;
-    @XmlElements({
-        @XmlElement(name = "resource_type", type = ResourceType.class),
-        @XmlElement(name = "method", type = Method.class),
-        @XmlElement(name = "representation", type = Representation.class),
-        @XmlElement(name = "param", type = Param.class)
-    })
-    protected List<Object> resourceTypeOrMethodOrRepresentation;
+    protected List<Include> include;
     @XmlAnyElement(lax = true)
     protected List<Object> any;
 
@@ -102,88 +83,32 @@ public class Application {
     }
 
     /**
-     * Gets the value of the grammars property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Grammars }
-     *     
-     */
-    public Grammars getGrammars() {
-        return grammars;
-    }
-
-    /**
-     * Sets the value of the grammars property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Grammars }
-     *     
-     */
-    public void setGrammars(Grammars value) {
-        this.grammars = value;
-    }
-
-    /**
-     * Gets the value of the resources property.
+     * Gets the value of the include property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the resources property.
+     * This is why there is not a <CODE>set</CODE> method for the include property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getResources().add(newItem);
+     *    getInclude().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Resources }
+     * {@link Include }
      * 
      * 
      */
-    public List<Resources> getResources() {
-        if (resources == null) {
-            resources = new ArrayList<Resources>();
+    public List<Include> getInclude() {
+        if (include == null) {
+            include = new ArrayList<Include>();
         }
-        return this.resources;
-    }
-
-    /**
-     * Gets the value of the resourceTypeOrMethodOrRepresentation property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the resourceTypeOrMethodOrRepresentation property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getResourceTypeOrMethodOrRepresentation().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link ResourceType }
-     * {@link Method }
-     * {@link Representation }
-     * {@link Param }
-     * 
-     * 
-     */
-    public List<Object> getResourceTypeOrMethodOrRepresentation() {
-        if (resourceTypeOrMethodOrRepresentation == null) {
-            resourceTypeOrMethodOrRepresentation = new ArrayList<Object>();
-        }
-        return this.resourceTypeOrMethodOrRepresentation;
+        return this.include;
     }
 
     /**

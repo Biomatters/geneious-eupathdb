@@ -1,78 +1,28 @@
 package com.biomatters.plugins.eupathdb.database;
 
-import com.biomatters.geneious.publicapi.databaseservice.BasicSearchQuery;
 import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
 import com.biomatters.geneious.publicapi.databaseservice.Query;
 import com.biomatters.geneious.publicapi.databaseservice.RetrieveCallback;
 import com.biomatters.geneious.publicapi.documents.AnnotatedPluginDocument;
 import com.biomatters.geneious.publicapi.documents.PluginDocument;
 import com.biomatters.geneious.publicapi.documents.URN;
-import com.biomatters.geneious.publicapi.plugin.GeneiousService;
-import com.biomatters.plugins.eupathdb.utils.TestUtilities;
-import com.biomatters.plugins.eupathdb.webservices.EuPathDBWebService;
+import com.biomatters.geneious.publicapi.plugin.TestGeneious;
 import com.biomatters.plugins.eupathdb.webservices.models.Record;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.MessageBodyReader;
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The class <code>EukaryoticDatabaseTest</code> contains test cases for the class
  * <code>{@link EukaryoticDatabaseTest}</code>.
  *
- * @author cybage
+ * @author sidney
  */
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"javax.management.*", "javax.swing.*", "javax.security.*", "org.freehep.graphicsio.raw.*",
-        "org.freehep.graphicsio.gif.*", "org.freehep.graphicsio.ppm.*", "apple.laf.*", "com.apple.*",
-        "javax.imageio.*", "javax.net.*", "com.sun.*", "javax.xml.*", "org.xml.*", "javax.crypto.*"})
-@SuppressStaticInitializationFor("com.biomatters.geneious.publicapi.plugin.Icons$PointlessJPanelHolder")
-@PrepareForTest({EuPathDBWebService.class, EukaryoticDatabase.class})
 public class EukaryoticDatabaseTest {
-
-    @Rule
-    public ExpectedException expectedEx = ExpectedException.none();
-    private Query query;
-    private Callback callback;
-    private EukaryoticDatabase eukaryoticDatabase;
-    private Response response;
-
-    /**
-     * Perform pre-test initialization.
-     *
-     * @throws Exception if the initialization fails for some reason
-     */
-    @Before
-    public void setUp() throws Exception {
-        callback = new Callback();
-        eukaryoticDatabase = new EuPathDatabase();
-        query = Mockito.mock(BasicSearchQuery.class);
-        response = Mockito.mock(Response.class);
-
-        EuPathDBWebService service = Mockito.mock(EuPathDBWebService.class);
-        PowerMockito.whenNew(EuPathDBWebService.class).withAnyArguments().thenReturn(service);
-        Mockito.when(
-                service.post(Mockito.any(URI.class),
-                        Mockito.anyMapOf(String.class, String.class),
-                        Mockito.any(MessageBodyReader.class)))
-                .thenReturn(response);
-    }
 
     /**
      * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test for search by tag.
@@ -80,44 +30,29 @@ public class EukaryoticDatabaseTest {
      * @throws Exception
      */
     @Test
-    public void testProcessSearchForSearchByTag() throws Exception {
-        mockAndProcessSearch("PF3D7_1133400", "ResponseDataXML.txt");
-        Assert.assertEquals(7, callback.addCount);
+    public void testRunAllSearchTests() throws DatabaseServiceException {
+        TestGeneious.initialize();
+        for  (EuDBTests euDBTest : EuDBTests.values()) {
+            euDBTest.runTest();
+        }
     }
 
-    /**
-     * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test for search by text.
-     *
-     * @throws Exception
-     */
     @Test
-    public void testProcessSearchForSearchByText() throws Exception {
-        mockAndProcessSearch("adc", "ResponseDataXML.txt");
-        Assert.assertEquals(7, callback.addCount);
-    }
-
-    /**
-     * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test for search on OrthoMCL DB Service.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testProcessSearchForOrthoMCL() throws Exception {
-        mockAndProcessSearch("OG5_228447", "ResponseDataXMLForOrthoMCL.txt");
-        Assert.assertEquals(2, callback.addCount);
-    }
-
-    /**
-     * Run the processSearch(Query, RetrieveCallback, EuPathDatabase) method test for error response.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testProcessSearch_ErrorResponse() throws Exception {
-        expectedEx.expect(DatabaseServiceException.class);
-        expectedEx.expectMessage("User Error (#020): The input to parameter 'Text term (use * as wildcard)' is required");
-
-        mockAndProcessSearch("adc", "ResponseDataXML_Error.txt");
+    public void testErrorReturn() throws DatabaseServiceException {
+        TestGeneious.initialize();
+        EukaryoticDatabase eukaryoticDatabase = new EuPathDatabase();
+        String organisms = eukaryoticDatabase.getWebServiceTextSearchOrganismParamValue();
+        AtomicReference<String> ref = eukaryoticDatabase.getWebServiceTextSearchOrganismParamReference();
+        ref.set("foo,"+organisms); // this leaves class in a bad state, be sure to clean up
+        try {
+            EuDBTests.EuPathByText.runTest();
+        } catch (DatabaseServiceException e) {
+            Assert.assertTrue("Expected to catch server error message but caught "+e+": "+e.getUserMessage(), e.getMessage().contains("server responded with an error message"));
+            return;  // expecting the correct error
+        } finally {
+            ref.set(organisms);  // clean up before running any more tests
+        }
+        Assert.fail("Expected to catch an error from the server, but somehow the test query succeeded");
     }
 
     /**
@@ -125,7 +60,7 @@ public class EukaryoticDatabaseTest {
      */
     @Test
     public void testRetrieveIDsInCSVStringTest() {
-        String result = eukaryoticDatabase.retrieveIDsInCSVString(getRecords(), new ArrayList<String>());
+        String result = new EuPathDatabase().retrieveIDsInCSVString(getRecords(), new ArrayList<>());
         Assert.assertEquals("PF3D7_1111,PF3D7_1112,PF3D7_1113|,PF3D7_1114", result);
     }
 
@@ -134,10 +69,10 @@ public class EukaryoticDatabaseTest {
      */
     @Test
     public void testRetrieveIDsInCSVStringTestWithURN() {
-        List<String> urnList = new ArrayList<String>();
+        List<String> urnList = new ArrayList<>();
         urnList.add("PF3D7_1111");
         urnList.add("PF3D7_1113|");
-        String result = eukaryoticDatabase.retrieveIDsInCSVString(getRecords(), urnList);
+        String result = new EuPathDatabase().retrieveIDsInCSVString(getRecords(), urnList);
         Assert.assertEquals("PF3D7_1112,PF3D7_1114", result);
     }
 
@@ -147,7 +82,7 @@ public class EukaryoticDatabaseTest {
      * @return - list of records
      */
     private List<Record> getRecords() {
-        List<Record> records = new ArrayList<Record>();
+        List<Record> records = new ArrayList<>();
         records.add(new Record("PF3D7_1111", null));
         records.add(new Record("PF3D7_1111", null));
         records.add(new Record("abc|PF3D7_1112", null));
@@ -157,27 +92,59 @@ public class EukaryoticDatabaseTest {
         return records;
     }
 
-    /**
-     * Mocking search-query and readEntity.
-     * Hit search based on mocking data.
-     *
-     * @param searchQuery - search query.
-     * @param fileName    - test-data file name.
-     * @throws IOException
-     * @throws DatabaseServiceException
-     */
-    private void mockAndProcessSearch(String searchQuery, String fileName) throws IOException, DatabaseServiceException {
-        Mockito.doReturn(searchQuery).when((BasicSearchQuery) query).getSearchText();
-        Mockito.when(
-                response.readEntity(com.biomatters.plugins.eupathdb.webservices.models.Response.class))
-                .thenReturn(TestUtilities.getWebServiceResponse(fileName));
-        eukaryoticDatabase.search(query, callback, new URN[]{}, new ArrayList<GeneiousService>());
+    private enum EuDBTests {
+        // tests named ByTag use query strings that should be interpreted as list of gene ids (locus tags) and return exact number of results
+        // tests named ByText should use a free text query. We allow for future tests to get more responses if new matching items have been added to the database
+        EuPathByTag(new EuPathDatabase(), "PF3D7_1133400", 1, 1),
+        EuPathByText(new EuPathDatabase(), "ACA1_0417*", 6, 10),
+        AmoebaByTag(new AmoebaDatabase(), "EDI_046900,EDI_046930", 2, 2),
+        AmoebaByText(new AmoebaDatabase(), "*EDI_0469*", 4, 8),
+        CryptoByTag(new CryptoDatabase(), "cgd7_2320,cgd7_2340", 2, 2),
+        CryptoByText(new CryptoDatabase(), "cgd7_23*", 11, 15),
+        FungiByTag(new FungiDatabase(), "NCU06650;NCU06656", 2, 2),
+        FungiByText(new FungiDatabase(), "NCU0665*", 11, 15),
+        GiardiaByTag(new GiardiaDatabase(), "GL50803_102438", 1, 1),
+        GiardiaByText(new GiardiaDatabase(), "GL50803_1024*", 6, 10),
+        MicrosporidiaByTag(new MicrosporidiaDatabase(), "ECU03_0820i", 1, 1),
+        MicrosporidiaByText(new MicrosporidiaDatabase(), "ECU03_0820*", 8, 12),
+        OrthoMCLByTag(new OrthoMCLDatabase(), "pfal|PF11_0344,pfal|PF11_0345", 2, 2),
+        OrthoMCLByText(new OrthoMCLDatabase(), "*OG5_228447", 2, 6),
+        PiroPlasmaByTag(new PiroPlasmaDatabase(), "TA14980,TA14985", 2, 2),
+        PiroPlasmaByText(new PiroPlasmaDatabase(), "TA1498*", 2, 6),
+        PlasmoByTag(new PlasmoDatabase(), "PF3D7_1133400,PGSY75_1133400", 2, 2),
+        PlasmoByText(new PlasmoDatabase(), "PF3D7_113340*", 2, 6),
+        ToxoByTag(new ToxoDatabase(), "TGME49_239250", 1, 1),
+        ToxoByText(new ToxoDatabase(), "TGME49_2392*", 4, 8),
+        TrichByTag(new TrichDatabase(), "TVAG_386080", 1, 1),
+        TrichByText(new TrichDatabase(), "TVAG_38608*", 1, 5),
+        TriTrypByTag(new TriTrypDatabase(), "Tb927.11.3120", 1, 1),
+        TriTrypByText(new TriTrypDatabase(), "Tb927.11.312*", 1, 5);
+
+        private final EukaryoticDatabase eukaryoticDatabase;
+        private final String queryString;
+        private final int minExpectedReturns;
+        private final int maxExpectedReturns;
+
+        EuDBTests(EukaryoticDatabase eukaryoticDatabase, String queryString, int minExpectedReturns, int maxExpectedReturns) {
+            this.eukaryoticDatabase = eukaryoticDatabase;
+            this.queryString = queryString;
+            this.minExpectedReturns = minExpectedReturns;
+            this.maxExpectedReturns = maxExpectedReturns;
+        }
+
+        void runTest() throws DatabaseServiceException {
+            Callback callback = new Callback();
+            Query query = Query.Factory.createQuery(queryString);
+            eukaryoticDatabase.search(query, callback, new URN[]{}, new ArrayList<>());
+            Assert.assertTrue(toString()+": Number of results is "+callback.addCount+", expected range ["+minExpectedReturns+", "+maxExpectedReturns+"]",
+                    (callback.addCount >= minExpectedReturns) && (callback.addCount <= maxExpectedReturns));
+        }
     }
 
     /**
      *
      */
-    class Callback extends RetrieveCallback {
+    static class Callback extends RetrieveCallback {
 
         /**
          * The count of call to _add(PluginDocument pluginDocument, Map<String, Object> map)
@@ -203,6 +170,7 @@ public class EukaryoticDatabaseTest {
          */
         @Override
         protected void _add(AnnotatedPluginDocument annotatedPluginDocument, Map<String, Object> map) {
+            addCount++;   // should never be called, but let it contribute to an error if it is called
         }
     }
 }

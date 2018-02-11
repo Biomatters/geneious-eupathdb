@@ -17,9 +17,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
@@ -34,10 +36,12 @@ import org.w3c.dom.Element;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element ref="{http://wadl.dev.java.net/2009/02}doc" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;any processContents='lax' namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
- *       &lt;attribute name="title" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute ref="{http://www.w3.org/XML/1998/namespace}lang"/>
+ *       &lt;attribute name="resource_type" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
+ *       &lt;attribute name="rel" type="{http://www.w3.org/2001/XMLSchema}token" />
+ *       &lt;attribute name="rev" type="{http://www.w3.org/2001/XMLSchema}token" />
  *       &lt;anyAttribute processContents='lax' namespace='##other'/>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -48,98 +52,158 @@ import org.w3c.dom.Element;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "content"
+    "doc",
+    "any"
 })
-@XmlRootElement(name = "doc")
-public class Doc {
+@XmlRootElement(name = "link")
+public class Link {
 
-    @XmlMixed
+    protected List<Doc> doc;
     @XmlAnyElement(lax = true)
-    protected List<Object> content;
-    @XmlAttribute(name = "title")
-    protected String title;
-    @XmlAttribute(name = "lang", namespace = "http://www.w3.org/XML/1998/namespace")
-    protected String lang;
+    protected List<Object> any;
+    @XmlAttribute(name = "resource_type")
+    @XmlSchemaType(name = "anyURI")
+    protected String resourceType;
+    @XmlAttribute(name = "rel")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlSchemaType(name = "token")
+    protected String rel;
+    @XmlAttribute(name = "rev")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlSchemaType(name = "token")
+    protected String rev;
     @XmlAnyAttribute
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
 
     /**
-     * Gets the value of the content property.
+     * Gets the value of the doc property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the content property.
+     * This is why there is not a <CODE>set</CODE> method for the doc property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getContent().add(newItem);
+     *    getDoc().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link Doc }
+     * 
+     * 
+     */
+    public List<Doc> getDoc() {
+        if (doc == null) {
+            doc = new ArrayList<Doc>();
+        }
+        return this.doc;
+    }
+
+    /**
+     * Gets the value of the any property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the any property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getAny().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link Element }
-     * {@link String }
      * {@link Object }
      * 
      * 
      */
-    public List<Object> getContent() {
-        if (content == null) {
-            content = new ArrayList<Object>();
+    public List<Object> getAny() {
+        if (any == null) {
+            any = new ArrayList<Object>();
         }
-        return this.content;
+        return this.any;
     }
 
     /**
-     * Gets the value of the title property.
+     * Gets the value of the resourceType property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getTitle() {
-        return title;
+    public String getResourceType() {
+        return resourceType;
     }
 
     /**
-     * Sets the value of the title property.
+     * Sets the value of the resourceType property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setTitle(String value) {
-        this.title = value;
+    public void setResourceType(String value) {
+        this.resourceType = value;
     }
 
     /**
-     * Gets the value of the lang property.
+     * Gets the value of the rel property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getLang() {
-        return lang;
+    public String getRel() {
+        return rel;
     }
 
     /**
-     * Sets the value of the lang property.
+     * Sets the value of the rel property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setLang(String value) {
-        this.lang = value;
+    public void setRel(String value) {
+        this.rel = value;
+    }
+
+    /**
+     * Gets the value of the rev property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getRev() {
+        return rev;
+    }
+
+    /**
+     * Sets the value of the rev property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setRev(String value) {
+        this.rev = value;
     }
 
     /**
