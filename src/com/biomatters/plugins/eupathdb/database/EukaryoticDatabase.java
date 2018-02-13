@@ -12,6 +12,7 @@ import com.biomatters.geneious.publicapi.plugin.GeneiousService;
 import com.biomatters.geneious.publicapi.plugin.Icons;
 import com.biomatters.geneious.publicapi.utilities.IconUtilities;
 import com.biomatters.plugins.eupathdb.EuPathDBPlugin;
+import com.biomatters.plugins.eupathdb.services.EuPathDatabaseService;
 import com.biomatters.plugins.eupathdb.utils.ApplicationMessageBodyReader;
 import com.biomatters.plugins.eupathdb.utils.ResponseMessageBodyReader;
 import com.biomatters.plugins.eupathdb.utils.SequenceDocumentGenerator;
@@ -61,7 +62,9 @@ public abstract class EukaryoticDatabase {
     private static final String PATH_XML_GENES_BY_MR4_REAGENTS = "GenesByMr4Reagents.xml";
 
     private static final int BATCH_SIZE = 250;
-    private static final String FINAL_MESSAGE = "\"No results found. Consider using * to search for partial words. For example CO*I matches COI and COXI\"";
+    private static final String NO_RESULTS_FROM_GENE_ID_LIST = "No results found. Consider disabling Gene IDs Only to search all text fields";
+    private static final String NO_RESULTS_BAD_GENE_ID_LIST = "No results found. The query string is not in the correct format for a list of gene IDs";
+    private static final String NO_RESULTS_FROM_FREE_TEXT = "No results found. Consider using * to search partial words. For example CO*I matches COI and COXI";
     private static final String INFO_MESSAGE = "EuPathDB does not support searching for a single wildcard '*'. Please use a more specific search term.";
     private static final String MISSING_RESULT_MESSAGE = "Failed to download all matching sequences. The following sequences are missing from the search results:";
     // gene id format: begins with two letters, followed by string of alphanumeric or '_'
@@ -256,13 +259,16 @@ public abstract class EukaryoticDatabase {
                     urnElementList.add(urn.element);
                 }
             }
-            Map<String, String> paramMap = isQueryForLocusTagSearch(queryText)
+            boolean isLocusTagSearch = isQueryForLocusTagSearch(paramQuery);
+            Map<String, String> paramMap = isLocusTagSearch
                     ? getParametersMapForSearchByTag(queryText)
                     : getParametersMapForSearchByText(queryText);
 
             //Override the O_FIELDS value of the parameterMap to get only ID at first request.
             paramMap.put(WEB_SERVICE_O_FIELDS_PARAM, WEB_SERVICE_O_FIELDS_PARAM_VALUE_FOR_ID);
-            URI uri = buildURI(queryText);
+            URI uri = isLocusTagSearch
+                    ? buildURIForGenesByLocusTag()
+                    : buildURIForGenesByTextSearch();
             EuPathDBWebService service = new EuPathDBWebService();
             Response response = getResponseFromWebService(paramMap, uri, service);
 
@@ -288,7 +294,15 @@ public abstract class EukaryoticDatabase {
                     Dialogs.showMessageDialog(MISSING_RESULT_MESSAGE + "\n" + missingIDList, "Search Results Missing in " + getName(), null, Dialogs.DialogIcon.INFORMATION);
                 }
             } else {
-                paramRetrieveCallback.setFinalStatus(FINAL_MESSAGE, false);
+                String notFoundMessage = NO_RESULTS_FROM_FREE_TEXT;
+                if (isLocusTagSearch) {
+                    if (isQueryForLocusTagSearch(queryText)) {
+                        notFoundMessage = NO_RESULTS_FROM_GENE_ID_LIST;
+                    } else {
+                        notFoundMessage = NO_RESULTS_BAD_GENE_ID_LIST;
+                    }
+                }
+                paramRetrieveCallback.setFinalStatus(notFoundMessage, false);
             }
         }
     }
@@ -490,6 +504,10 @@ public abstract class EukaryoticDatabase {
         return errorMsg.toString();
     }
 
+    private boolean isQueryForLocusTagSearch(Query paramQuery) {
+       return EuPathDatabaseService.isLocusTagsOnly(paramQuery);
+    }
+
     /**
      * Checks if the query text is proper format for locus tag search.
      * Search contains one or more exact gene IDs (locus tags) separated by comma, semicolon, or whitespace
@@ -499,17 +517,6 @@ public abstract class EukaryoticDatabase {
      */
     private boolean isQueryForLocusTagSearch(String queryText) {
         return GENE_ID_PATTERN.matcher(queryText).matches();
-    }
-
-    /**
-     * Builds URI from query text and end point decided based on query search type.
-     *
-     * @param queryText the queryText
-     * @return uri the URI
-     */
-    private URI buildURI(String queryText) {
-        return isQueryForLocusTagSearch(queryText) ? buildURIForGenesByLocusTag()
-                : buildURIForGenesByTextSearch();
     }
 
     /**

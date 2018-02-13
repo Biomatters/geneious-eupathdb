@@ -15,6 +15,8 @@ public class EuPathDatabase extends EukaryoticDatabase {
     private static final String HELP = "Provides services to search for genes in EuPathDB. EuPathDB (formerly ApiDB) is an integrated database covering the eukaryotic pathogens in the genera Acanthamoeba, Annacaliia, Babesia, Crithidia, Cryptosporidium, Edhazardia, Eimeria, Encephalitozoon, Endotrypanum, Entamoeba, Enterocytozoon, Giardia, Gregarina, Hamiltosporidium, Leishmania, Nematocida, Neospora, Nosema, EuPathdium, Theileria, Toxoplasma, Trichomonas, Trypanosoma and Vavraia, Vittaforma.";
     private static final String DESCRIPTION = "Provides services to search for genes in EuPathDB";
     private static final String NAME = "EuPathDB";
+    private static final String UNIQUE_ID = "EuPathDB Service";
+    private static final String PLUGIN_ICON = "databaseSearch16.png";
     private static final String DB_URL = "http://eupathdb.org/eupathdb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias, EC descriptions, Gene ID, Gene notes, Gene product, GO terms and definitions, Metabolic pathway names and descriptions, Phenotype, Protein domain names and descriptions, PubMed, Rodent Malaria Phenotype, Similar proteins (BLAST hits v. NRDB/PDB), User comments";
     private static final String WEB_SERVICE_DS_GENE_IDS_PARSER_PARAM = "ds_gene_ids_parser";
@@ -31,7 +33,7 @@ public class EuPathDatabase extends EukaryoticDatabase {
      */
     @Override
     public String getUniqueID() {
-        return NAME;
+        return UNIQUE_ID;
     }
 
     /**
@@ -66,7 +68,7 @@ public class EuPathDatabase extends EukaryoticDatabase {
 
     @Override
     protected String getIconName() {
-        return null;
+        return PLUGIN_ICON;
     }
 
     /**

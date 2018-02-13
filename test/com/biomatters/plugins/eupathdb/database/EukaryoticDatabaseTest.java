@@ -7,11 +7,13 @@ import com.biomatters.geneious.publicapi.documents.AnnotatedPluginDocument;
 import com.biomatters.geneious.publicapi.documents.PluginDocument;
 import com.biomatters.geneious.publicapi.documents.URN;
 import com.biomatters.geneious.publicapi.plugin.TestGeneious;
+import com.biomatters.plugins.eupathdb.services.EuPathDatabaseService;
 import com.biomatters.plugins.eupathdb.webservices.models.Record;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -95,46 +97,49 @@ public class EukaryoticDatabaseTest {
     private enum EuDBTests {
         // tests named ByTag use query strings that should be interpreted as list of gene ids (locus tags) and return exact number of results
         // tests named ByText should use a free text query. We allow for future tests to get more responses if new matching items have been added to the database
-        EuPathByTag(new EuPathDatabase(), "PF3D7_1133400", 1, 1),
-        EuPathByText(new EuPathDatabase(), "ACA1_0417*", 6, 10),
-        AmoebaByTag(new AmoebaDatabase(), "EDI_046900,EDI_046930", 2, 2),
-        AmoebaByText(new AmoebaDatabase(), "*EDI_0469*", 4, 8),
-        CryptoByTag(new CryptoDatabase(), "cgd7_2320,cgd7_2340", 2, 2),
-        CryptoByText(new CryptoDatabase(), "cgd7_23*", 11, 15),
-        FungiByTag(new FungiDatabase(), "NCU06650;NCU06656", 2, 2),
-        FungiByText(new FungiDatabase(), "NCU0665*", 11, 15),
-        GiardiaByTag(new GiardiaDatabase(), "GL50803_102438", 1, 1),
-        GiardiaByText(new GiardiaDatabase(), "GL50803_1024*", 6, 10),
-        MicrosporidiaByTag(new MicrosporidiaDatabase(), "ECU03_0820i", 1, 1),
-        MicrosporidiaByText(new MicrosporidiaDatabase(), "ECU03_0820*", 8, 12),
-        OrthoMCLByTag(new OrthoMCLDatabase(), "pfal|PF11_0344,pfal|PF11_0345", 2, 2),
-        OrthoMCLByText(new OrthoMCLDatabase(), "*OG5_228447", 2, 6),
-        PiroPlasmaByTag(new PiroPlasmaDatabase(), "TA14980,TA14985", 2, 2),
-        PiroPlasmaByText(new PiroPlasmaDatabase(), "TA1498*", 2, 6),
-        PlasmoByTag(new PlasmoDatabase(), "PF3D7_1133400,PGSY75_1133400", 2, 2),
-        PlasmoByText(new PlasmoDatabase(), "PF3D7_113340*", 2, 6),
-        ToxoByTag(new ToxoDatabase(), "TGME49_239250", 1, 1),
-        ToxoByText(new ToxoDatabase(), "TGME49_2392*", 4, 8),
-        TrichByTag(new TrichDatabase(), "TVAG_386080", 1, 1),
-        TrichByText(new TrichDatabase(), "TVAG_38608*", 1, 5),
-        TriTrypByTag(new TriTrypDatabase(), "Tb927.11.3120", 1, 1),
-        TriTrypByText(new TriTrypDatabase(), "Tb927.11.312*", 1, 5);
+        EuPathByTag(new EuPathDatabase(), "PF3D7_1133400", true, 1, 1),
+        EuPathByText(new EuPathDatabase(), "ACA1_0417*", false, 6, 10),
+        AmoebaByTag(new AmoebaDatabase(), "EDI_046900,EDI_046930", true, 2, 2),
+        AmoebaByText(new AmoebaDatabase(), "*EDI_0469*", false, 4, 8),
+        CryptoByTag(new CryptoDatabase(), "cgd7_2320,cgd7_2340", true, 2, 2),
+        CryptoByText(new CryptoDatabase(), "cgd7_23*", false, 11, 15),
+        FungiByTag(new FungiDatabase(), "NCU06650;NCU06656", true, 2, 2),
+        FungiByText(new FungiDatabase(), "NCU0665*", false, 11, 15),
+        GiardiaByTag(new GiardiaDatabase(), "GL50803_102438", true, 1, 1),
+        GiardiaByText(new GiardiaDatabase(), "GL50803_1024*", false, 6, 10),
+        MicrosporidiaByTag(new MicrosporidiaDatabase(), "ECU03_0820i", true, 1, 1),
+        MicrosporidiaByText(new MicrosporidiaDatabase(), "ECU03_0820*", false, 8, 12),
+        OrthoMCLByTag(new OrthoMCLDatabase(), "pfal|PF11_0344,pfal|PF11_0345", true, 2, 2),
+        OrthoMCLByText(new OrthoMCLDatabase(), "*OG5_228447", false, 2, 6),
+        PiroPlasmaByTag(new PiroPlasmaDatabase(), "TA14980,TA14985", true, 2, 2),
+        PiroPlasmaByText(new PiroPlasmaDatabase(), "TA1498*", false, 2, 6),
+        PlasmoByTag(new PlasmoDatabase(), "PF3D7_1133400,PGSY75_1133400", true, 2, 2),
+        PlasmoByText(new PlasmoDatabase(), "PF3D7_113340*", false, 2, 6),
+        ToxoByTag(new ToxoDatabase(), "TGME49_239250", true, 1, 1),
+        ToxoByText(new ToxoDatabase(), "TGME49_2392*", false, 4, 8),
+        TrichByTag(new TrichDatabase(), "TVAG_386080", true, 1, 1),
+        TrichByText(new TrichDatabase(), "TVAG_38608*", false, 1, 5),
+        TriTrypByTag(new TriTrypDatabase(), "Tb927.11.3120", true, 1, 1),
+        TriTrypByText(new TriTrypDatabase(), "Tb927.11.312*", false, 1, 5);
 
         private final EukaryoticDatabase eukaryoticDatabase;
         private final String queryString;
+        private final Map<String, Object> extendedOptions;
         private final int minExpectedReturns;
         private final int maxExpectedReturns;
 
-        EuDBTests(EukaryoticDatabase eukaryoticDatabase, String queryString, int minExpectedReturns, int maxExpectedReturns) {
+        EuDBTests(EukaryoticDatabase eukaryoticDatabase, String queryString, boolean isTag, int minExpectedReturns, int maxExpectedReturns) {
             this.eukaryoticDatabase = eukaryoticDatabase;
             this.queryString = queryString;
+            this.extendedOptions = new HashMap<>();
+            this.extendedOptions.put(EuPathDatabaseService.KEY_LOCUS_TAGS_ONLY, isTag);
             this.minExpectedReturns = minExpectedReturns;
             this.maxExpectedReturns = maxExpectedReturns;
         }
 
         void runTest() throws DatabaseServiceException {
             Callback callback = new Callback();
-            Query query = Query.Factory.createQuery(queryString);
+            Query query = Query.Factory.createExtendedQuery(queryString, extendedOptions);
             eukaryoticDatabase.search(query, callback, new URN[]{}, new ArrayList<>());
             Assert.assertTrue(toString()+": Number of results is "+callback.addCount+", expected range ["+minExpectedReturns+", "+maxExpectedReturns+"]",
                     (callback.addCount >= minExpectedReturns) && (callback.addCount <= maxExpectedReturns));

@@ -100,4 +100,27 @@ public class EuPathDatabaseService extends DatabaseService {
                          URN[] paramArrayOfURN) throws DatabaseServiceException {
         eukaryoticDatabase.search(paramQuery, callback, paramArrayOfURN, getChildServices());
     }
+    public static final String KEY_LOCUS_TAGS_ONLY ="LocusTagsOnly";
+
+    @Override
+    public ExtendedSearchOption[] getExtendedSearchOptions(boolean isAdvancedSearch) {
+        ExtendedSearchOption[] searchOptions = super.getExtendedSearchOptions(isAdvancedSearch);
+        if (isAdvancedSearch)
+            return searchOptions;
+        ExtendedSearchOption[] results = new ExtendedSearchOption[searchOptions.length+1];
+        System.arraycopy(searchOptions,0,results,0,searchOptions.length);
+        CheckboxSearchOption isGeneIdOnly = new CheckboxSearchOption(KEY_LOCUS_TAGS_ONLY, "Gene IDs Only", false);
+        results[searchOptions.length] = isGeneIdOnly;
+        isGeneIdOnly.setDescription("<html>Select checkbox if the query string is a list of gene IDs separated by commas, semicolons, or whitespace.<br/>If not selected, search all text fields, using * for wildcard and quotation marks to match an exact phrase</html>");
+        return results;
+    }
+
+    public static boolean isLocusTagsOnly(Query query) {
+        final Object value =  query.getExtendedOptionValue(KEY_LOCUS_TAGS_ONLY);
+        if (value != null) {
+            return (Boolean) value;
+        }
+        return false; // If not present use most general interpretation of query string
+    }
+
 }
