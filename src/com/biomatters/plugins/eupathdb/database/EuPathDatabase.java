@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The Class <code>EuPathDatabase</code> represents EuPathDB service {http://eupathdb.org/} which
+ * The Class <code>EuPathDatabase</code> represents EuPathDB service {https://eupathdb.org/} which
  * provides web services to search for genes in EuPathDB.
  *
  * @author cybage
@@ -17,13 +17,13 @@ public class EuPathDatabase extends EukaryoticDatabase {
     private static final String NAME = "EuPathDB";
     private static final String UNIQUE_ID = "EuPathDB Service";
     private static final String PLUGIN_ICON = "databaseSearch16.png";
-    private static final String DB_URL = "http://eupathdb.org/eupathdb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
+    private static final String DB_URL = "https://eupathdb.org/eupathdb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias, EC descriptions, Gene ID, Gene notes, Gene product, GO terms and definitions, Metabolic pathway names and descriptions, Phenotype, Protein domain names and descriptions, PubMed, Rodent Malaria Phenotype, Similar proteins (BLAST hits v. NRDB/PDB), User comments";
     private static final String WEB_SERVICE_DS_GENE_IDS_PARSER_PARAM = "ds_gene_ids_parser";
     private static final String WEB_SERVICE_DS_GENE_IDS_PARSER_PARAM_VALUE = "list";
     private static final String WEB_SERVICE_WDK_USER_SIGNATURE_PARAM = "wdk_user_signature";
     private static final String WEB_SERVICE_WDK_USER_SIGNATURE_PARAM_VALUE = "none";
-    private static final String WEB_SERVICE_URI = "http://eupathdb.org/eupathdb/webservices/GeneQuestions";
+    private static final String WEB_SERVICE_URI = "https://eupathdb.org/eupathdb/webservices/GeneQuestions";
     private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<>(null);
 
     /**
