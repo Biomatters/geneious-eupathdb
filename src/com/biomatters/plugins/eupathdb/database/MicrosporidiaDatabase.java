@@ -5,7 +5,7 @@ import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceExceptio
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The Class <code>MicrosporidiaDatabase</code> represents MicrosporidiaDB service {https://microsporidiadb.org/} which
+ * The Class <code>MicrosporidiaDatabase</code> represents MicrosporidiaDB service {http://microsporidiadb.org/} which
  * provides web services to search for genes in MicrosporidiaDB.
  *
  * @author cybage
@@ -16,8 +16,8 @@ public class MicrosporidiaDatabase extends EukaryoticDatabase {
     private static final String NAME = "MicrosporidiaDB";
     private static final String UNIQUE_ID = "MicrosporidiaDB Service";
     private static final String PLUGIN_ICON = "microsporidiadb16.png";
-    private static final String WEB_SERVICE_URI = "https://microsporidiadb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "https://microsporidiadb.org/micro/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
+    private static final String WEB_SERVICE_URI = "http://microsporidiadb.org/webservices/GeneQuestions";
+    private static final String DB_URL = "http://microsporidiadb.org/micro/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias, EC descriptions, Gene ID, Gene notes, Gene product, GO terms and definitions, Metabolic pathway names and descriptions, Protein domain names and descriptions, PubMed, Similar proteins (BLAST hits v. NRDB/PDB), User comments";
     private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<>(null);
 

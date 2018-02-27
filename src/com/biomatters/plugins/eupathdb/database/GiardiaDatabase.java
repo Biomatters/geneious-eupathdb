@@ -5,7 +5,7 @@ import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceExceptio
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The Class <code>GiardiaDatabase</code> represents GiardiaDB service {https://giardiadb.org/} which
+ * The Class <code>GiardiaDatabase</code> represents GiardiaDB service {http://giardiadb.org/} which
  * provides web services to search for genes in GiardiaDB.
  *
  * @author cybage
@@ -16,8 +16,8 @@ public class GiardiaDatabase extends EukaryoticDatabase {
     private static final String NAME = "GiardiaDB";
     private static final String UNIQUE_ID = "GiardiaDB Service";
     private static final String PLUGIN_ICON = "giardiadb16.png";
-    private static final String WEB_SERVICE_URI = "https://giardiadb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "https://giardiadb.org/giardiadb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
+    private static final String WEB_SERVICE_URI = "http://giardiadb.org/webservices/GeneQuestions";
+    private static final String DB_URL = "http://giardiadb.org/giardiadb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias, Cellular localization, EC descriptions, Gene ID, Gene notes, Gene product, GO terms and definitions, Protein domain names and descriptions, PubMed, Similar proteins (BLAST hits v. NRDB/PDB), User comments";
     private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<>(null);
 

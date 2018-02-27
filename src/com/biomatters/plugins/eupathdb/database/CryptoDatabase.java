@@ -5,7 +5,7 @@ import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceExceptio
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The Class <code>CryptoDatabase</code> represents Crypto service {https://cryptodb.org/} which
+ * The Class <code>CryptoDatabase</code> represents Crypto service {http://cryptodb.org/} which
  * provides web services to search for genes in CryptoDB.
  *
  * @author cybage
@@ -16,8 +16,8 @@ public class CryptoDatabase extends EukaryoticDatabase {
     private static final String NAME = "CryptoDB";
     private static final String UNIQUE_ID = "CryptoDB Service";
     private static final String PLUGIN_ICON = "cryptodb16.png";
-    private static final String WEB_SERVICE_URI = "https://cryptodb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "https://cryptodb.org/cryptodb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
+    private static final String WEB_SERVICE_URI = "http://cryptodb.org/webservices/GeneQuestions";
+    private static final String DB_URL = "http://cryptodb.org/cryptodb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Protein domain names and descriptions,User comments";
     private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<>(null);
 
