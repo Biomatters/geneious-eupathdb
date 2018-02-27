@@ -9,7 +9,7 @@ Adds to [Geneious](http://geneious.com) the ability to submit searches to all of
 # v1.0.2 (23rd Februray 2017)
 - GEN-28419 Restored plugin's R9 compatibility
 
-# v1.0.3 (** TO BE RELEASED **)
+# v1.0.3 (27 February 2018)
 - GEN-30327 Update to be compatible with changes in format of EuPathDB server response
 - GEN-30525 Plugin now uses information from server to continue to work in the face of certain changes on the server
             Added a checkbox for user to indicate that the query string represents a list of gene IDs
