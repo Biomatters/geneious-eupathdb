@@ -5,7 +5,7 @@ import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceExceptio
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The Class <code>AmoebaDatabase</code> represents AmoebaDB service {https://amoebadb.org/} which
+ * The Class <code>AmoebaDatabase</code> represents AmoebaDB service {http://amoebadb.org/} which
  * provides web services to search for genes in AmoebaDB.
  *
  * @author cybage
@@ -16,8 +16,8 @@ public class AmoebaDatabase extends EukaryoticDatabase {
     private static final String NAME = "AmoebaDB";
     private static final String UNIQUE_ID = "AmoebaDB Service";
     private static final String PLUGIN_ICON = "amoebadb16.png";
-    private static final String WEB_SERVICE_URI = "https://amoebadb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "https://amoebadb.org/amoeba/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
+    private static final String WEB_SERVICE_URI = "http://amoebadb.org/webservices/GeneQuestions";
+    private static final String DB_URL = "http://amoebadb.org/amoeba/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Metabolic pathway names and descriptions,Protein domain names and descriptions,User comments";
     private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<>(null);
 

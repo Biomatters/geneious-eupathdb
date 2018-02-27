@@ -5,7 +5,7 @@ import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceExceptio
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The Class <code>FungiDatabase</code> represents FungiDB service {https://fungidb.org/} which
+ * The Class <code>FungiDatabase</code> represents FungiDB service {http://fungidb.org/} which
  * provides web services to search for genes in FungiDB.
  *
  * @author cybage
@@ -16,8 +16,8 @@ public class FungiDatabase extends EukaryoticDatabase {
     private static final String NAME = "FungiDB";
     private static final String UNIQUE_ID = "FungiDB Service";
     private static final String PLUGIN_ICON = "fungidb16.png";
-    private static final String WEB_SERVICE_URI = "https://fungidb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "https://fungidb.org/fungidb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
+    private static final String WEB_SERVICE_URI = "http://fungidb.org/webservices/GeneQuestions";
+    private static final String DB_URL = "http://fungidb.org/fungidb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Metabolic pathway names and descriptions,Protein domain names and descriptions,User comments";
     private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<>(null);
 

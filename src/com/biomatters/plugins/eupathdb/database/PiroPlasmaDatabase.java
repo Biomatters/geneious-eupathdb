@@ -4,7 +4,7 @@ import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceExceptio
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The Class <code>PiroPlasmaDatabase</code> represents PiroPlasmaDB service {https://piroplasmadb.org/} which
+ * The Class <code>PiroPlasmaDatabase</code> represents PiroPlasmaDB service {http://piroplasmadb.org/} which
  * provides web services to search for genes in PiroPlasmaDB.
  *
  * @author cybage
@@ -15,8 +15,8 @@ public class PiroPlasmaDatabase extends EukaryoticDatabase {
     private static final String NAME = "PiroplasmaDB";
     private static final String UNIQUE_ID = "PiroplasmaDB Service";
     private static final String PLUGIN_ICON = "piroplasmadb16.png";
-    private static final String WEB_SERVICE_URI = "https://piroplasmadb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "https://piroplasmadb.org/piro/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
+    private static final String WEB_SERVICE_URI = "http://piroplasmadb.org/webservices/GeneQuestions";
+    private static final String DB_URL = "http://piroplasmadb.org/piro/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias,EC descriptions,Gene ID,Gene notes,Gene product,GO terms and definitions,Metabolic pathway names and descriptions,Protein domain names and descriptions,User comments";
     private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<>(null);
 
