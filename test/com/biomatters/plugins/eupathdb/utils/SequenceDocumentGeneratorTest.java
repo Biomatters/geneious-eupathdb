@@ -34,7 +34,7 @@ public class SequenceDocumentGeneratorTest {
     @Test
     public void testGetDefaultSequenceDocumentNucleotide() throws Exception {
         SequenceDocument.Alphabet alphabet = SequenceDocument.Alphabet.NUCLEOTIDE;
-        String url = "http://amoebadb.org/amoeba/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
+        String url = "https://amoebadb.org/amoeba/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
         String expectedUrl = url + getRecord().getId() + "&project_id=AmoebaDB";
 
         DefaultSequenceDocument document = SequenceDocumentGenerator.getDefaultSequenceDocument(getRecord(), url, alphabet,"AmoebaDB", null);
