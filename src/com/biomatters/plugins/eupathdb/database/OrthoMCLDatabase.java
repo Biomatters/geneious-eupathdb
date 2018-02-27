@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The Class <code>OrthoMCLDatabase</code> represents OrthoMCLDB service {http://orthomcl.org/} which
+ * The Class <code>OrthoMCLDatabase</code> represents OrthoMCLDB service {https://orthomcl.org/} which
  * provides web services to search for sequences in OrthoMCL.
  *
  * @author cybage
@@ -18,8 +18,8 @@ public class OrthoMCLDatabase extends EukaryoticDatabase {
     private static final String NAME = "OrthoMCL";
     private static final String UNIQUE_ID = "OrthoMCL Service";
     private static final String PLUGIN_ICON = "orthomcldb16.png";
-    private static final String WEB_SERVICE_URI = "http://orthomcl.org/webservices/SequenceQuestions";
-    private static final String DB_URL = "http://orthomcl.org/orthomcl/showRecord.do?name=SequenceRecordClasses.SequenceRecordClass&full_id=";
+    private static final String WEB_SERVICE_URI = "https://orthomcl.org/webservices/SequenceQuestions";
+    private static final String DB_URL = "https://orthomcl.org/orthomcl/showRecord.do?name=SequenceRecordClasses.SequenceRecordClass&full_id=";
     private static final String PATH_XML_BY_ID_LIST = "ByIdList.xml";
     private static final String PATH_XML_BY_TEXT_SEARCH = "ByTextSearch.xml";
 
