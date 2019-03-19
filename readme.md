@@ -1,5 +1,6 @@
 # EuPathDB Plugin
 Adds the ability to submit searches to all of the EuPathDB pathogen databases from within Geneious.
+
 **Note: this plugin is currently undergoing maintenance due to EuPathDB API changes and will not be useable from within Geneious.**
 
 ## Authors
