@@ -64,6 +64,13 @@ public class EuPathDBWebService {
         try {
             WebTarget target = client.target(paramURI);
             response = target.request(MediaType.APPLICATION_XML).get();
+            if (response.getStatus() == 301) {
+                URI redirectUri = response.getLocation();
+                if (redirectUri != null) {
+                    target = client.target(redirectUri);
+                    response = target.request(MediaType.APPLICATION_XML).get();
+                }
+            }
             if (response.getStatus() >= HTTP_ERROR_CODE) {
                 WebApplicationException we = new WebApplicationException(response);
                 throw new DatabaseServiceException(we, we.getMessage(), true);
@@ -92,7 +99,14 @@ public class EuPathDBWebService {
         Response response;
         try {
             WebTarget target = client.target(uri);
-            response = target.request(MediaType.APPLICATION_XML).post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE) /*text("")*/);
+            response = target.request(MediaType.APPLICATION_XML).post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+            if (response.getStatus() == 301) {
+                URI redirectUri = response.getLocation();
+                if (redirectUri != null) {
+                    target = client.target(redirectUri);
+                    response = target.request(MediaType.APPLICATION_XML).post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+                }
+            }
             if (response.getStatus() >= HTTP_ERROR_CODE) {
                 WebApplicationException we = new WebApplicationException(response);
                 throw new DatabaseServiceException(we, we.getMessage(), true);
