@@ -5,7 +5,7 @@ import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceExceptio
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The Class <code>TriTrypDatabase</code> represents TriTrypDB service {http://tritrypdb.org/} which
+ * The Class <code>TriTrypDatabase</code> represents TriTrypDB service {https://tritrypdb.org/} which
  * provides web services to search for genes in TriTrypDB.
  *
  * @author cybage
@@ -16,8 +16,8 @@ public class TriTrypDatabase extends EukaryoticDatabase {
     private static final String NAME = "TriTrypDB";
     private static final String UNIQUE_ID = "TriTrypDB Service";
     private static final String PLUGIN_ICON = "tritrypdb16.png";
-    private static final String WEB_SERVICE_URI = "http://tritrypdb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "http://tritrypdb.org/tritrypdb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
+    private static final String WEB_SERVICE_URI = "https://tritrypdb.org/webservices/GeneQuestions";
+    private static final String DB_URL = "https://tritrypdb.org/tritrypdb/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias, EC descriptions, Gene ID, Gene notes, Gene product, GO terms and definitions, Phenotype, Protein domain names and descriptions, PubMed, Similar proteins (BLAST hits v. NRDB/PDB), User comments";
     private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<>(null);
 

@@ -4,7 +4,7 @@ import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceExceptio
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The Class <code>ToxoDatabase</code> represents ToxoDB service {http://toxodb.org/} which
+ * The Class <code>ToxoDatabase</code> represents ToxoDB service {https://toxodb.org/} which
  * provides web services to search for genes in ToxoDB.
  *
  * @author cybage
@@ -15,8 +15,8 @@ public class ToxoDatabase extends EukaryoticDatabase {
     private static final String NAME = "ToxoDB";
     private static final String UNIQUE_ID = "ToxoDB Service";
     private static final String PLUGIN_ICON = "toxodb16.png";
-    private static final String WEB_SERVICE_URI = "http://toxodb.org/webservices/GeneQuestions";
-    private static final String DB_URL = "http://toxodb.org/toxo/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
+    private static final String WEB_SERVICE_URI = "https://toxodb.org/webservices/GeneQuestions";
+    private static final String DB_URL = "https://toxodb.org/toxo/showRecord.do?name=GeneRecordClasses.GeneRecordClass&source_id=";
     private static final String WEB_SERVICE_TEXT_FIELDS_PARAM_VALUE = "Alias, EC descriptions, Gene ID, Gene notes, Gene product, GO terms and definitions, Metabolic pathway names and descriptions, Protein domain names and descriptions, PubMed, Similar proteins (BLAST hits v. NRDB/PDB), User comments";
     private static AtomicReference<String> WEB_SERVICE_TEXT_SEARCH_ORGANISM_PARAM_VALUE = new AtomicReference<>(null);
 

@@ -8,7 +8,6 @@ Adds the ability to submit searches to all of the EuPathDB pathogen databases fr
 * Original plugins by Charles Ma - <charles_ma@email.com>
 
 ## More Information
-* [Plugin Page](http://www.geneious.com/plugins/eupathdb)
 * [EuPathDB Website](http://eupathdb.org)
 
 ## Requirements

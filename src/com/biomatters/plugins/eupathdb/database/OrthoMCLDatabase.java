@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The Class <code>OrthoMCLDatabase</code> represents OrthoMCLDB service {http://orthomcl.org/} which
+ * The Class <code>OrthoMCLDatabase</code> represents OrthoMCLDB service {https://orthomcl.org/} which
  * provides web services to search for sequences in OrthoMCL.
  *
  * @author cybage
