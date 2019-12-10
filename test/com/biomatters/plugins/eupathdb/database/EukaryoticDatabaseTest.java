@@ -1,5 +1,6 @@
 package com.biomatters.plugins.eupathdb.database;
 
+import com.biomatters.geneious.publicapi.databaseservice.BasicSearchQuery;
 import com.biomatters.geneious.publicapi.databaseservice.DatabaseServiceException;
 import com.biomatters.geneious.publicapi.databaseservice.Query;
 import com.biomatters.geneious.publicapi.databaseservice.RetrieveCallback;
@@ -120,7 +121,7 @@ public class EukaryoticDatabaseTest {
         TrichByTag(new TrichDatabase(), "TVAG_386080", true, 1, 1),
         TrichByText(new TrichDatabase(), "TVAG_38608*", false, 1, 5),
         TriTrypByTag(new TriTrypDatabase(), "Tb927.11.3120", true, 1, 1),
-        TriTrypByText(new TriTrypDatabase(), "Tb927.11.312*", false, 1, 5);
+        TriTrypByText(new TriTrypDatabase(), "Tb927.11.312*", false, 1, 10);
 
         private final EukaryoticDatabase eukaryoticDatabase;
         private final String queryString;
@@ -139,7 +140,8 @@ public class EukaryoticDatabaseTest {
 
         void runTest() throws DatabaseServiceException {
             Callback callback = new Callback();
-            Query query = Query.Factory.createExtendedQuery(queryString, extendedOptions);
+            BasicSearchQuery query = Query.Factory.createExtendedQuery(queryString, extendedOptions);
+            System.out.println("Searching " + toString() + ": " + query.getSearchText());
             eukaryoticDatabase.search(query, callback, new URN[]{}, new ArrayList<>());
             Assert.assertTrue(toString()+": Number of results is "+callback.addCount+", expected range ["+minExpectedReturns+", "+maxExpectedReturns+"]",
                     (callback.addCount >= minExpectedReturns) && (callback.addCount <= maxExpectedReturns));
