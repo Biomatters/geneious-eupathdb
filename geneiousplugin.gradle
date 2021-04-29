@@ -1,9 +1,5 @@
 defaultTasks 'createPlugin';
 
-task wrapper(type: Wrapper) {
-    gradleVersion = "2.2"
-}
-
 apply plugin: "java"
 
 // IntelliJ IDEA specific configuration required to workaround a bug. See https://intellij-support.jetbrains.com/hc/en-us/community/posts/206842955-builrd-resources-broken-for-gradle-projects-
@@ -42,14 +38,14 @@ task extractGeneiousRuntimeFiles(type: Copy) {
     })
 
     from zipTree(zipFile)
-    into dependencyCacheDir
+    into buildDir
 }
 
 // Running the test task will depend on making the Geneious Runtime available
 tasks.test.dependsOn(extractGeneiousRuntimeFiles)
 
 tasks.test {
-    workingDir file("$dependencyCacheDir/$geneiousFilesName")
+    workingDir file("$buildDir/$geneiousFilesName")
     minHeapSize '256M'
     maxHeapSize '1024M'
     jvmArgs '-ea', '-XX:MaxNewSize=40M', '-XX:ReservedCodeCacheSize=128m', '-Xss512K'
@@ -75,7 +71,7 @@ sourceSets {
         resources {
             srcDir 'resources'
         }
-        File geneiousFiles = file("$dependencyCacheDir/$geneiousFilesName")
+        File geneiousFiles = file("$buildDir/$geneiousFilesName")
         runtimeClasspath += files("$geneiousFiles/resources")
         runtimeClasspath += files("$geneiousFiles/iSeek.jar")
         runtimeClasspath += fileTree("$geneiousFiles/lib")
@@ -88,7 +84,7 @@ sourceSets {
         resources {
             srcDir 'testdata'
         }
-        File geneiousFiles = file("$dependencyCacheDir/$geneiousFilesName")
+        File geneiousFiles = file("$buildDir/$geneiousFilesName")
         runtimeClasspath += files("$geneiousFiles/resources")
         runtimeClasspath += files("$geneiousFiles/iSeek.jar")
         runtimeClasspath += fileTree("$geneiousFiles/lib")
@@ -134,7 +130,7 @@ task runGeneious(dependsOn: [extractGeneiousRuntimeFiles,build], type: JavaExec)
     main 'com.biomatters.iseek.application.ISeekMain'
     classpath sourceSets.main.runtimeClasspath
     args 'extraPlugins=' + pluginName
-    workingDir file("$dependencyCacheDir/$geneiousFilesName")
+    workingDir file("$buildDir/$geneiousFilesName")
     minHeapSize '256M'
     maxHeapSize '1024M'
     jvmArgs '-XX:+UseCompressedOops', '-XX:+UseConcMarkSweepGC', '-ea', '-Xss512K', '-Djava.util.logging.config.file=no_logging.properties'
