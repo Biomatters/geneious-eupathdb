@@ -1,3 +1,25 @@
+# Update 2022
+
+<p><br><br>This Plugin is no longer supported and does not function in current versions of Geneious Prime.
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    </p>
+
+---
+
 # EuPathDB Plugin
 Adds the ability to submit searches to all of the EuPathDB pathogen databases from within Geneious.
 
